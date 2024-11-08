@@ -3,25 +3,76 @@
 {% block title %}Village green{% endblock %}
 
 {% block body %}
-    <h1 class="text-center">Toutes nos categories</h1>
-    <img src="assets/image/violon1.webp" alt="violon">
-    <img src="assets/image/acoustique1.webp" alt="guitare acoustique">
-    <img src="assets/image/guitare_elec1.webp" alt="guitare electrique">
-    <img src="assets/image/saxo1.webp" alt="saxophone">
-    <img src="assets/image/piano1.webp" alt="piano">
-    <img src="assets/image/batterie1.webp" alt="batterie">
-
-    <div class="">
-        <div>
-            <h1 class="text-center">Best sellers</h1>
+<div class="container">
+    <h1 class="text-center my-5">Toutes nos catégories</h1>
+    <!-- Section Toutes nos catégories -->
+    <div class="row d-flex justify-content-center">
+        <div class="card col-12 col-sm-6 col-md-4 col-lg-3 mb-4 mx-3">
+            <img src="/image/violon1.webp" alt="Violon" class="card-img-top">
+            <div class="card-body text-center">
+                <p class="card-text">Violon</p>
+            </div>
         </div>
-        <div>
-            <img src="assets/image/best.webp" alt="image best sellers">
+        <div class="card col-12 col-sm-6 col-md-4 col-lg-3 mb-4 mx-3">
+            <img src="/image/acoustique1.webp" alt="Guitare acoustique" class="card-img-top">
+            <div class="card-body text-center">
+                <p class="card-text">Guitare Acoustique</p>
+            </div>
+        </div>
+        <div class="card col-12 col-sm-6 col-md-4 col-lg-3 mb-4 mx-3">
+            <img src="/image/guitare_elec1.webp" alt="Guitare électrique" class="card-img-top">
+            <div class="card-body text-center">
+                <p class="card-text">Guitare Électrique</p>
+            </div>
+        </div>
+        <div class="card col-12 col-sm-6 col-md-4 col-lg-3 mb-4 mx-3">
+            <img src="/image/saxo1.webp" alt="Saxophone" class="card-img-top">
+            <div class="card-body text-center">
+                <p class="card-text">Saxophone</p>
+            </div>
+        </div>
+        <div class="card col-12 col-sm-6 col-md-4 col-lg-3 mb-4 mx-3">
+            <img src="/image/piano1.webp" alt="Piano" class="card-img-top">
+            <div class="card-body text-center">
+                <p class="card-text">Piano</p>
+            </div>
+        </div>
+        <div class="card col-12 col-sm-6 col-md-4 col-lg-3 mb-4 mx-3">
+            <img src="/image/batterie1.webp" alt="Batterie" class="card-img-top">
+            <div class="card-body text-center">
+                <p class="card-text">Batterie</p>
+            </div>
         </div>
     </div>
 
-    <img src="assets/image/violon1.webp" alt="violon">
-    <img src="assets/image/saxo1.webp" alt="saxophone">
-    <img src="assets/image/piano1.webp" alt="piano">
+    <div class="d-flex align-items-center justify-content-center my-4">
+        <h1>Best Sellers</h1>
+        <img src="/image/best.webp" alt="Best Sellers" style="width: 70px; height: 70px; margin-left: 20px;">
+    </div>
+
+    <!-- Section Best Sellers -->
+    <div class="row d-flex justify-content-center">
+        <div class="card col-12 col-sm-6 col-md-4 col-lg-3 mb-4 mx-3">
+            <img src="/image/violon1.webp" alt="Violon" class="card-img-top">
+            <div class="card-body text-center">
+                <p class="card-text">Violon</p>
+            </div>
+        </div>
+        <div class="card col-12 col-sm-6 col-md-4 col-lg-3 mb-4 mx-3">
+            <img src="/image/saxo1.webp" alt="Saxophone" class="card-img-top">
+            <div class="card-body text-center">
+                <p class="card-text">Saxophone</p>
+            </div>
+        </div>
+        <div class="card col-12 col-sm-6 col-md-4 col-lg-3 mb-4 mx-3">
+            <img src="/image/piano1.webp" alt="Piano" class="card-img-top">
+            <div class="card-body text-center">
+                <p class="card-text">Piano</p>
+            </div>
+        </div>
+      
+    </div>  
+    
+</div>
 
 {% endblock %}
