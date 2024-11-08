@@ -1,20 +1,27 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello AccueilController!{% endblock %}
+{% block title %}Village green{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+    <h1 class="text-center">Toutes nos categories</h1>
+    <img src="assets/image/violon1.webp" alt="violon">
+    <img src="assets/image/acoustique1.webp" alt="guitare acoustique">
+    <img src="assets/image/guitare_elec1.webp" alt="guitare electrique">
+    <img src="assets/image/saxo1.webp" alt="saxophone">
+    <img src="assets/image/piano1.webp" alt="piano">
+    <img src="assets/image/batterie1.webp" alt="batterie">
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+    <div class="">
+        <div>
+            <h1 class="text-center">Best sellers</h1>
+        </div>
+        <div>
+            <img src="assets/image/best.webp" alt="image best sellers">
+        </div>
+    </div>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ '/home/souare/Bureau/projet/fil_rouge/src/Controller/AccueilController.php'|file_link(0) }}">src/Controller/AccueilController.php</a></code></li>
-        <li>Your template at <code><a href="{{ '/home/souare/Bureau/projet/fil_rouge/templates/accueil/index.html.twig'|file_link(0) }}">templates/accueil/index.html.twig</a></code></li>
-    </ul>
-</div>
+    <img src="assets/image/violon1.webp" alt="violon">
+    <img src="assets/image/saxo1.webp" alt="saxophone">
+    <img src="assets/image/piano1.webp" alt="piano">
+
 {% endblock %}
