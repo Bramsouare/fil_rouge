@@ -13,21 +13,26 @@ use App\Entity\Utilisateur;
 *                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~      UTILISATEUR CONTROLLER     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ####################################################################################################################################*/
 
+// CRÉATION ET GESTION DE FORMULAIRE
 class UtilisateurController extends AbstractController
 {
+    // Utilise les fonctions de la classe AbstractController: création et gestion du formulaire
     #[Route(
         '/utilisateur', 
         name: 'utilisateur_form'
         )
     ]
+
+    // Écoute la route /utilisateur et lui associe le nom de la route 'utilisateur_form'
     public function index(Request $request): Response
     {
         $form = $this -> createForm(UtilisateurType::class);
 
         $form -> handleRequest ($request);
+
         if ($form -> isSubmitted() && $form -> isValid()) 
         {
-            // Traitement des données du formulaire ici (par exemple, enregistrement)
+            // Vérifie si le form est soumis et valide
             $data = $form -> getData();
 
             // Ajoutez ici le code pour gérer les données, comme les sauvegarder en base de données
@@ -35,12 +40,12 @@ class UtilisateurController extends AbstractController
             // $email = $data['email'];
             // $password = $data['password'];
 
-            return $this -> redirectToRoute('app_success');
+            return $this -> redirectToRoute('app_accueil');
         }
 
         return $this -> render('utilisateur/index.html.twig', 
             [
-                'form' => $form->createView(),
+                'form' => $form -> createView(),
             ]
             )
         ;
@@ -77,6 +82,9 @@ class RoleController extends AbstractController
 *                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~      INSCRIPTION CONTROLLER     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                     
 ####################################################################################################################################*/
 
+// CRÉATION ET GESTION DE FORMULAIRE
+
+// Utilise les fonctions de la classe AbstractController: création et gestion du formulaire
 class InscriptionController extends AbstractController
 {
     #[Route(
@@ -84,14 +92,31 @@ class InscriptionController extends AbstractController
         name: 'app_inscription'
         )
     ]
-    public function index(): Response
+
+    //Écoute la route /inscription et lui associe le nom de la route 'app_inscription'
+    public function index(Request $request): Response
     {
-        return $this -> render
-            (
-                'inscription/index.html.twig',
-                [
-                    'controller_name' => 'InscriptionController',
-                ]
+        $form = $this -> createForm(UtilisateurType::class);
+
+        $form -> handleRequest ($request);
+
+        if ($form -> isSubmitted() && $form -> isValid())
+        {
+            // Vérifie si le form est soumis et valide
+            $data = $form -> getData();
+
+            // Ajoutez ici le code pour gérer les données, comme les sauvegarder en base de données
+            // Par exemple :
+            // $email = $data['email'];
+            // $password = $data['password'];   
+
+            return $this -> redirectToRoute('app_accueil');
+        }
+
+        return $this -> render('inscription/index.html.twig',
+            [
+                'controller_name' => 'InscriptionController',
+            ]
             )
         ;
     }

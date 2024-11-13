@@ -1,52 +1,55 @@
 <?php
 
 namespace App\Entity;
-// gérer les opérations de base de données de la classe Utilisateur.
+// Gestion des opérations de recherche de bd de la classe récupérer, manipuler et gérer les objets Utilisateur.
 use App\Repository\UtilisateurRepository; 
-// Object-Relational Mapper) afin de spécifier les métadonnées des colonnes et les relations.
+// Liaison des attributs avec la table de la bd.
 use Doctrine\ORM\Mapping as ORM;
-// Contient des contraintes de validation qui seront appliquées lors de la validation des données. 
+// Contraintes de validation lors de la validation des données. 
 use Symfony\Component\Validator\Constraints as Assert;
 
+// Marquer la classe comme une entité de Doctrine, qui correspond au table de la bd.
+#[ORM\Entity(repositoryClass: UtilisateurRepository::class)]
 
 class Utilisateur
 {
-    // Indique que $id est la clé primaire de la table de base de données.
+    // $id est la clé primaire de la table de la bd.
     #[ORM\Id]
-    // valeur de $id est auto-incrémentée par la base de données.
+    // $id est auto-incrementée par la bd
     #[ORM\GeneratedValue]
-    // $id est une colonne de la table associée dans la base de données.
+    // $id est une colonne de la table associée de la bd.
     #[ORM\Column]
-    // $id est de type int (entier), initialisée à null par défaut et ne peut être accédée directement que depuis la classe.
+    // $id est de type int et privé
     private ?int $id = null;
 
+    ####################################################
+    ######## CONFIGURATION DES CHAMPS DE LA BD #########
+    ####################################################
+
+    // 1. Contraintes de validation.
+    // 2. privé donc accecible depuis la class Utilisateur.php
+
     #[ORM\Column(length: 255)]
-    // Contrainte pour l'email.
-    #[Assert\NotBlank(message:"Le nom ne peut pas être vide")]
+    #[Assert\NotBlank(message:"Le mail ne peut pas être vide")]
     #[Assert\Email(message:"Veuillez entrer une adresse email valide")]
     private ?string $email = null;
 
     #[ORM\Column(length: 255)]
-    // Contrainte pour le mot de passe.
     #[Assert\NotBlank(message:"Le mot de passe ne peut pas être vide")]
     #[Assert\Length(
             min: 8,
             minMessage: "Le mot de passe doit faire au moins {{ limit }} caractères."   
         )
     ]
-
     private ?string $password = null;
 
-    // Cela permet d’accéder à $id depuis l'extérieur de la classe.
+    // Methode pour récuperer la valeur depuis l'exterieur de la classe Utilisateur.php
+    // Get = Récuperer Set = Définir.
+    // Si la valeur n'est pas renseignée, renvoie null.
     public function getId(): ?int
     {
         return $this -> id;
     }
-
-    // getEmail() : Un getter pour obtenir la valeur de $email.
-    // setEmail() : Un setter pour définir la valeur de $email. 
-    // Il prend en paramètre un string $email et retourne l’instance de l’objet 
-    // (self), permettant le chaînage des appels.
 
     public function getEmail(): ?string
     {

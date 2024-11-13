@@ -1,6 +1,7 @@
 <?php 
 namespace App\Form;
 
+use App\Entity\Utilisateur;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -31,10 +32,14 @@ class UtilisateurType extends AbstractType
         ;
     }
 
+    // Renvoie l'entité et le nom de la classe de l'entité
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver -> setDefaults([
-           
-        ]);
+        // Les données du form mappée sur l'object de la classe lors de la soumission puis mise a jour.
+        $resolver -> setDefaults(
+            [
+                'dara_class' => Utilisateur::class,
+            ]
+    );
     }
 }
