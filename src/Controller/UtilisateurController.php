@@ -9,13 +9,17 @@ use App\Form\UtilisateurType;
 use Symfony\Component\HttpFoundation\Request;
 use App\Entity\Utilisateur;
 
-/*####################################################################################################################################
-*                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~      UTILISATEUR CONTROLLER     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-####################################################################################################################################*/
 
-// CRÉATION ET GESTION DE FORMULAIRE
+
+
 class UtilisateurController extends AbstractController
 {
+    /*####################################################################################################################################
+    *                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~      UTILISATEUR CONTROLLER     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ####################################################################################################################################*/
+    
+    
+    // CRÉATION ET GESTION DE FORMULAIRE
     // Utilise les fonctions de la classe AbstractController: création et gestion du formulaire
     #[Route(
         '/utilisateur', 
@@ -24,7 +28,7 @@ class UtilisateurController extends AbstractController
     ]
 
     // Écoute la route /utilisateur et lui associe le nom de la route 'utilisateur_form'
-    public function index(Request $request): Response
+    public function utilisateur(Request $request): Response
     {
         $form = $this -> createForm(UtilisateurType::class);
 
@@ -50,43 +54,13 @@ class UtilisateurController extends AbstractController
             )
         ;
     }
-};
-  
 
-/*####################################################################################################################################
-*                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~      ROLE CONTROLLER     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-####################################################################################################################################*/
+    /*####################################################################################################################################
+    *                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~      INSCRIPTION CONTROLLER     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                     
+    ####################################################################################################################################*/
 
-class RoleController extends AbstractController
-{
-    #[Route(
-    '/role',
-    name: 'app_role'
-        )
-    ]
-    public function index(): Response
-    {
-        return $this -> render
-            (
-                'role/index.html.twig',
-                [
-                    'controller_name' => 'RoleController',
-                ]
-            )
-        ;
-    }
-};
+    // CRÉATION ET GESTION DE FORMULAIRE
 
-
-/*####################################################################################################################################
-*                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~      INSCRIPTION CONTROLLER     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                     
-####################################################################################################################################*/
-
-// CRÉATION ET GESTION DE FORMULAIRE
-
-// Utilise les fonctions de la classe AbstractController: création et gestion du formulaire
-class InscriptionController extends AbstractController
-{
     #[Route(
         '/inscription',
         name: 'app_inscription'
@@ -94,8 +68,15 @@ class InscriptionController extends AbstractController
     ]
 
     //Écoute la route /inscription et lui associe le nom de la route 'app_inscription'
-    public function index(Request $request): Response
-    {
+    public function inscription(Request $request): Response
+    {  
+        return $this -> render('inscription/index.html.twig',
+            [
+                'controller_name' => 'InscriptionController',
+
+                ]
+            )
+        ;
         $form = $this -> createForm(UtilisateurType::class);
 
         $form -> handleRequest ($request);
@@ -113,28 +94,40 @@ class InscriptionController extends AbstractController
             return $this -> redirectToRoute('app_accueil');
         }
 
-        return $this -> render('inscription/index.html.twig',
-            [
-                'controller_name' => 'InscriptionController',
-            ]
+      
+    }
+
+    /*####################################################################################################################################
+    *                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~      ROLE CONTROLLER     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ####################################################################################################################################*/
+
+    #[Route(
+        '/role',
+        name: 'app_role'
+            )
+        ]
+    public function role(): Response
+    {
+        return $this -> render
+            (
+                'role/index.html.twig',
+                [
+                    'controller_name' => 'RoleController',
+                ]
             )
         ;
     }
-};
 
+    /*####################################################################################################################################
+    *                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~      ADRESSE CONTROLLER     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ####################################################################################################################################*/
 
-/*####################################################################################################################################
-*                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~      ADRESSE CONTROLLER     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-####################################################################################################################################*/
-
-class AdresseController extends AbstractController
-{
     #[Route(
         '/adresse',
         name: 'app_adresse'
         )
     ]
-    public function index(): Response
+    public function adresse(): Response
     {
         return $this -> render
             (
@@ -145,21 +138,17 @@ class AdresseController extends AbstractController
             )
         ;
     }
-};
 
+    /*####################################################################################################################################
+    *                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~      CONNECTION CONTROLLER     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ####################################################################################################################################*/
 
-/*####################################################################################################################################
-*                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~      CONNECTION CONTROLLER     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-####################################################################################################################################*/
-
-class ConnectionController extends AbstractController
-{
     #[Route(
         '/connection',
         name: 'app_connection'
         )
     ]
-    public function index(): Response
+    public function connection(): Response
     {
         return $this -> render
             (
@@ -170,21 +159,17 @@ class ConnectionController extends AbstractController
             )
         ;
     }
-};
 
+    /*####################################################################################################################################
+    *                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~      FOURNISSEUR CONTROLLER     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ####################################################################################################################################*/
 
-/*####################################################################################################################################
-*                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~      FOURNISSEUR CONTROLLER     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-####################################################################################################################################*/
-
-class FournisseurController extends AbstractController 
-{
     #[Route(
         '/fournisseur',
         name: 'app_fournisseur'
         )
     ]
-    public function index(): Response
+    public function fournisseur(): Response
     {
         return $this -> render
             (
@@ -195,4 +180,6 @@ class FournisseurController extends AbstractController
             )
         ;
     }
+
 };
+  
