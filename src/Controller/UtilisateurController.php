@@ -8,6 +8,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Form\UtilisateurType;
 use Symfony\Component\HttpFoundation\Request;
 use App\Entity\Utilisateur;
+use App\Form\InscriptionType;
 
 
 
@@ -70,14 +71,7 @@ class UtilisateurController extends AbstractController
     //Écoute la route /inscription et lui associe le nom de la route 'app_inscription'
     public function inscription(Request $request): Response
     {  
-        return $this -> render('inscription/index.html.twig',
-            [
-                'controller_name' => 'InscriptionController',
-
-                ]
-            )
-        ;
-        $form = $this -> createForm(UtilisateurType::class);
+        $form = $this -> createForm(InscriptionType::class);
 
         $form -> handleRequest ($request);
 
@@ -93,6 +87,15 @@ class UtilisateurController extends AbstractController
 
             return $this -> redirectToRoute('app_accueil');
         }
+
+        return $this -> render('inscription/index.html.twig',
+        [
+            'controller_name' => 'InscriptionController',
+            'form'=> $form -> createView(),
+
+            ]
+        )
+    ;
 
       
     }

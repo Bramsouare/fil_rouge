@@ -1,15 +1,11 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title></title>
+<header>
 
     <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+
         <div class="container-fluid">
             <!-- Logo -->
             <a class="navbar-brand">
-                <img src="/image/logo.webp" alt="Logo" class="d-inline-block align-text-top" style="height: 50px;">
+                <img src="/image/logo.webp" alt="Logo" class="d-inline-block align-text-top" style="height: 80px;">
             </a>
 
             <!-- Barre de recherche -->
@@ -25,64 +21,27 @@
                         <a class="nav-link" href="{{ path('app_accueil') }}">Accueil</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Catégorie</a>
+                        <a class="nav-link" href="{{ path('app_categorie') }}">Catégorie</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Instruments</a>
+                        <a class="nav-link" href="{{ path('app_instrument') }}">Instruments</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Me connecter</a>
+                        <a class="nav-link" href="{{ path('utilisateur_form') }}">Me connecter</a>
                     </li>
                 </ul>
 
                 <!-- Panier -->
-                <a href="#" class="nav-link text-light">
+                <a href="{{ path('app_panier') }}" class="nav-link text-light">
                     <i class="bi bi-cart"></i> 
                 </a>
             </div>
+
         </div>
+
     </nav>
 
-    
-</head>
-<body>
-{# <nav class="navbar navbar-expand-md navbar-dark bg-dark">
-        <div class="container-fluid">
-            <!-- Logo -->
-            <a class="navbar-brand">
-                <img src="/image/logo.webp" alt="Logo" class="d-inline-block align-text-top">
-            </a>
+</header>
 
-        <!-- Barre de recherche -->
-        <form class="d-flex mx-5">
-            <input class="form-control me-2" type="search" placeholder="Recherche" aria-label="Recherche">
-            <button class="btn btn-outline-success" type="submit">Recherche</button>
-        </form>
-        <!-- Barre de navigation -->
-        <div class="collapse navbar-collapse justify-content-end" id="navbarTogglerDemo01">
-            <ul class="navbar-nav me-3">
-                <li class="nav-item">
-                    <a class="navbar-brand" href="{{ path('app_accueil') }}">Accueil</a>
-                </li>
-                <li class="nav-item">
-                    <a class="navbar-brand" href="#">Catégorie</a>
-                </li>
-                <li class="nav-item">
-                    <a class="navbar-brand" href="#">Instruments</a>
-                </li>
-                <li class="nav-item">
-                    <a class="navbar-brand" href="#">Me connecter</a>
-                </li>
-            </ul>
 
-            <!-- Panier -->
-            <a href="#" class="nav-link text-light">
-                <i class="bi bi-cart"></i> 
-            </a>
-        </div>
-        </div>
-    </nav> #}
     
-</body>
-    
-</html>

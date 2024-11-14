@@ -1,20 +1,50 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Inscription</title>
-</head>
-<body>
-    <h1>Inscription</h1>
-{# 
-    {{ form_start (form) }}
-        {{ form_row(form.nom) }}
-        {{ form_row(form.prenom) }}
-        {{ form_row(form.siret) }}
-        {{ form_row(form.email) }}
-        {{ form_row(form.telephone) }}
-        {{ form_row(form.password) }}
-        <button type="submit">Je m'inscrit</button>
-    {{ form_end(form) }} #}
+{% extends 'base.html.twig'%}
+
+{% block title %} Inscription {% endblock %}
     
-</body>
-</html>
+{% block body %}
+
+    <div class="container">
+
+        <h1 class="text-center my-5">Inscription</h1>
+
+        {{ form_start(form) }}
+
+            <!-- Affiche les erreurs de validation -->
+            <div class="my-custom-class-for-errors">
+                {{ form_errors(form) }}
+            </div>
+
+            <div class="row">
+                
+                <div class="col-md-6">
+                    <div class="form-group">
+                        {{ form_row(form.nom, {'attr': {'class': 'form-control', 'placeholder': 'Veuillez entrer nom'} }) }}
+                    </div>
+                    <div class="form-group my-5">
+                        {{ form_row(form.prenom, {'attr': {'class': 'form-control', 'placeholder': 'Veuillez entrer prenom'} }) }}
+                    </div>
+                    <div class="form-group my-5">
+                        {{ form_row(form.siret, {'attr': {'class': 'form-control', 'placeholder': 'champs pour les professionnels'} }) }}
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        {{ form_row(form.email, {'attr': {'class': 'form-control', 'placeholder': 'Veuillez entrer email'} }) }}
+                    </div>
+                    <div class="form-group my-5">
+                        {{ form_row(form.telephone, {'attr': {'class': 'form-control', 'placeholder': 'Veuillez entrer téléphone'} }) }}
+                    </div>
+                    <div class="form-group my-5">
+                        {{ form_row(form.password, {'attr': {'class': 'form-control', 'placeholder': 'Veuillez entrer mot de passe'} }) }}
+                    </div>
+                </div>
+
+            </div>
+
+        {{ form_end(form) }}
+
+    </div>
+
+{% endblock %}

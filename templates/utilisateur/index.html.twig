@@ -1,16 +1,47 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Connection</title>
-</head>
-<body>
-    <h1>Connection</h1>
+{% extends 'base.html.twig' %}
 
-    {{ form_start(form) }}
-        {{ form_row(form.email) }}
-        {{ form_row(form.password) }}
-        <button type="submit">Je me connecte</button>
-    {{ form_end(form) }}
+{% block title %}Connexion{% endblock %}
 
-</body>
-</html>
+{% block body %}
+
+    <div class="container mt-5">
+
+        <h1 class="text-center my-5">Connexion</h1>
+
+        {{ form_start(form) }}
+
+            <!-- Affiche les erreurs de validation -->
+            <div class="my-custom-class-for-errors">
+                {{ form_errors(form) }}
+            </div>
+
+            <div class="row">
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        {{ form_row(form.email, {'attr': {'class': 'form-control', 'placeholder': 'Veuillez entrer email'}}) }}
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        {{ form_row(form.password, {'attr': {'class': 'form-control', 'placeholder': 'Veuillez entrer mot de passe'}}) }}
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="text-center mt-3">
+                <button type="submit" class="btn btn-default btn-lg">Je me connecte</button>
+            </div>
+
+        {{ form_end(form) }}
+
+        <div class="text-center mt-3">
+            <a href="{{ path('app_inscription') }}" class="btn btn-link">Vous n’êtes pas encore membre ?</a>
+        </div>
+
+
+    </div>
+
+{% endblock %}
