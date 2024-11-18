@@ -1,10 +1,54 @@
 
 body {
     background-color: #73927a;
+    margin: 0;
+    padding-bottom: 100px; /* Ajoute un espace pour éviter que le footer ne masque le contenu */
+    box-sizing: border-box;
 }
 
 .logo {
     width: 500px; 
     height: auto;
 }
+
+
+footer {
+    position: fixed; /* Fixe à un endroit spécifique */
+    bottom: 0;       /* Colle au bas de la fenêtre */
+    left: 0;
+    width: 100%;     /* Occupe toute la largeur */
+    z-index: 1000;   /* Assure que le footer reste au-dessus d'autres éléments */
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2); /* Ombre subtile pour démarquer */
+}
+
+footer a {
+    margin-right: 15px;
+    text-decoration: none;
+}
+
+footer a:hover {
+    text-decoration: underline;
+    color: #73927a; /* Couleur en survol */
+}
+
+
+
+/* En-tête du tableau */
+.table thead th {
+    background-color: #73927a;
+    color: white;
+    padding: 10px;
+    text-align: left;
+    border-bottom: 2px solid white;
+}
+
+.table-row {
+    height: 50px; 
+}
+
+.table td, .table th {
+    vertical-align: middle;  /* Aligne verticalement le contenu au centre */
+}
+
+
 

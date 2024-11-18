@@ -2,9 +2,12 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Entity\Payement;
+use App\Form\PayementType;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 
 
@@ -62,13 +65,31 @@ class CommandeController extends AbstractController
         name: 'app_payement',
         )
     ]
-    public function payement(): Response
+    // Récupération des données du formulaire
+    public function payement(Request $Request): Response
     {
+        // Création de l'entité
+        $payement = new Payement();
+
+        // Création du formulaire
+        $form = $this -> createForm(PayementType::class, $payement);
+
+        // traitement des données et vérification plus renplis les champs
+        $form -> handleRequest($Request);
+
+        // Si le formulaire est soumis et valide
+        if ($form -> isSubmitted() && $form -> isValid())
+        {
+            // Redirection vers la page de confirmation
+            return $this -> redirectToRoute('payment_success');
+        }
+        
+        // Affichage du formulaire si il n'est pas soumis et valide
         return $this -> render
             (
                 'payement/index.html.twig',
                 [
-                    'controller_name' => 'PayementController',
+                    'form' => $form -> createView(),
                 ]
             )
         ;

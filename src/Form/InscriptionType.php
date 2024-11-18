@@ -77,8 +77,11 @@ class InscriptionType extends AbstractType
                 'submit',
                 SubmitType::class,
                 [
-                    'label' => "Je m'inscris",
-
+                    'label' => "Je m'inscris",  
+                    'attr' => 
+                    [
+                        'class' => 'btn btn-light',  
+                    ],
                 ]
             )
         ;

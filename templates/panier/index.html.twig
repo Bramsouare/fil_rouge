@@ -1,20 +1,43 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello PanierController!{% endblock %}
+{% block title %}Panier{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+<div class="container">
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+    <h1 class="text-center my-5 text-white">Panier</h1>  <!-- Texte en blanc pour le titre -->
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ '/home/souare/Bureau/projet/fil_rouge/src/Controller/PanierController.php'|file_link(0) }}">src/Controller/PanierController.php</a></code></li>
-        <li>Your template at <code><a href="{{ '/home/souare/Bureau/projet/fil_rouge/templates/panier/index.html.twig'|file_link(0) }}">templates/panier/index.html.twig</a></code></li>
-    </ul>
+    <div class="cart-container">
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col" class="text-white">Produit</th>
+                    <th scope="col" class="text-white">Quantité</th>
+                    <th scope="col" class="text-white">Prix</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="table-row">
+                    <td class="text-white">Produit A</td>
+                    <td class="text-white">2</td>
+                    <td class="text-white">20 €</td>
+                </tr>
+                <tr class="table-row">
+                    <td class="text-white">Produit B</td>
+                    <td class="text-white">1</td>
+                    <td class="text-white">15 €</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Total et Bouton -->
+        <div class="d-flex justify-content-between align-items-center">
+            <div><strong class="text-white">Total :</strong> 35 €</div>
+            <a href="{{ path('app_payement') }}" class="btn btn-light">Valider le panier</a>
+        </div>
+
+    </div>
+
 </div>
 {% endblock %}
