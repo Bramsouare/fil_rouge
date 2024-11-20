@@ -2,11 +2,14 @@
 
 namespace App\Entity;
 
-use App\Repository\ProduitRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use App\Entity\Commande;
+use App\Entity\Livraison;
+use App\Entity\Utilisateur;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\ProduitRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 
 #[ORM\Entity(repositoryClass: ProduitRepository::class)]
 class Produit
@@ -37,7 +40,7 @@ class Produit
     #[ORM\Column(length: 255)]
     private ?string $produit_stock = null;
 
-    #[ORM\ManyToOne(inversedBy: 'produits')]
+    #[ORM\ManyToOne(inversedBy: 'produit')]
     #[ORM\JoinColumn(nullable: false)]
     private ?tva $tva = null;
 
@@ -57,7 +60,7 @@ class Produit
      * @var Collection<int, Commande>
      */
     #[ORM\ManyToMany(targetEntity: Commande::class, mappedBy: 'produit')]
-    private Collection $commandes;
+    private Collection $commande;
 
     /**
      * @var Collection<int, Livraison>
@@ -69,30 +72,16 @@ class Produit
      * @var Collection<int, Utilisateur>
      */
     #[ORM\ManyToMany(targetEntity: Utilisateur::class, mappedBy: 'produit')]
-    private Collection $utilisateurs;
-
-    /**
-     * @var Collection<int, Appartient>
-     */
-    #[ORM\ManyToMany(targetEntity: Appartient::class, mappedBy: 'commande')]
-    private Collection $appartients;
-
-    #[ORM\ManyToOne(inversedBy: 'produit')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Appartient $appartient = null;
-
-    #[ORM\ManyToOne(inversedBy: 'produit')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Genere $genere = null;
+    private Collection $utilisateur;
 
     public function __construct()
     {
         $this -> rubrique = new ArrayCollection();
         $this -> fournisseur = new ArrayCollection();
-        $this -> commandes = new ArrayCollection();
+        $this -> commande = new ArrayCollection();
         $this -> livraisons = new ArrayCollection();
-        $this -> utilisateurs = new ArrayCollection();
-        $this -> appartients = new ArrayCollection();
+        $this -> utilisateur = new ArrayCollection();
+
     }
 
     public function getId(): ?int
@@ -259,15 +248,15 @@ class Produit
     /**
      * @return Collection<int, Commande>
      */
-    public function getCommandes(): Collection
+    public function getCommande(): Collection
     {
-        return $this -> commandes;
+        return $this -> commande;
     }
 
     public function addCommande(Commande $commande): static
     {
-        if (!$this -> commandes -> contains($commande)) {
-            $this -> commandes -> add($commande);
+        if (!$this -> commande -> contains($commande)) {
+            $this -> commande -> add($commande);
             $commande -> addProduit($this);
         }
 
@@ -276,7 +265,7 @@ class Produit
 
     public function removeCommande(Commande $commande): static
     {
-        if ($this -> commandes -> removeElement($commande)) {
+        if ($this -> commande -> removeElement($commande)) {
             $commande -> removeProduit($this);
         }
 
@@ -313,15 +302,15 @@ class Produit
     /**
      * @return Collection<int, Utilisateur>
      */
-    public function getUtilisateurs(): Collection
+    public function getUtilisateur(): Collection
     {
-        return $this -> utilisateurs;
+        return $this -> utilisateur;
     }
 
     public function addUtilisateur(Utilisateur $utilisateur): static
     {
-        if (!$this -> utilisateurs -> contains($utilisateur)) {
-            $this -> utilisateurs -> add($utilisateur);
+        if (!$this -> utilisateur -> contains($utilisateur)) {
+            $this -> utilisateur -> add($utilisateur);
             $utilisateur -> addProduit($this);
         }
 
@@ -330,61 +319,13 @@ class Produit
 
     public function removeUtilisateur(Utilisateur $utilisateur): static
     {
-        if ($this -> utilisateurs -> removeElement($utilisateur)) {
+        if ($this -> utilisateur -> removeElement($utilisateur)) {
             $utilisateur -> removeProduit($this);
         }
 
         return $this;
     }
 
-    /**
-     * @return Collection<int, Appartient>
-     */
-    public function getAppartients(): Collection
-    {
-        return $this -> appartients;
-    }
+  
 
-    public function addAppartient(Appartient $appartient): static
-    {
-        if (!$this -> appartients -> contains($appartient)) {
-            $this -> appartients -> add($appartient);
-            $appartient -> setProduit($this);
-        }
-
-        return $this;
-    }
-
-    public function removeAppartient(Appartient $appartient): static
-    {
-        if ($this -> appartients -> removeElement($appartient)) {
-            $appartient -> setProduit($this);
-        }
-
-        return $this;
-    }
-
-    public function getAppartient(): ?Appartient
-    {
-        return $this -> appartient;
-    }
-
-    public function setAppartient(?Appartient $appartient): static
-    {
-        $this -> appartient = $appartient;
-
-        return $this;
-    }
-
-    public function getGenere(): ?Genere
-    {
-        return $this->genere;
-    }
-
-    public function setGenere(?Genere $genere): static
-    {
-        $this->genere = $genere;
-
-        return $this;
-    }
 }

@@ -2,14 +2,14 @@
 
 namespace App\Entity;
 
-use App\Repository\AppartientRepository;
+use App\Repository\DetailCommandeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: AppartientRepository::class)]
-class Appartient
+#[ORM\Entity(repositoryClass: DetailCommandeRepository::class)]
+class DetailCommande
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -22,22 +22,24 @@ class Appartient
     #[ORM\Column(type: Types::DECIMAL, precision: 19, scale: 4)]
     private ?float $prix_de_vente = null;
 
-    #[ORM\ManyToOne(inversedBy: 'appartients')]
+    #[ORM\ManyToOne(inversedBy: 'detail_commande')]
     #[ORM\JoinColumn(nullable: false)]
     private ?commande $commande = null;
 
-    /**
-     * @var Collection<int, produit>
-     */
-    #[ORM\OneToMany(targetEntity: produit::class, mappedBy: 'appartient')]
-    private Collection $produit;
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?produit $id_produit = null;
+
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?commande $id_commande = null;
+
 
   
 
     public function __construct()
     {
         $this -> commande = new ArrayCollection();
-        $this -> produit = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -81,32 +83,26 @@ class Appartient
         return $this;
     }
 
-    /**
-     * @return Collection<int, produit>
-     */
-    public function getProduit(): Collection
+    public function getIdProduit(): ?produit
     {
-        return $this -> produit;
+        return $this->id_produit;
     }
 
-    public function addProduit(produit $produit): static
+    public function setIdProduit(?produit $id_produit): static
     {
-        if (!$this -> produit -> contains($produit)) {
-            $this -> produit -> add($produit);
-            $produit -> setAppartient($this);
-        }
+        $this->id_produit = $id_produit;
 
         return $this;
     }
 
-    public function removeProduit(produit $produit): static
+    public function getIdCommande(): ?commande
     {
-        if ($this -> produit -> removeElement($produit)) {
-            // set the owning side to null (unless already changed)
-            if ($produit -> getAppartient() === $this) {
-                $produit -> setAppartient(null);
-            }
-        }
+        return $this->id_commande;
+    }
+
+    public function setIdCommande(?commande $id_commande): static
+    {
+        $this->id_commande = $id_commande;
 
         return $this;
     }

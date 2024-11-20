@@ -34,24 +34,20 @@ class Livraison
     /**
      * @var Collection<int, produit>
      */
-    #[ORM\ManyToMany(targetEntity: produit::class, inversedBy: 'livraisons')]
+    #[ORM\ManyToMany(targetEntity: produit::class, inversedBy: 'livraison')]
     private Collection $produit;
 
     /**
-     * @var Collection<int, Genere>
+     * @var Collection<int, DetailLivraison>
      */
-    #[ORM\ManyToMany(targetEntity: Genere::class, mappedBy: 'produit')]
-    private Collection $generes;
-
-    #[ORM\ManyToOne(inversedBy: 'livraison')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Genere $genere = null;
+    #[ORM\OneToMany(targetEntity: DetailLivraison::class, mappedBy: 'id_livraison', orphanRemoval: true)]
+    private Collection $detailLivraison;
 
     public function __construct()
     {
         $this -> commande = new ArrayCollection();
         $this -> produit = new ArrayCollection();
-        $this -> generes = new ArrayCollection();
+        $this->detailLivraison = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -150,41 +146,34 @@ class Livraison
     }
 
     /**
-     * @return Collection<int, Genere>
+     * @return Collection<int, DetailLivraison>
      */
-    public function getGeneres(): Collection
+    public function getDetailLivraison(): Collection
     {
-        return $this -> generes;
+        return $this->detailLivraison;
     }
 
-    public function addGenere(Genere $genere): static
+    public function addDetailLivraison(DetailLivraison $detailLivraison): static
     {
-        if (!$this -> generes -> contains($genere)) {
-            $this -> generes -> add($genere);
-            $genere -> addProduit($this);
+        if (!$this->detailLivraison->contains($detailLivraison)) {
+            $this->detailLivraison->add($detailLivraison);
+            $detailLivraison->setIdLivraison($this);
         }
 
         return $this;
     }
 
-    public function removeGenere(Genere $genere): static
+    public function removeDetailLivraison(DetailLivraison $detailLivraison): static
     {
-        if ($this -> generes -> removeElement($genere)) {
-            $genere -> removeProduit($this);
+        if ($this->detailLivraison->removeElement($detailLivraison)) {
+            // set the owning side to null (unless already changed)
+            if ($detailLivraison->getIdLivraison() === $this) {
+                $detailLivraison->setIdLivraison(null);
+            }
         }
 
         return $this;
     }
 
-    public function getGenere(): ?Genere
-    {
-        return $this -> genere;
-    }
-
-    public function setGenere(?Genere $genere): static
-    {
-        $this -> genere = $genere;
-
-        return $this;
-    }
+ 
 }

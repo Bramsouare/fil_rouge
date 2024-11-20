@@ -2,39 +2,39 @@
 
 namespace App\Repository;
 
-use App\Entity\Beneficie;
+use App\Entity\DetailCommande;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Beneficie>
+ * @extends ServiceEntityRepository<detail_commande>
  */
-class BeneficieRepository extends ServiceEntityRepository
+class DetailCommandeRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Beneficie::class);
+        parent::__construct($registry, DetailCommande::class);
     }
 
     //    /**
-    //     * @return Beneficie[] Returns an array of Beneficie objects
+    //     * @return detail_commande[] Returns an array of detail_commande objects
     //     */
     //    public function findByExampleField($value): array
     //    {
-    //        return $this->createQueryBuilder('b')
-    //            ->andWhere('b.exampleField = :val')
+    //        return $this->createQueryBuilder('a')
+    //            ->andWhere('a.exampleField = :val')
     //            ->setParameter('val', $value)
-    //            ->orderBy('b.id', 'ASC')
+    //            ->orderBy('a.id', 'ASC')
     //            ->setMaxResults(10)
     //            ->getQuery()
     //            ->getResult()
     //        ;
     //    }
 
-    //    public function findOneBySomeField($value): ?Beneficie
+    //    public function findOneBySomeField($value): ?detail_commande
     //    {
-    //        return $this->createQueryBuilder('b')
-    //            ->andWhere('b.exampleField = :val')
+    //        return $this->createQueryBuilder('a')
+    //            ->andWhere('a.exampleField = :val')
     //            ->setParameter('val', $value)
     //            ->getQuery()
     //            ->getOneOrNullResult()

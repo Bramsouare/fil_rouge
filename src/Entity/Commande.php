@@ -60,17 +60,11 @@ class Commande
     #[ORM\JoinColumn(nullable: false)]
     private ?facture $facture = null;
 
-    /**
-     * @var Collection<int, Appartient>
-     */
-    #[ORM\OneToMany(targetEntity: Appartient::class, mappedBy: 'commande', orphanRemoval: true)]
-    private Collection $appartients;
-
+  
     public function __construct()
     {
         $this -> utilisateur = new ArrayCollection();
         $this -> produit = new ArrayCollection();
-        $this->appartients = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -252,33 +246,4 @@ class Commande
         return $this;
     }
 
-    /**
-     * @return Collection<int, Appartient>
-     */
-    public function getAppartients(): Collection
-    {
-        return $this->appartients;
-    }
-
-    public function addAppartient(Appartient $appartient): static
-    {
-        if (!$this->appartients->contains($appartient)) {
-            $this->appartients->add($appartient);
-            $appartient->setCommande($this);
-        }
-
-        return $this;
-    }
-
-    public function removeAppartient(Appartient $appartient): static
-    {
-        if ($this->appartients->removeElement($appartient)) {
-            // set the owning side to null (unless already changed)
-            if ($appartient->getCommande() === $this) {
-                $appartient->setCommande(null);
-            }
-        }
-
-        return $this;
-    }
 }
