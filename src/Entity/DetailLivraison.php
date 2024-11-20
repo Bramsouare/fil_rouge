@@ -27,41 +27,41 @@ class DetailLivraison
 
     public function getId(): ?int
     {
-        return $this->id;
+        return $this -> id;
     }
 
     public function getQuantite(): ?string
     {
-        return $this->quantite;
+        return $this -> quantite;
     }
 
     public function setQuantite(string $quantite): static
     {
-        $this->quantite = $quantite;
+        $this -> quantite = $quantite;
 
         return $this;
     }
 
     public function getIdLivraison(): ?livraison
     {
-        return $this->id_livraison;
+        return $this -> id_livraison;
     }
 
     public function setIdLivraison(?livraison $id_livraison): static
     {
-        $this->id_livraison = $id_livraison;
+        $this -> id_livraison = $id_livraison;
 
         return $this;
     }
 
     public function getIdProduit(): ?produit
     {
-        return $this->id_produit;
+        return $this -> id_produit;
     }
 
     public function setIdProduit(?produit $id_produit): static
     {
-        $this->id_produit = $id_produit;
+        $this -> id_produit = $id_produit;
 
         return $this;
     }

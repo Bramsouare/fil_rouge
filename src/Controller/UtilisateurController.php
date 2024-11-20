@@ -9,12 +9,58 @@ use App\Form\UtilisateurType;
 use Symfony\Component\HttpFoundation\Request;
 use App\Entity\Utilisateur;
 use App\Form\InscriptionType;
-
+use App\Entity\Payement;
+use App\Form\PayementType;
+use App\Entity\Adresse;
 
 
 
 class UtilisateurController extends AbstractController
 {
+
+    /*###################################################################################################################################
+        *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~    ACCUEIL CONTROLLER    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ###################################################################################################################################*/
+
+    #[Route(
+        '/',
+        name: 'app_accueil'
+        )
+    ]
+    public function accueil(): Response
+    {
+        return $this -> render
+            (
+                'accueil/index.html.twig',
+                [
+                    'controller_name' => 'UtilisateurController',
+                ]
+            )
+        ;
+    }
+
+    /*####################################################################################################################################
+    *                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~      CATEGORIES CONTROLLER     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ####################################################################################################################################*/
+
+    #[Route(
+        '/categorie',
+        name: 'app_categorie'
+            )
+        ]
+    public function categorie(): Response
+    {
+        return $this -> render
+            (
+                'categorie/index.html.twig',
+                [
+                    'controller_name' => 'UtilisateurController',
+                ]
+            )
+        ;
+    }
+
+    
     /*####################################################################################################################################
     *                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~      UTILISATEUR CONTROLLER     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ####################################################################################################################################*/
@@ -89,15 +135,14 @@ class UtilisateurController extends AbstractController
         }
 
         return $this -> render('inscription/index.html.twig',
-        [
-            'controller_name' => 'InscriptionController',
-            'form'=> $form -> createView(),
+            [
+                'controller_name' => 'UtilisateurController',
+                'form'=> $form -> createView(),
 
-            ]
-        )
-    ;
+                ]
+            )
+        ;
 
-      
     }
 
 
@@ -116,32 +161,12 @@ class UtilisateurController extends AbstractController
             (
                 'adresse/index.html.twig',
                 [
-                    'controller_name' => 'AdresseController',
+                    'controller_name' => 'UtilisateurController',
                 ]
             )
         ;
     }
 
-    /*####################################################################################################################################
-    *                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~      CONNECTION CONTROLLER     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ####################################################################################################################################*/
-
-    #[Route(
-        '/connection',
-        name: 'app_connection'
-        )
-    ]
-    public function connection(): Response
-    {
-        return $this -> render
-            (
-                'connection/index.html.twig',
-                [
-                    'controller_name' => 'ConnectionController',
-                ]
-            )
-        ;
-    }
 
     /*####################################################################################################################################
     *                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~      FOURNISSEUR CONTROLLER     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -158,11 +183,176 @@ class UtilisateurController extends AbstractController
             (
                 'fournisseur/index.html.twig',
                 [
-                    'controller_name' => 'FournisseurController',
+                    'controller_name' => 'UtilisateurController',
                 ]
             )
         ;
     }
 
-};
+        /*####################################################################################################################################
+    *                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~      COMMANDE CONTROLLER     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ####################################################################################################################################*/
+
+    #[Route(
+        '/commande',
+        name: 'app_commande',
+        )
+    ]
+    public function commande(): Response
+    {
+        return $this -> render
+            (
+                    'commande/index.html.twig',
+                [
+                    'controller_name' => 'UtilisateurController',
+                ]
+            )
+        ;
+    }
+
+    /*####################################################################################################################################
+    *                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~     PANIER CONTROLLER     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ####################################################################################################################################*/
+
+    #[Route(
+        '/panier',
+        name: 'app_panier',
+        )
+    ]
+    public function panier(): Response
+    {
+        return $this -> render
+            (
+                'panier/index.html.twig',
+                [
+                    'controller_name' => 'UtilisateurController',
+                ]
+            )
+        ;
+    }
+
+    /*####################################################################################################################################
+    *                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~     PAYEMENT  CONTROLLER     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ####################################################################################################################################*/
+
+    #[Route(
+        '/payement',
+        name: 'app_payement',
+        )
+    ]
+    // Récupération des données du formulaire
+    public function payement(Request $Request): Response
+    {
+        // Création de l'entité
+        $payement = new Payement();
+
+        // Création du formulaire
+        $form = $this -> createForm(PayementType::class, $payement);
+
+        // traitement des données et vérification plus renplis les champs
+        $form -> handleRequest($Request);
+
+        // Si le formulaire est soumis et valide
+        if ($form -> isSubmitted() && $form -> isValid())
+        {
+            // Redirection vers la page de confirmation
+            return $this -> redirectToRoute('payment_success');
+        }
+        
+        // Affichage du formulaire si il n'est pas soumis et valide
+        return $this -> render
+            (
+                'payement/index.html.twig',
+                [
+                    'form' => $form -> createView(),
+                ]
+            )
+        ;
+    }
+
+
+    /*####################################################################################################################################
+    *                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~      FACTURE CONTROLLER     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ####################################################################################################################################*/
+
+    #[Route(
+        '/facture',
+        name: 'app_facture',
+        )
+    ]
+    public function facture(): Response
+    {
+        return $this -> render
+            (
+                'facture/index.html.twig',
+                [
+                    'controller_name' => 'UtilisateurController',
+                ]
+            )
+        ;
+    }
+
+    /*####################################################################################################################################
+    *                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~      CONFIRMATION DE COMMANDE CONTROLLER     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ####################################################################################################################################*/
+
+    #[Route(
+        '/confirmation/com',
+        name: 'app_confirmation_com', 
+        )
+    ]
+    public function confirmationcom(): Response
+    {
+        return $this -> render
+            (
+                'confirmation_com/index.html.twig',
+                [
+                    'controller_name' => 'UtilisateurController',
+                ]
+            )
+        ;
+    }   
+
+    /*####################################################################################################################################
+    *                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~     CONFFIRMATION DE MAIL CONTROLLER     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ####################################################################################################################################*/
+
+    #[Route(
+        '/confirmation/mail',
+        name: 'app_confirmation_mail',
+        )
+    ]
+    public function confirmationmail(): Response
+    {
+        return $this -> render
+            (
+                'confirmation_mail/index.html.twig',
+                [
+                    'controller_name' => 'UtilisateurController',
+                ]
+            )
+        ;
+    }
+
+
+    /*####################################################################################################################################
+    *                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~      LIVRAISON CONTROLLER     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ####################################################################################################################################*/
+    #[Route(
+        '/livraison',
+        name: 'app_livraison',
+        )
+    ]
+    public function livraison(): Response
+    {
+        return $this -> render
+            (
+                'livraison/index.html.twig',
+                [
+                    'controller_name' => 'UtilisateurController',
+                ]
+            )
+        ;
+    }
+}
   

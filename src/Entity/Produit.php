@@ -57,18 +57,6 @@ class Produit
     private Collection $fournisseur;
 
     /**
-     * @var Collection<int, Commande>
-     */
-    #[ORM\ManyToMany(targetEntity: Commande::class, mappedBy: 'produit')]
-    private Collection $commande;
-
-    /**
-     * @var Collection<int, Livraison>
-     */
-    #[ORM\ManyToMany(targetEntity: Livraison::class, mappedBy: 'produit')]
-    private Collection $livraisons;
-
-    /**
      * @var Collection<int, Utilisateur>
      */
     #[ORM\ManyToMany(targetEntity: Utilisateur::class, mappedBy: 'produit')]
@@ -78,8 +66,6 @@ class Produit
     {
         $this -> rubrique = new ArrayCollection();
         $this -> fournisseur = new ArrayCollection();
-        $this -> commande = new ArrayCollection();
-        $this -> livraisons = new ArrayCollection();
         $this -> utilisateur = new ArrayCollection();
 
     }
@@ -246,60 +232,6 @@ class Produit
     }
 
     /**
-     * @return Collection<int, Commande>
-     */
-    public function getCommande(): Collection
-    {
-        return $this -> commande;
-    }
-
-    public function addCommande(Commande $commande): static
-    {
-        if (!$this -> commande -> contains($commande)) {
-            $this -> commande -> add($commande);
-            $commande -> addProduit($this);
-        }
-
-        return $this;
-    }
-
-    public function removeCommande(Commande $commande): static
-    {
-        if ($this -> commande -> removeElement($commande)) {
-            $commande -> removeProduit($this);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Livraison>
-     */
-    public function getLivraisons(): Collection
-    {
-        return $this -> livraisons;
-    }
-
-    public function addLivraison(Livraison $livraison): static
-    {
-        if (!$this -> livraisons -> contains($livraison)) {
-            $this -> livraisons -> add($livraison);
-            $livraison -> addProduit($this);
-        }
-
-        return $this;
-    }
-
-    public function removeLivraison(Livraison $livraison): static
-    {
-        if ($this -> livraisons -> removeElement($livraison)) {
-            $livraison -> removeProduit($this);
-        }
-
-        return $this;
-    }
-
-    /**
      * @return Collection<int, Utilisateur>
      */
     public function getUtilisateur(): Collection
@@ -325,7 +257,4 @@ class Produit
 
         return $this;
     }
-
-  
-
 }

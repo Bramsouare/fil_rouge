@@ -32,12 +32,6 @@ class Livraison
     private Collection $commande;
 
     /**
-     * @var Collection<int, produit>
-     */
-    #[ORM\ManyToMany(targetEntity: produit::class, inversedBy: 'livraison')]
-    private Collection $produit;
-
-    /**
      * @var Collection<int, DetailLivraison>
      */
     #[ORM\OneToMany(targetEntity: DetailLivraison::class, mappedBy: 'id_livraison', orphanRemoval: true)]
@@ -46,8 +40,7 @@ class Livraison
     public function __construct()
     {
         $this -> commande = new ArrayCollection();
-        $this -> produit = new ArrayCollection();
-        $this->detailLivraison = new ArrayCollection();
+        $this -> detailLivraison = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -122,42 +115,18 @@ class Livraison
     }
 
     /**
-     * @return Collection<int, produit>
-     */
-    public function getProduit(): Collection
-    {
-        return $this -> produit;
-    }
-
-    public function addProduit(produit $produit): static
-    {
-        if (!$this -> produit -> contains($produit)) {
-            $this -> produit -> add($produit);
-        }
-
-        return $this;
-    }
-
-    public function removeProduit(produit $produit): static
-    {
-        $this -> produit -> removeElement($produit);
-
-        return $this;
-    }
-
-    /**
      * @return Collection<int, DetailLivraison>
      */
     public function getDetailLivraison(): Collection
     {
-        return $this->detailLivraison;
+        return $this -> detailLivraison;
     }
 
     public function addDetailLivraison(DetailLivraison $detailLivraison): static
     {
-        if (!$this->detailLivraison->contains($detailLivraison)) {
-            $this->detailLivraison->add($detailLivraison);
-            $detailLivraison->setIdLivraison($this);
+        if (!$this -> detailLivraison -> contains($detailLivraison)) {
+            $this -> detailLivraison -> add($detailLivraison);
+            $detailLivraison -> setIdLivraison($this);
         }
 
         return $this;
@@ -165,15 +134,13 @@ class Livraison
 
     public function removeDetailLivraison(DetailLivraison $detailLivraison): static
     {
-        if ($this->detailLivraison->removeElement($detailLivraison)) {
+        if ($this -> detailLivraison -> removeElement($detailLivraison)) {
             // set the owning side to null (unless already changed)
-            if ($detailLivraison->getIdLivraison() === $this) {
-                $detailLivraison->setIdLivraison(null);
+            if ($detailLivraison -> getIdLivraison() === $this) {
+                $detailLivraison -> setIdLivraison(null);
             }
         }
 
         return $this;
     }
-
- 
 }

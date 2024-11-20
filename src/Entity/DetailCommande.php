@@ -4,7 +4,6 @@ namespace App\Entity;
 
 use App\Repository\DetailCommandeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -33,9 +32,6 @@ class DetailCommande
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
     private ?commande $id_commande = null;
-
-
-  
 
     public function __construct()
     {
@@ -85,24 +81,24 @@ class DetailCommande
 
     public function getIdProduit(): ?produit
     {
-        return $this->id_produit;
+        return $this -> id_produit;
     }
 
     public function setIdProduit(?produit $id_produit): static
     {
-        $this->id_produit = $id_produit;
+        $this -> id_produit = $id_produit;
 
         return $this;
     }
 
     public function getIdCommande(): ?commande
     {
-        return $this->id_commande;
+        return $this -> id_commande;
     }
 
     public function setIdCommande(?commande $id_commande): static
     {
-        $this->id_commande = $id_commande;
+        $this -> id_commande = $id_commande;
 
         return $this;
     }

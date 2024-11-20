@@ -9,10 +9,37 @@ use Symfony\Component\Routing\Attribute\Route;
 class CatalogueController extends AbstractController
 {
     #[Route('/catalogue', name: 'app_catalogue')]
+
     public function index(): Response
     {
-        return $this->render('catalogue/index.html.twig', [
-            'controller_name' => 'CatalogueController',
-        ]);
+        return $this -> render(
+
+            'catalogue/index.html.twig', 
+            [
+                'controller_name' => 'CatalogueController',
+            ]
+        );
     }
+
+    /*####################################################################################################################################
+    *                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~      INSTRUMENT CONTROLLER     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ####################################################################################################################################*/
+
+    #[Route(
+        '/instrument',
+        name: 'app_instrument'
+            )
+        ]
+    public function instrument(): Response
+    {
+        return $this -> render
+            (
+                'instrument/index.html.twig',
+                [
+                    'controller_name' => 'InstrumentController',
+                ]
+            )
+        ;
+    }
+    
 }
