@@ -2,11 +2,13 @@
 
 namespace App\Entity;
 
-use App\Repository\DetailCommandeRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use App\Entity\Produit;
+use App\Entity\Commande;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\Collection;
+use App\Repository\DetailCommandeRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 
 #[ORM\Entity(repositoryClass: DetailCommandeRepository::class)]
 class DetailCommande
@@ -17,29 +19,25 @@ class DetailCommande
     private ?int $id = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 15, scale: 2)]
-    private ?float $quantite = null;
+    private ?string $quantite = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 19, scale: 4)]
-    private ?float $prix_de_vente = null;
+    private ?string $prix_de_vente = null;
 
-    #[ORM\ManyToOne(inversedBy: 'detail_commande')]
+    #[ORM\OneToOne(inversedBy: 'detailCommande', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
-    private ?commande $commande = null;
-
-    #[ORM\OneToOne(inversedBy: 'id_detailCommande', cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?commande $id_commande = null;
+    private ?Commande $commande = null;
 
     /**
      * @var Collection<int, produit>
      */
-    #[ORM\OneToMany(targetEntity: produit::class, mappedBy: 'id_detailCommande', orphanRemoval: true)]
-    private Collection $id_produit;
+    #[ORM\OneToMany(targetEntity: Produit::class, mappedBy: 'detailCommande', orphanRemoval: true)]
+    private Collection $produit;
 
     public function __construct()
     {
         $this -> commande = new ArrayCollection();
-        $this->id_produit = new ArrayCollection();
+        $this->produit = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -71,26 +69,15 @@ class DetailCommande
         return $this;
     }
 
-    public function getCommande(): ?commande
+
+    public function getCommande(): ?Commande
     {
         return $this -> commande;
     }
 
-    public function setCommande(?commande $commande): static
+    public function setCommande(Commande $commande): static
     {
         $this -> commande = $commande;
-
-        return $this;
-    }
-
-    public function getIdCommande(): ?commande
-    {
-        return $this -> id_commande;
-    }
-
-    public function setIdCommande(commande $id_commande): static
-    {
-        $this -> id_commande = $id_commande;
 
         return $this;
     }
@@ -98,27 +85,27 @@ class DetailCommande
     /**
      * @return Collection<int, produit>
      */
-    public function getIdProduit(): Collection
+    public function getProduit(): Collection
     {
-        return $this -> id_produit;
+        return $this -> produit;
     }
 
-    public function addIdProduit(produit $idProduit): static
+    public function addProduit(Produit $Produit): static
     {
-        if (!$this -> id_produit -> contains($idProduit)) {
-            $this -> id_produit -> add($idProduit);
-            $idProduit -> setIdDetailCommande($this);
+        if (!$this -> produit -> contains($Produit)) {
+            $this -> produit -> add($Produit);
+            $Produit -> setDetailCommande($this);
         }
 
         return $this;
     }
 
-    public function removeIdProduit(produit $idProduit): static
+    public function removeProduit(Produit $Produit): static
     {
-        if ($this -> id_produit -> removeElement($idProduit)) {
+        if ($this -> produit -> removeElement($Produit)) {
             // set the owning side to null (unless already changed)
-            if ($idProduit -> getIdDetailCommande() === $this) {
-                $idProduit -> setIdDetailCommande(null);
+            if ($Produit -> getDetailCommande() === $this) {
+                $Produit -> setDetailCommande(null);
             }
         }
 

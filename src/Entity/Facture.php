@@ -2,10 +2,9 @@
 
 namespace App\Entity;
 
-use App\Repository\FactureRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use App\Entity\Commande;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\FactureRepository;
 
 #[ORM\Entity(repositoryClass: FactureRepository::class)]
 class Facture
@@ -18,9 +17,9 @@ class Facture
     #[ORM\Column(length: 255)]
     private ?string $facture_libelle = null;
 
-    #[ORM\OneToOne(inversedBy: 'id_facture', cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(inversedBy: 'facture', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
-    private ?commande $id_commande = null;
+    private ?Commande $commande = null;
 
     public function getId(): ?int
     {
@@ -39,14 +38,14 @@ class Facture
         return $this;
     }
 
-    public function getIdCommande(): ?commande
+    public function getCommande(): ?Commande
     {
-        return $this->id_commande;
+        return $this -> commande;
     }
 
-    public function setIdCommande(commande $id_commande): static
+    public function setCommande(Commande $commande): static
     {
-        $this->id_commande = $id_commande;
+        $this -> commande = $commande;
 
         return $this;
     }

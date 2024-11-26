@@ -2,11 +2,12 @@
 
 namespace App\Entity;
 
-use App\Repository\DetailLivraisonRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use App\Entity\Produit;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\Collection;
+use App\Repository\DetailLivraisonRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 
 #[ORM\Entity(repositoryClass: DetailLivraisonRepository::class)]
 class DetailLivraison
@@ -19,19 +20,20 @@ class DetailLivraison
     #[ORM\Column(type: Types::DECIMAL, precision: 15, scale: 2)]
     private ?string $quantite = null;
 
-    #[ORM\OneToOne(inversedBy: 'id_detailLivraison', cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?livraison $id_livraison = null;
 
     /**
      * @var Collection<int, produit>
      */
-    #[ORM\OneToMany(targetEntity: produit::class, mappedBy: 'id_detailLivraison', orphanRemoval: true)]
-    private Collection $id_produit;
+    #[ORM\OneToMany(targetEntity: Produit::class, mappedBy: 'detailLivraison', orphanRemoval: true)]
+    private Collection $produit;
+
+    #[ORM\ManyToOne(inversedBy: 'detailLivraison')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Livraison $livraison = null;
 
     public function __construct()
     {
-        $this->id_produit = new ArrayCollection();
+        $this->produit = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -51,44 +53,44 @@ class DetailLivraison
         return $this;
     }
 
-    public function getIdLivraison(): ?livraison
-    {
-        return $this -> id_livraison;
-    }
-
-    public function setIdLivraison(livraison $id_livraison): static
-    {
-        $this -> id_livraison = $id_livraison;
-
-        return $this;
-    }
-
     /**
      * @return Collection<int, produit>
      */
-    public function getIdProduit(): Collection
+    public function getProduit(): Collection
     {
-        return $this -> id_produit;
+        return $this -> produit;
     }
 
-    public function addIdProduit(produit $idProduit): static
+    public function addProduit(Produit $Produit): static
     {
-        if (!$this -> id_produit -> contains($idProduit)) {
-            $this -> id_produit -> add($idProduit);
-            $idProduit -> setIdDetailLivraison($this);
+        if (!$this -> produit -> contains($Produit)) {
+            $this -> produit -> add($Produit);
+            $Produit -> setDetailLivraison($this);
         }
 
         return $this;
     }
 
-    public function removeIdProduit(produit $idProduit): static
+    public function removeProduit(Produit $Produit): static
     {
-        if ($this -> id_produit -> removeElement($idProduit)) {
+        if ($this -> produit -> removeElement($Produit)) {
             // set the owning side to null (unless already changed)
-            if ($idProduit -> getIdDetailLivraison() === $this) {
-                $idProduit -> setIdDetailLivraison(null);
+            if ($Produit -> getDetailLivraison() === $this) {
+                $Produit -> setDetailLivraison(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getLivraison(): ?Livraison
+    {
+        return $this->livraison;
+    }
+
+    public function setLivraison(?Livraison $livraison): static
+    {
+        $this->livraison = $livraison;
 
         return $this;
     }

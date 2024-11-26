@@ -6,8 +6,6 @@ use App\Entity\Utilisateur;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\ProduitRepository;
-use Doctrine\Common\Collections\Collection;
-use Doctrine\Common\Collections\ArrayCollection;
 
 #[ORM\Entity(repositoryClass: ProduitRepository::class)]
 class Produit
@@ -40,32 +38,32 @@ class Produit
 
     #[ORM\ManyToOne(inversedBy: 'produit')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?tva $tva = null;
+    private ?Tva $tva = null;
 
 
-    #[ORM\ManyToOne(inversedBy: 'id_produit')]
+    #[ORM\ManyToOne(inversedBy: 'produit')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Rubrique $id_rubrique = null;
+    private ?Rubrique $rubrique = null;
 
-    #[ORM\ManyToOne(inversedBy: 'id_produit')]
+    #[ORM\ManyToOne(inversedBy: 'produit')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Fournisseur $id_fournisseur = null;
+    private ?Fournisseur $fournisseur = null;
 
-    #[ORM\ManyToOne(inversedBy: 'id_produit')]
+    #[ORM\ManyToOne(inversedBy: 'produit')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Utilisateur $id_utilisateur = null;
+    private ?Utilisateur $utilisateur = null;
 
-    #[ORM\ManyToOne(inversedBy: 'id_produit')]
+    #[ORM\ManyToOne(inversedBy: 'produit')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Commande $id_commande = null;
+    private ?Commande $commande = null;
 
-    #[ORM\ManyToOne(inversedBy: 'id_produit')]
+    #[ORM\ManyToOne(inversedBy: 'produit')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?DetailCommande $id_detailCommande = null;
+    private ?DetailCommande $detailCommande = null;
 
-    #[ORM\ManyToOne(inversedBy: 'id_produit')]
+    #[ORM\ManyToOne(inversedBy: 'produit')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?DetailLivraison $id_detailLivraison = null;
+    private ?DetailLivraison $detailLivraison = null;
 
     public function getId(): ?int
     {
@@ -156,86 +154,86 @@ class Produit
         return $this;
     }
 
-    public function getTva(): ?tva
+    public function getTva(): ?Tva
     {
         return $this -> tva;
     }
 
-    public function setTva(?tva $tva): static
+    public function setTva(?Tva $tva): static
     {
         $this -> tva = $tva;
 
         return $this;
     }
 
-    public function getIdRubrique(): ?Rubrique
+    public function getRubrique(): ?Rubrique
     {
-        return $this -> id_rubrique;
+        return $this -> rubrique;
     }
 
-    public function setIdRubrique(?Rubrique $id_rubrique): static
+    public function setRubrique(?Rubrique $rubrique): static
     {
-        $this -> id_rubrique = $id_rubrique;
+        $this -> rubrique = $rubrique;
 
         return $this;
     }
 
-    public function getIdFournisseur(): ?Fournisseur
+    public function getFournisseur(): ?Fournisseur
     {
-        return $this -> id_fournisseur;
+        return $this -> fournisseur;
     }
 
-    public function setIdFournisseur(?Fournisseur $id_fournisseur): static
+    public function setFournisseur(?Fournisseur $fournisseur): static
     {
-        $this -> id_fournisseur = $id_fournisseur;
+        $this -> fournisseur = $fournisseur;
 
         return $this;
     }
 
-    public function getIdUtilisateur(): ?Utilisateur
+    public function getUtilisateur(): ?Utilisateur
     {
-        return $this -> id_utilisateur;
+        return $this -> utilisateur;
     }
 
-    public function setIdUtilisateur(?Utilisateur $id_utilisateur): static
+    public function setUtilisateur(?Utilisateur $utilisateur): static
     {
-        $this -> id_utilisateur = $id_utilisateur;
+        $this -> utilisateur = $utilisateur;
 
         return $this;
     }
 
-    public function getIdCommande(): ?Commande
+    public function getCommande(): ?Commande
     {
-        return $this -> id_commande;
+        return $this -> commande;
     }
 
-    public function setIdCommande(?Commande $id_commande): static
+    public function setCommande(?Commande $commande): static
     {
-        $this -> id_commande = $id_commande;
+        $this -> commande = $commande;
 
         return $this;
     }
 
-    public function getIdDetailCommande(): ?DetailCommande
+    public function getDetailCommande(): ?DetailCommande
     {
-        return $this -> id_detailCommande;
+        return $this -> detailCommande;
     }
 
-    public function setIdDetailCommande(?DetailCommande $id_detailCommande): static
+    public function setDetailCommande(?DetailCommande $detailCommande): static
     {
-        $this -> id_detailCommande = $id_detailCommande;
+        $this -> detailCommande = $detailCommande;
 
         return $this;
     }
 
-    public function getIdDetailLivraison(): ?DetailLivraison
+    public function getDetailLivraison(): ?DetailLivraison
     {
-        return $this -> id_detailLivraison;
+        return $this -> detailLivraison;
     }
 
-    public function setIdDetailLivraison(?DetailLivraison $id_detailLivraison): static
+    public function setDetailLivraison(?DetailLivraison $detailLivraison): static
     {
-        $this -> id_detailLivraison = $id_detailLivraison;
+        $this -> detailLivraison = $detailLivraison;
 
         return $this;
     }

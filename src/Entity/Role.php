@@ -2,10 +2,9 @@
 
 namespace App\Entity;
 
-use App\Repository\RoleRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use App\Entity\Utilisateur;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\RoleRepository;
 
 #[ORM\Entity(repositoryClass: RoleRepository::class)]
 class Role
@@ -21,8 +20,8 @@ class Role
     #[ORM\Column(length: 255)]
     private ?string $role_niveau = null;
 
-    #[ORM\OneToOne(mappedBy: 'id_role', cascade: ['persist', 'remove'])]
-    private ?Utilisateur $id_utilisateur = null;
+    #[ORM\OneToOne(mappedBy: 'role', cascade: ['persist', 'remove'])]
+    private ?Utilisateur $utilisateur = null;
 
 
     public function getId(): ?int
@@ -54,46 +53,19 @@ class Role
         return $this;
     }
 
-    // /**
-    //  * @return Collection<int, Utilisateur>
-    //  */
-    // public function getUtilisateurs(): Collection
-    // {
-    //     return $this -> utilisateurs;
-    // }
-
-    // public function addUtilisateur(Utilisateur $utilisateur): static
-    // {
-    //     if (!$this -> utilisateurs -> contains($utilisateur)) {
-    //         $this -> utilisateurs -> add($utilisateur);
-    //         $utilisateur -> addRole($this);
-    //     }
-
-    //     return $this;
-    // }
-
-    // public function removeUtilisateur(Utilisateur $utilisateur): static
-    // {
-    //     if ($this -> utilisateurs -> removeElement($utilisateur)) {
-    //         $utilisateur -> removeRole($this);
-    //     }
-
-    //     return $this;
-    // }
-
-    public function getIdUtilisateur(): ?Utilisateur
+    public function getUtilisateur(): ?Utilisateur
     {
-        return $this -> id_utilisateur;
+        return $this -> utilisateur;
     }
 
-    public function setIdUtilisateur(Utilisateur $id_utilisateur): static
+    public function setUtilisateur(Utilisateur $utilisateur): static
     {
         // set the owning side of the relation if necessary
-        if ($id_utilisateur -> getIdRole() !== $this) {
-            $id_utilisateur -> setIdRole($this);
+        if ($utilisateur -> getRole() !== $this) {
+            $utilisateur -> setRole($this);
         }
 
-        $this -> id_utilisateur = $id_utilisateur;
+        $this -> utilisateur = $utilisateur;
 
         return $this;
     }

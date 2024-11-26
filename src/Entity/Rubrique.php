@@ -2,10 +2,11 @@
 
 namespace App\Entity;
 
-use App\Repository\RubriqueRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use App\Entity\Produit;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\RubriqueRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 
 #[ORM\Entity(repositoryClass: RubriqueRepository::class)]
 class Rubrique
@@ -24,25 +25,20 @@ class Rubrique
     #[ORM\Column(length: 255)]
     private ?string $rubrique_description = null;
 
-    #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'rubrique')]
-    private ?self $rubrique = null;
-
     /**
      * @var Collection<int, produit>
      */
-    #[ORM\OneToMany(targetEntity: produit::class, mappedBy: 'id_rubrique', orphanRemoval: true)]
-    private Collection $id_produit;
+    #[ORM\OneToMany(targetEntity: Produit::class, mappedBy: 'rubrique', orphanRemoval: true)]
+    private Collection $produit;
 
-    #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'id_parent')]
+    #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'parent')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?self $id_rubrique = null;
+    private ?self $rubrique = null;
 
     public function __construct()
     {
-        $this -> id_produit = new ArrayCollection();
+        $this -> produit = new ArrayCollection();
     }
-
-
 
     public function getId(): ?int
     {
@@ -85,6 +81,37 @@ class Rubrique
         return $this;
     }
 
+
+    /**
+     * @return Collection<int, produit>
+     */
+    public function getProduit(): Collection
+    {
+        return $this -> produit;
+    }
+
+    public function addProduit(Produit $idProduit): static
+    {
+        if (!$this -> produit -> contains($idProduit)) {
+            $this -> produit -> add($idProduit);
+            $idProduit -> setRubrique($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProduit(Produit $idProduit): static
+    {
+        if ($this -> produit -> removeElement($idProduit)) {
+            // set the owning side to null (unless already changed)
+            if ($idProduit -> getRubrique() === $this) {
+                $idProduit -> setRubrique(null);
+            }
+        }
+
+        return $this;
+    }
+
     public function getRubrique(): ?self
     {
         return $this -> rubrique;
@@ -93,48 +120,6 @@ class Rubrique
     public function setRubrique(?self $rubrique): static
     {
         $this -> rubrique = $rubrique;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, produit>
-     */
-    public function getIdProduit(): Collection
-    {
-        return $this -> id_produit;
-    }
-
-    public function addIdProduit(produit $idProduit): static
-    {
-        if (!$this -> id_produit -> contains($idProduit)) {
-            $this -> id_produit -> add($idProduit);
-            $idProduit -> setIdRubrique($this);
-        }
-
-        return $this;
-    }
-
-    public function removeIdProduit(produit $idProduit): static
-    {
-        if ($this -> id_produit -> removeElement($idProduit)) {
-            // set the owning side to null (unless already changed)
-            if ($idProduit -> getIdRubrique() === $this) {
-                $idProduit -> setIdRubrique(null);
-            }
-        }
-
-        return $this;
-    }
-
-    public function getIdRubrique(): ?self
-    {
-        return $this -> id_rubrique;
-    }
-
-    public function setIdRubrique(?self $id_rubrique): static
-    {
-        $this -> id_rubrique = $id_rubrique;
 
         return $this;
     }

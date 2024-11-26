@@ -2,11 +2,13 @@
 
 namespace App\Entity;
 
+use App\Entity\Fournisseur;
 use App\Repository\AdresseRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: AdresseRepository::class)]
+
 class Adresse
 {
     #[ORM\Id]
@@ -29,13 +31,13 @@ class Adresse
     #[ORM\Column(length: 255)]
     private ?string $adresse_telephone = null;
 
-    #[ORM\ManyToOne(inversedBy: 'id_adresse')]
+    #[ORM\ManyToOne(inversedBy: 'adresse')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?fournisseur $id_fournisseur = null;
+    private ?Fournisseur $fournisseur = null;
 
-    #[ORM\ManyToOne(inversedBy: 'id_adresse')]
+    #[ORM\ManyToOne(inversedBy: 'adresse')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?utilisateur $id_client = null;
+    private ?Utilisateur $client = null;
 
     public function getId(): ?int
     {
@@ -102,26 +104,26 @@ class Adresse
         return $this;
     }
 
-    public function getIdFournisseur(): ?fournisseur
+    public function getFournisseur(): ?Fournisseur
     {
-        return $this -> id_fournisseur;
+        return $this -> fournisseur;
     }
 
-    public function setIdFournisseur(?fournisseur $id_fournisseur): static
+    public function setFournisseur(?Fournisseur $fournisseur): static
     {
-        $this -> id_fournisseur = $id_fournisseur;
+        $this -> fournisseur = $fournisseur;
 
         return $this;
     }
 
-    public function getIdClient(): ?utilisateur
+    public function getClient(): ?Utilisateur
     {
-        return $this -> id_client;
+        return $this -> client;
     }
 
-    public function setIdClient(?utilisateur $id_client): static
+    public function setClient(?Utilisateur $client): static
     {
-        $this -> id_client = $id_client;
+        $this -> client = $client;
 
         return $this;
     }
