@@ -18,16 +18,9 @@ class Facture
     #[ORM\Column(length: 255)]
     private ?string $facture_libelle = null;
 
-    /**
-     * @var Collection<int, Commande>
-     */
-    #[ORM\OneToMany(targetEntity: Commande::class, mappedBy: 'facture')]
-    private Collection $commandes;
-
-    public function __construct()
-    {
-        $this -> commandes = new ArrayCollection();
-    }
+    #[ORM\OneToOne(inversedBy: 'id_facture', cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?commande $id_commande = null;
 
     public function getId(): ?int
     {
@@ -46,33 +39,17 @@ class Facture
         return $this;
     }
 
-    /**
-     * @return Collection<int, Commande>
-     */
-    public function getCommandes(): Collection
+    public function getIdCommande(): ?commande
     {
-        return $this -> commandes;
+        return $this->id_commande;
     }
 
-    public function addCommande(Commande $commande): static
+    public function setIdCommande(commande $id_commande): static
     {
-        if (!$this -> commandes -> contains($commande)) {
-            $this -> commandes -> add($commande);
-            $commande -> setFacture($this);
-        }
+        $this->id_commande = $id_commande;
 
         return $this;
     }
 
-    public function removeCommande(Commande $commande): static
-    {
-        if ($this -> commandes -> removeElement($commande)) {
-            // set the owning side to null (unless already changed)
-            if ($commande -> getFacture() === $this) {
-                $commande -> setFacture(null);
-            }
-        }
-
-        return $this;
-    }
+   
 }

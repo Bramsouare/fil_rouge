@@ -4,9 +4,10 @@ namespace App\Form;
 use App\Entity\Utilisateur;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\Extension\Core\Type\EmailType;
-use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 
 class UtilisateurType extends AbstractType
 {
@@ -14,21 +15,35 @@ class UtilisateurType extends AbstractType
     {
         $builder
             -> add(
-                    'email',
-                    EmailType::class, 
-                    [
-                        'label' => 'Email',
-                        'required' => true,
-                    ]
-                )
+                'email',
+                EmailType::class, 
+                [
+                    'label' => 'Email',
+                    'required' => true,
+                ]
+            )
             -> add( 
-                    'password',
-                    PasswordType::class, 
+                'password',
+                PasswordType::class, 
+                [
+                    'label' => 'Mot de passe',
+                    'required' => true,
+                ]
+            )
+
+            -> add(
+                'submit',
+                SubmitType::class,
+                [
+                    'label' => 'Je me connecte',
+                    'attr' => 
                     [
-                        'label' => 'Mot de passe',
-                        'required' => true,
+                        'class' => 'btn btn-light'
                     ]
-                )
+                ]
+            )
+        
+            
         ;
     }
 
@@ -38,7 +53,7 @@ class UtilisateurType extends AbstractType
         // Les données du form mappée sur l'object de la classe lors de la soumission puis mise a jour.
         $resolver -> setDefaults(
             [
-                'dara_class' => Utilisateur::class,
+                'data_class' => Utilisateur::class,
             ]
     );
     }

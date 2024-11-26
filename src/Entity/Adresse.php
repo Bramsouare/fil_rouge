@@ -3,8 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\AdresseRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -31,23 +29,13 @@ class Adresse
     #[ORM\Column(length: 255)]
     private ?string $adresse_telephone = null;
 
-    /**
-     * @var Collection<int, Fournisseur>
-     */
-    #[ORM\ManyToMany(targetEntity: Fournisseur::class, mappedBy: 'adresse')]
-    private Collection $fournisseurs;
+    #[ORM\ManyToOne(inversedBy: 'id_adresse')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?fournisseur $id_fournisseur = null;
 
-    /**
-     * @var Collection<int, Utilisateur>
-     */
-    #[ORM\ManyToMany(targetEntity: Utilisateur::class, mappedBy: 'adresse')]
-    private Collection $utilisateurs;
-
-    public function __construct()
-    {
-        $this -> fournisseurs = new ArrayCollection();
-        $this -> utilisateurs = new ArrayCollection();
-    }
+    #[ORM\ManyToOne(inversedBy: 'id_adresse')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?utilisateur $id_client = null;
 
     public function getId(): ?int
     {
@@ -114,56 +102,26 @@ class Adresse
         return $this;
     }
 
-    /**
-     * @return Collection<int, Fournisseur>
-     */
-    public function getFournisseurs(): Collection
+    public function getIdFournisseur(): ?fournisseur
     {
-        return $this -> fournisseurs;
+        return $this -> id_fournisseur;
     }
 
-    public function addFournisseur(Fournisseur $fournisseur): static
+    public function setIdFournisseur(?fournisseur $id_fournisseur): static
     {
-        if (!$this -> fournisseurs -> contains($fournisseur)) {
-            $this -> fournisseurs -> add($fournisseur);
-            $fournisseur -> addAdresse($this);
-        }
+        $this -> id_fournisseur = $id_fournisseur;
 
         return $this;
     }
 
-    public function removeFournisseur(Fournisseur $fournisseur): static
+    public function getIdClient(): ?utilisateur
     {
-        if ($this -> fournisseurs -> removeElement($fournisseur)) {
-            $fournisseur -> removeAdresse($this);
-        }
-
-        return $this;
+        return $this -> id_client;
     }
 
-    /**
-     * @return Collection<int, Utilisateur>
-     */
-    public function getUtilisateurs(): Collection
+    public function setIdClient(?utilisateur $id_client): static
     {
-        return $this -> utilisateurs;
-    }
-
-    public function addUtilisateur(Utilisateur $utilisateur): static
-    {
-        if (!$this -> utilisateurs -> contains($utilisateur)) {
-            $this -> utilisateurs -> add($utilisateur);
-            $utilisateur -> addAdresse($this);
-        }
-
-        return $this;
-    }
-
-    public function removeUtilisateur(Utilisateur $utilisateur): static
-    {
-        if ($this -> utilisateurs -> removeElement($utilisateur)) {
-            $utilisateur -> removeAdresse($this);
-        }
+        $this -> id_client = $id_client;
 
         return $this;
     }

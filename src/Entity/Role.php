@@ -21,16 +21,9 @@ class Role
     #[ORM\Column(length: 255)]
     private ?string $role_niveau = null;
 
-    /**
-     * @var Collection<int, Utilisateur>
-     */
-    #[ORM\ManyToMany(targetEntity: Utilisateur::class, mappedBy: 'role')]
-    private Collection $utilisateurs;
+    #[ORM\OneToOne(mappedBy: 'id_role', cascade: ['persist', 'remove'])]
+    private ?Utilisateur $id_utilisateur = null;
 
-    public function __construct()
-    {
-        $this -> utilisateurs = new ArrayCollection();
-    }
 
     public function getId(): ?int
     {
@@ -61,29 +54,46 @@ class Role
         return $this;
     }
 
-    /**
-     * @return Collection<int, Utilisateur>
-     */
-    public function getUtilisateurs(): Collection
+    // /**
+    //  * @return Collection<int, Utilisateur>
+    //  */
+    // public function getUtilisateurs(): Collection
+    // {
+    //     return $this -> utilisateurs;
+    // }
+
+    // public function addUtilisateur(Utilisateur $utilisateur): static
+    // {
+    //     if (!$this -> utilisateurs -> contains($utilisateur)) {
+    //         $this -> utilisateurs -> add($utilisateur);
+    //         $utilisateur -> addRole($this);
+    //     }
+
+    //     return $this;
+    // }
+
+    // public function removeUtilisateur(Utilisateur $utilisateur): static
+    // {
+    //     if ($this -> utilisateurs -> removeElement($utilisateur)) {
+    //         $utilisateur -> removeRole($this);
+    //     }
+
+    //     return $this;
+    // }
+
+    public function getIdUtilisateur(): ?Utilisateur
     {
-        return $this -> utilisateurs;
+        return $this -> id_utilisateur;
     }
 
-    public function addUtilisateur(Utilisateur $utilisateur): static
+    public function setIdUtilisateur(Utilisateur $id_utilisateur): static
     {
-        if (!$this -> utilisateurs -> contains($utilisateur)) {
-            $this -> utilisateurs -> add($utilisateur);
-            $utilisateur -> addRole($this);
+        // set the owning side of the relation if necessary
+        if ($id_utilisateur -> getIdRole() !== $this) {
+            $id_utilisateur -> setIdRole($this);
         }
 
-        return $this;
-    }
-
-    public function removeUtilisateur(Utilisateur $utilisateur): static
-    {
-        if ($this -> utilisateurs -> removeElement($utilisateur)) {
-            $utilisateur -> removeRole($this);
-        }
+        $this -> id_utilisateur = $id_utilisateur;
 
         return $this;
     }

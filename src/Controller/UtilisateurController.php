@@ -8,11 +8,13 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Form\UtilisateurType;
 use Symfony\Component\HttpFoundation\Request;
 use App\Entity\Utilisateur;
+use Doctrine\ORM\EntityManagerInterface;
 use App\Form\InscriptionType;
 use App\Entity\Payement;
 use App\Form\PayementType;
 use App\Entity\Adresse;
-
+use Doctrine\ORM\EntityManager;
+use Monolog\Handler\Curl\Util;
 
 
 class UtilisateurController extends AbstractController
@@ -115,16 +117,19 @@ class UtilisateurController extends AbstractController
     ]
 
     //Écoute la route /inscription et lui associe le nom de la route 'app_inscription'
-    public function inscription(Request $request): Response
+    public function inscription(Request $request, EntityManagerInterface $entityManager): Response
     {  
-        $form = $this -> createForm(InscriptionType::class);
+        $utilisateur = new Utilisateur();
+
+        $form = $this -> createForm(InscriptionType::class, $utilisateur);
 
         $form -> handleRequest ($request);
 
+        // Vérifie si le form est soumis et valide
         if ($form -> isSubmitted() && $form -> isValid())
         {
-            // Vérifie si le form est soumis et valide
-            // $data = $form -> getData();
+            $entityManager -> persist($utilisateur);
+            $entityManager -> flush();
 
             // Ajoutez ici le code pour gérer les données, comme les sauvegarder en base de données
             // Par exemple :
@@ -136,13 +141,9 @@ class UtilisateurController extends AbstractController
 
         return $this -> render('inscription/index.html.twig',
             [
-                'controller_name' => 'UtilisateurController',
                 'form'=> $form -> createView(),
-
-                ]
-            )
+            ])
         ;
-
     }
 
 

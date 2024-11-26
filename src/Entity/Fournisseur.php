@@ -31,18 +31,25 @@ class Fournisseur
     private ?bool $fournisseur_constructeur = null;
 
     /**
-     * @var Collection<int, adresse>
+     * @var Collection<int, Adresse>
      */
-    #[ORM\ManyToMany(targetEntity: adresse::class, inversedBy: 'fournisseurs')]
-    private Collection $adresse;
+    #[ORM\OneToMany(targetEntity: Adresse::class, mappedBy: 'id_fournisseur', orphanRemoval: true)]
+    private Collection $id_adresse;
 
-    #[ORM\ManyToOne(inversedBy: 'fournisseur')]
+    /**
+     * @var Collection<int, produit>
+     */
+    #[ORM\OneToMany(targetEntity: produit::class, mappedBy: 'id_fournisseur', orphanRemoval: true)]
+    private Collection $id_produit;
+
+    #[ORM\OneToOne(inversedBy: 'id_fournisseur', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Produit $produit = null;
+    private ?utilisateur $id_utilisateur = null;
 
     public function __construct()
     {
-        $this -> adresse = new ArrayCollection();
+        $this -> id_adresse = new ArrayCollection();
+        $this -> id_produit = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -111,37 +118,73 @@ class Fournisseur
     }
 
     /**
-     * @return Collection<int, adresse>
+     * @return Collection<int, Adresse>
      */
-    public function getAdresse(): Collection
+    public function getIdAdresse(): Collection
     {
-        return $this -> adresse;
+        return $this -> id_adresse;
     }
 
-    public function addAdresse(adresse $adresse): static
+    public function addIdAdresse(Adresse $idAdresse): static
     {
-        if (!$this -> adresse -> contains($adresse)) {
-            $this -> adresse -> add($adresse);
+        if (!$this -> id_adresse -> contains($idAdresse)) {
+            $this -> id_adresse -> add($idAdresse);
+            $idAdresse -> setIdFournisseur($this);
         }
 
         return $this;
     }
 
-    public function removeAdresse(adresse $adresse): static
+    public function removeIdAdresse(Adresse $idAdresse): static
     {
-        $this -> adresse -> removeElement($adresse);
+        if ($this -> id_adresse -> removeElement($idAdresse)) {
+            // set the owning side to null (unless already changed)
+            if ($idAdresse -> getIdFournisseur() === $this) {
+                $idAdresse -> setIdFournisseur(null);
+            }
+        }
 
         return $this;
     }
 
-    public function getProduit(): ?Produit
+    /**
+     * @return Collection<int, produit>
+     */
+    public function getIdProduit(): Collection
     {
-        return $this -> produit;
+        return $this -> id_produit;
     }
 
-    public function setProduit(?Produit $produit): static
+    public function addIdProduit(produit $idProduit): static
     {
-        $this -> produit = $produit;
+        if (!$this -> id_produit -> contains($idProduit)) {
+            $this -> id_produit -> add($idProduit);
+            $idProduit -> setIdFournisseur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeIdProduit(produit $idProduit): static
+    {
+        if ($this -> id_produit -> removeElement($idProduit)) {
+            // set the owning side to null (unless already changed)
+            if ($idProduit -> getIdFournisseur() === $this) {
+                $idProduit -> setIdFournisseur(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getIdUtilisateur(): ?utilisateur
+    {
+        return $this -> id_utilisateur;
+    }
+
+    public function setIdUtilisateur(utilisateur $id_utilisateur): static
+    {
+        $this -> id_utilisateur = $id_utilisateur;
 
         return $this;
     }

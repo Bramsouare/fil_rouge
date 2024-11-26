@@ -25,21 +25,23 @@ class Livraison
     #[ORM\Column(length: 255)]
     private ?string $livraison_reference = null;
 
-    /**
-     * @var Collection<int, commande>
-     */
-    #[ORM\OneToMany(targetEntity: commande::class, mappedBy: 'livraison')]
-    private Collection $commande;
-
+   
     /**
      * @var Collection<int, DetailLivraison>
      */
     #[ORM\OneToMany(targetEntity: DetailLivraison::class, mappedBy: 'id_livraison', orphanRemoval: true)]
     private Collection $detailLivraison;
 
+    #[ORM\ManyToOne(inversedBy: 'livraison')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Commande $id_commande = null;
+
+    #[ORM\OneToOne(mappedBy: 'id_livraison', cascade: ['persist', 'remove'])]
+    private ?DetailLivraison $id_detailLivraison = null;
+
+
     public function __construct()
     {
-        $this -> commande = new ArrayCollection();
         $this -> detailLivraison = new ArrayCollection();
     }
 
@@ -85,36 +87,6 @@ class Livraison
     }
 
     /**
-     * @return Collection<int, commande>
-     */
-    public function getCommande(): Collection
-    {
-        return $this -> commande;
-    }
-
-    public function addCommande(commande $commande): static
-    {
-        if (!$this -> commande -> contains($commande)) {
-            $this -> commande -> add($commande);
-            $commande -> setLivraison($this);
-        }
-
-        return $this;
-    }
-
-    public function removeCommande(commande $commande): static
-    {
-        if ($this -> commande -> removeElement($commande)) {
-            // set the owning side to null (unless already changed)
-            if ($commande -> getLivraison() === $this) {
-                $commande -> setLivraison(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
      * @return Collection<int, DetailLivraison>
      */
     public function getDetailLivraison(): Collection
@@ -122,25 +94,34 @@ class Livraison
         return $this -> detailLivraison;
     }
 
-    public function addDetailLivraison(DetailLivraison $detailLivraison): static
+    public function getIdCommande(): ?Commande
     {
-        if (!$this -> detailLivraison -> contains($detailLivraison)) {
-            $this -> detailLivraison -> add($detailLivraison);
-            $detailLivraison -> setIdLivraison($this);
-        }
+        return $this -> id_commande;
+    }
+
+    public function setIdCommande(?Commande $id_commande): static
+    {
+        $this -> id_commande = $id_commande;
 
         return $this;
     }
 
-    public function removeDetailLivraison(DetailLivraison $detailLivraison): static
+    public function getIdDetailLivraison(): ?DetailLivraison
     {
-        if ($this -> detailLivraison -> removeElement($detailLivraison)) {
-            // set the owning side to null (unless already changed)
-            if ($detailLivraison -> getIdLivraison() === $this) {
-                $detailLivraison -> setIdLivraison(null);
-            }
+        return $this -> id_detailLivraison;
+    }
+
+    public function setIdDetailLivraison(DetailLivraison $id_detailLivraison): static
+    {
+        // set the owning side of the relation if necessary
+        if ($id_detailLivraison -> getIdLivraison() !== $this) {
+            $id_detailLivraison -> setIdLivraison($this);
         }
+
+        $this -> id_detailLivraison = $id_detailLivraison;
 
         return $this;
     }
+
+   
 }

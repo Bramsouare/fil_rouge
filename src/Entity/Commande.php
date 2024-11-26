@@ -46,25 +46,35 @@ class Commande
     #[ORM\OneToMany(targetEntity: utilisateur::class, mappedBy: 'commande')]
     private Collection $utilisateur;
 
+
+    #[ORM\OneToOne(mappedBy: 'id_commande', cascade: ['persist', 'remove'])]
+    private ?Utilisateur $id_utilisateur = null;
+
     /**
      * @var Collection<int, produit>
      */
-    #[ORM\ManyToMany(targetEntity: produit::class, inversedBy: 'commandes')]
-    private Collection $produit;
+    #[ORM\OneToMany(targetEntity: produit::class, mappedBy: 'id_commande', orphanRemoval: true)]
+    private Collection $id_produit;
 
-    #[ORM\ManyToOne(inversedBy: 'commande')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Livraison $livraison = null;
 
-    #[ORM\ManyToOne(inversedBy: 'commandes')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?facture $facture = null;
+    /**
+     * @var Collection<int, livraison>
+     */
+    #[ORM\OneToMany(targetEntity: livraison::class, mappedBy: 'id_commande', orphanRemoval: true)]
+    private Collection $livraison;
+
+    #[ORM\OneToOne(mappedBy: 'id_commande', cascade: ['persist', 'remove'])]
+    private ?Facture $id_facture = null;
+
+    #[ORM\OneToOne(mappedBy: 'id_commande', cascade: ['persist', 'remove'])]
+    private ?DetailCommande $id_detailCommande = null;
 
   
     public function __construct()
     {
         $this -> utilisateur = new ArrayCollection();
-        $this -> produit = new ArrayCollection();
+        $this -> id_produit = new ArrayCollection();
+        $this -> livraison = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -176,24 +186,19 @@ class Commande
         return $this -> utilisateur;
     }
 
-    public function addUtilisateur(utilisateur $utilisateur): static
+    public function getIdUtilisateur(): ?Utilisateur
     {
-        if (!$this -> utilisateur -> contains($utilisateur)) {
-            $this -> utilisateur -> add($utilisateur);
-            $utilisateur -> setCommande($this);
-        }
-
-        return $this;
+        return $this -> id_utilisateur;
     }
 
-    public function removeUtilisateur(utilisateur $utilisateur): static
+    public function setIdUtilisateur(Utilisateur $id_utilisateur): static
     {
-        if ($this -> utilisateur -> removeElement($utilisateur)) {
-            // set the owning side to null (unless already changed)
-            if ($utilisateur -> getCommande() === $this) {
-                $utilisateur -> setCommande(null);
-            }
+        // set the owning side of the relation if necessary
+        if ($id_utilisateur -> getIdCommande() !== $this) {
+            $id_utilisateur -> setIdCommande($this);
         }
+
+        $this -> id_utilisateur = $id_utilisateur;
 
         return $this;
     }
@@ -201,47 +206,93 @@ class Commande
     /**
      * @return Collection<int, produit>
      */
-    public function getProduit(): Collection
+    public function getIdProduit(): Collection
     {
-        return $this -> produit;
+        return $this -> id_produit;
     }
 
-    public function addProduit(produit $produit): static
+    public function addIdProduit(produit $idProduit): static
     {
-        if (!$this -> produit -> contains($produit)) {
-            $this -> produit -> add($produit);
+        if (!$this -> id_produit -> contains($idProduit)) {
+            $this -> id_produit -> add($idProduit);
+            $idProduit -> setIdCommande($this);
         }
 
         return $this;
     }
 
-    public function removeProduit(produit $produit): static
+    public function removeIdProduit(produit $idProduit): static
     {
-        $this -> produit -> removeElement($produit);
+        if ($this -> id_produit -> removeElement($idProduit)) {
+            // set the owning side to null (unless already changed)
+            if ($idProduit -> getIdCommande() === $this) {
+                $idProduit -> setIdCommande(null);
+            }
+        }
 
         return $this;
     }
 
-    public function getLivraison(): ?Livraison
+    /**
+     * @return Collection<int, livraison>
+     */
+    public function getLivraison(): Collection
     {
         return $this -> livraison;
     }
 
-    public function setLivraison(?Livraison $livraison): static
+    public function addLivraison(livraison $livraison): static
     {
-        $this -> livraison = $livraison;
+        if (!$this -> livraison -> contains($livraison)) {
+            $this -> livraison -> add($livraison);
+            $livraison -> setIdCommande($this);
+        }
 
         return $this;
     }
 
-    public function getFacture(): ?facture
+    public function removeLivraison(livraison $livraison): static
     {
-        return $this -> facture;
+        if ($this -> livraison -> removeElement($livraison)) {
+            // set the owning side to null (unless already changed)
+            if ($livraison -> getIdCommande() === $this) {
+                $livraison -> setIdCommande(null);
+            }
+        }
+
+        return $this;
     }
 
-    public function setFacture(?facture $facture): static
+    public function getIdFacture(): ?Facture
     {
-        $this -> facture = $facture;
+        return $this -> id_facture;
+    }
+
+    public function setIdFacture(Facture $id_facture): static
+    {
+        // set the owning side of the relation if necessary
+        if ($id_facture -> getIdCommande() !== $this) {
+            $id_facture -> setIdCommande($this);
+        }
+
+        $this -> id_facture = $id_facture;
+
+        return $this;
+    }
+
+    public function getIdDetailCommande(): ?DetailCommande
+    {
+        return $this -> id_detailCommande;
+    }
+
+    public function setIdDetailCommande(DetailCommande $id_detailCommande): static
+    {
+        // set the owning side of the relation if necessary
+        if ($id_detailCommande -> getIdCommande() !== $this) {
+            $id_detailCommande -> setIdCommande($this);
+        }
+
+        $this -> id_detailCommande = $id_detailCommande;
 
         return $this;
     }

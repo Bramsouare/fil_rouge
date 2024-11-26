@@ -2,8 +2,6 @@
 
 namespace App\Entity;
 
-use App\Entity\Commande;
-use App\Entity\Livraison;
 use App\Entity\Utilisateur;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -44,31 +42,30 @@ class Produit
     #[ORM\JoinColumn(nullable: false)]
     private ?tva $tva = null;
 
-    /**
-     * @var Collection<int, rubrique>
-     */
-    #[ORM\OneToMany(targetEntity: rubrique::class, mappedBy: 'produit')]
-    private Collection $rubrique;
 
-    /**
-     * @var Collection<int, fournisseur>
-     */
-    #[ORM\OneToMany(targetEntity: fournisseur::class, mappedBy: 'produit')]
-    private Collection $fournisseur;
+    #[ORM\ManyToOne(inversedBy: 'id_produit')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Rubrique $id_rubrique = null;
 
-    /**
-     * @var Collection<int, Utilisateur>
-     */
-    #[ORM\ManyToMany(targetEntity: Utilisateur::class, mappedBy: 'produit')]
-    private Collection $utilisateur;
+    #[ORM\ManyToOne(inversedBy: 'id_produit')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Fournisseur $id_fournisseur = null;
 
-    public function __construct()
-    {
-        $this -> rubrique = new ArrayCollection();
-        $this -> fournisseur = new ArrayCollection();
-        $this -> utilisateur = new ArrayCollection();
+    #[ORM\ManyToOne(inversedBy: 'id_produit')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Utilisateur $id_utilisateur = null;
 
-    }
+    #[ORM\ManyToOne(inversedBy: 'id_produit')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Commande $id_commande = null;
+
+    #[ORM\ManyToOne(inversedBy: 'id_produit')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?DetailCommande $id_detailCommande = null;
+
+    #[ORM\ManyToOne(inversedBy: 'id_produit')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?DetailLivraison $id_detailLivraison = null;
 
     public function getId(): ?int
     {
@@ -171,89 +168,74 @@ class Produit
         return $this;
     }
 
-    /**
-     * @return Collection<int, rubrique>
-     */
-    public function getRubrique(): Collection
+    public function getIdRubrique(): ?Rubrique
     {
-        return $this -> rubrique;
+        return $this -> id_rubrique;
     }
 
-    public function addRubrique(rubrique $rubrique): static
+    public function setIdRubrique(?Rubrique $id_rubrique): static
     {
-        if (!$this -> rubrique -> contains($rubrique)) {
-            $this -> rubrique -> add($rubrique);
-            $rubrique -> setProduit($this);
-        }
+        $this -> id_rubrique = $id_rubrique;
 
         return $this;
     }
 
-    public function removeRubrique(rubrique $rubrique): static
+    public function getIdFournisseur(): ?Fournisseur
     {
-        if ($this -> rubrique -> removeElement($rubrique)) {
-            // set the owning side to null (unless already changed)
-            if ($rubrique -> getProduit() === $this) {
-                $rubrique -> setProduit(null);
-            }
-        }
+        return $this -> id_fournisseur;
+    }
+
+    public function setIdFournisseur(?Fournisseur $id_fournisseur): static
+    {
+        $this -> id_fournisseur = $id_fournisseur;
 
         return $this;
     }
 
-    /**
-     * @return Collection<int, fournisseur>
-     */
-    public function getFournisseur(): Collection
+    public function getIdUtilisateur(): ?Utilisateur
     {
-        return $this -> fournisseur;
+        return $this -> id_utilisateur;
     }
 
-    public function addFournisseur(fournisseur $fournisseur): static
+    public function setIdUtilisateur(?Utilisateur $id_utilisateur): static
     {
-        if (!$this -> fournisseur -> contains($fournisseur)) {
-            $this -> fournisseur -> add($fournisseur);
-            $fournisseur -> setProduit($this);
-        }
+        $this -> id_utilisateur = $id_utilisateur;
 
         return $this;
     }
 
-    public function removeFournisseur(fournisseur $fournisseur): static
+    public function getIdCommande(): ?Commande
     {
-        if ($this -> fournisseur -> removeElement($fournisseur)) {
-            // set the owning side to null (unless already changed)
-            if ($fournisseur -> getProduit() === $this) {
-                $fournisseur -> setProduit(null);
-            }
-        }
+        return $this -> id_commande;
+    }
+
+    public function setIdCommande(?Commande $id_commande): static
+    {
+        $this -> id_commande = $id_commande;
 
         return $this;
     }
 
-    /**
-     * @return Collection<int, Utilisateur>
-     */
-    public function getUtilisateur(): Collection
+    public function getIdDetailCommande(): ?DetailCommande
     {
-        return $this -> utilisateur;
+        return $this -> id_detailCommande;
     }
 
-    public function addUtilisateur(Utilisateur $utilisateur): static
+    public function setIdDetailCommande(?DetailCommande $id_detailCommande): static
     {
-        if (!$this -> utilisateur -> contains($utilisateur)) {
-            $this -> utilisateur -> add($utilisateur);
-            $utilisateur -> addProduit($this);
-        }
+        $this -> id_detailCommande = $id_detailCommande;
 
         return $this;
     }
 
-    public function removeUtilisateur(Utilisateur $utilisateur): static
+    public function getIdDetailLivraison(): ?DetailLivraison
     {
-        if ($this -> utilisateur -> removeElement($utilisateur)) {
-            $utilisateur -> removeProduit($this);
-        }
+        return $this -> id_detailLivraison;
+    }
+
+    public function setIdDetailLivraison(?DetailLivraison $id_detailLivraison): static
+    {
+        $this -> id_detailLivraison = $id_detailLivraison;
 
         return $this;
     }

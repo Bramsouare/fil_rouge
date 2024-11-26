@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\RubriqueRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: RubriqueRepository::class)]
@@ -25,9 +27,22 @@ class Rubrique
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'rubrique')]
     private ?self $rubrique = null;
 
-    #[ORM\ManyToOne(inversedBy: 'rubrique')]
+    /**
+     * @var Collection<int, produit>
+     */
+    #[ORM\OneToMany(targetEntity: produit::class, mappedBy: 'id_rubrique', orphanRemoval: true)]
+    private Collection $id_produit;
+
+    #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'id_parent')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Produit $produit = null;
+    private ?self $id_rubrique = null;
+
+    public function __construct()
+    {
+        $this -> id_produit = new ArrayCollection();
+    }
+
+
 
     public function getId(): ?int
     {
@@ -82,15 +97,46 @@ class Rubrique
         return $this;
     }
 
-    public function getProduit(): ?Produit
+    /**
+     * @return Collection<int, produit>
+     */
+    public function getIdProduit(): Collection
     {
-        return $this -> produit;
+        return $this -> id_produit;
     }
 
-    public function setProduit(?Produit $produit): static
+    public function addIdProduit(produit $idProduit): static
     {
-        $this -> produit = $produit;
+        if (!$this -> id_produit -> contains($idProduit)) {
+            $this -> id_produit -> add($idProduit);
+            $idProduit -> setIdRubrique($this);
+        }
 
         return $this;
     }
+
+    public function removeIdProduit(produit $idProduit): static
+    {
+        if ($this -> id_produit -> removeElement($idProduit)) {
+            // set the owning side to null (unless already changed)
+            if ($idProduit -> getIdRubrique() === $this) {
+                $idProduit -> setIdRubrique(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getIdRubrique(): ?self
+    {
+        return $this -> id_rubrique;
+    }
+
+    public function setIdRubrique(?self $id_rubrique): static
+    {
+        $this -> id_rubrique = $id_rubrique;
+
+        return $this;
+    }
+
 }

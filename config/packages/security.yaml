@@ -1,39 +1,69 @@
 security:
-    # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
+    # Configuration pour le hachage des mots de passe
     password_hashers:
+        # Définit quel algorithme sera utilisé pour hacher les mots de passe
+        # "auto" permet à Symfony de choisir l'algorithme le plus approprié
         Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
-    # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
+
+    # Déclaration des fournisseurs d'utilisateurs
     providers:
-        users_in_memory: { memory: null }
+        # Fournisseur basé sur l'entité Utilisateur
+        app_user_provider:
+            entity:
+                # Spécifie la classe de l'entité utilisateur
+                class: App\Entity\Utilisateur
+
+                # Indique quel champ sera utilisé pour identifier l'utilisateur
+                property: mail
+                # Utilise l'adresse email
+                # used to reload user from session & other features (e.g. switch_user)
+
+    # Configuration des pare-feu pour la gestion des connexions
     firewalls:
+        # Section pour les fichiers de développement 
         dev:
-            pattern: ^/(_(profiler|wdt)|css|images|js)/
-            security: false
+            pattern: ^/(_(profiler|wdt)|css|images|js)/ # Ces chemins correspondent aux outils de débogage
+            security: false # Pas de protection sur ces fichiers
+
+        # Pare-feu principal pour sécuriser l'application
         main:
-            lazy: true
-            provider: users_in_memory
+            lazy: true # Active le mode "paresseux" pour des performances améliorées
+            provider: app_user_provider # Associe ce firewall au fournisseur déclaré plus haut
 
-            # activate different ways to authenticate
-            # https://symfony.com/doc/current/security.html#the-firewall
+            # Activation de l'authentification par formulaire
+            form_login:
+                login_path: login # Route pour afficher la page de connexion
+                check_path: login # Route où le formulaire de connexion sera traité
+                username_parameter: utilisateur_mail # Nom du champ pour l'identifiant
+                password_parameter: utilisateur_mdp # Nom du champ pour le mot de passe
 
-            # https://symfony.com/doc/current/security/impersonating_user.html
-            # switch_user: true
+            # Configuration de la déconnexion
+            logout:
+                path: logout # Route à appeler pour se déconnecter
+                target: / # Redirection après la déconnexion page d'accueil par défaut
 
-    # Easy way to control access for large sections of your site
-    # Note: Only the *first* access control that matches will be used
+            # Activation de la fonctionnalité "se souvenir de moi"
+            remember_me:
+                secret: '%kernel.secret%' # Utilise la clé secrète de l'application pour sécuriser les cookies
+                lifetime: 604800 # Durée de vie en secondes (7 jours ici)
+
+    # Contrôle d'accès pour définir les permissions sur les différentes routes
     access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
+        # Restreint l'accès aux routes commençant par /admin aux utilisateurs ayant le rôle ROLE_ADMIN
+        - { path: ^/admin, roles: ROLE_ADMIN }
+        # Restreint l'accès aux routes commençant par /profile aux utilisateurs ayant le rôle ROLE_USER
+        - { path: ^/profile, roles: ROLE_USER }
+        # Permet un accès anonyme à la route de connexion
+        - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
 
+# Configuration spécifique pour les tests
 when@test:
     security:
         password_hashers:
-            # By default, password hashers are resource intensive and take time. This is
-            # important to generate secure password hashes. In tests however, secure hashes
-            # are not important, waste resources and increase test times. The following
-            # reduces the work factor to the lowest possible values.
+            # Pour les tests, on diminue les exigences pour les hachages de mot de passe
+            # Cela accélère les tests en sacrifiant la sécurité acceptable dans ce contexte
             Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface:
-                algorithm: auto
-                cost: 4 # Lowest possible value for bcrypt
-                time_cost: 3 # Lowest possible value for argon
-                memory_cost: 10 # Lowest possible value for argon
+                algorithm: auto # Utilisation automatique de l'algorithme
+                cost: 4 # Valeur minimale pour bcrypt
+                time_cost: 3 # Valeur minimale pour Argon2
+                memory_cost: 10 # Valeur minimale pour Argon2

@@ -5,6 +5,7 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class AuthentificationController extends AbstractController
 {
@@ -29,8 +30,14 @@ class AuthentificationController extends AbstractController
         name: 'app_connection'
         )
     ]
-    public function connection(): Response
+    public function connection(AuthenticationUtils $authenticationUtils): Response
     {
+        $error = $authenticationUtils -> getLastAuthenticationError();
+
+        $nomUtilisateur = $authenticationUtils -> getLastUsername();
+
+        
+
         return $this -> render
             (
                 'connection/index.html.twig',

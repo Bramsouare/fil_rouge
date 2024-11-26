@@ -7,8 +7,12 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\Adresse;
+use App\Entity\Role;
+
 
 #[ORM\Entity(repositoryClass: UtilisateurRepository::class)]
+
 class Utilisateur
 {
     #[ORM\Id]
@@ -52,33 +56,11 @@ class Utilisateur
     #[ORM\ManyToMany(targetEntity: fournisseur::class)]
     private Collection $fournisseur;
 
-    /**
-     * @var Collection<int, adresse>
-     */
-    #[ORM\ManyToMany(targetEntity: adresse::class, inversedBy: 'utilisateurs')]
-    private Collection $adresse;
-
-    /**
-     * @var Collection<int, role>
-     */
-    #[ORM\ManyToMany(targetEntity: role::class, inversedBy: 'utilisateurs')]
-    private Collection $role;
-
-    #[ORM\ManyToOne(inversedBy: 'utilisateur')]
-    private ?Commande $commande = null;
-
-    /**
-     * @var Collection<int, produit>
-     */
-    #[ORM\ManyToMany(targetEntity: produit::class, inversedBy: 'utilisateurs')]
-    private Collection $produit;
-
     public function __construct()
     {
         $this -> fournisseur = new ArrayCollection();
-        $this -> adresse = new ArrayCollection();
-        $this -> role = new ArrayCollection();
-        $this -> produit = new ArrayCollection();
+        $this -> id_adresse = new ArrayCollection();
+        $this -> id_produit = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -230,62 +212,110 @@ class Utilisateur
         return $this;
     }
 
+    private ?Adresse $utilisateur_adresse = null;
+
     /**
-     * @return Collection<int, adresse>
+     * @var Collection<int, Adresse>
      */
-    public function getAdresse(): Collection
+    #[ORM\OneToMany(targetEntity: Adresse::class, mappedBy: 'id_client', orphanRemoval: true)]
+    private Collection $id_adresse;
+
+    #[ORM\OneToOne(mappedBy: 'id_utilisateur', cascade: ['persist', 'remove'])]
+    private ?Fournisseur $id_fournisseur = null;
+
+    #[ORM\OneToOne(inversedBy: 'id_utilisateur', cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?role $id_role = null;
+
+    #[ORM\OneToOne(inversedBy: 'id_utilisateur', cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?commande $id_commande = null;
+
+    /**
+     * @var Collection<int, produit>
+     */
+    #[ORM\OneToMany(targetEntity: produit::class, mappedBy: 'id_utilisateur', orphanRemoval: true)]
+    private Collection $id_produit;
+
+    public function getUtilisateurAdresse(): ?Adresse
     {
-        return $this -> adresse;
+        return $this -> utilisateur_adresse;
     }
 
-    public function addAdresse(adresse $adresse): static
+    public function setUtilisateurAdresse(?Adresse $utilisateur_adresse): self
     {
-        if (!$this -> adresse -> contains($adresse)) {
-            $this -> adresse -> add($adresse);
+        $this -> utilisateur_adresse = $utilisateur_adresse;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Adresse>
+     */
+    public function getIdAdresse(): Collection
+    {
+        return $this -> id_adresse;
+    }
+
+    public function addIdAdresse(Adresse $idAdresse): static
+    {
+        if (!$this -> id_adresse -> contains($idAdresse)) {
+            $this -> id_adresse -> add($idAdresse);
+            $idAdresse -> setIdClient($this);
         }
 
         return $this;
     }
 
-    public function removeAdresse(adresse $adresse): static
+    public function removeIdAdresse(Adresse $idAdresse): static
     {
-        $this -> adresse -> removeElement($adresse);
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, role>
-     */
-    public function getRole(): Collection
-    {
-        return $this -> role;
-    }
-
-    public function addRole(role $role): static
-    {
-        if (!$this -> role -> contains($role)) {
-            $this -> role -> add($role);
+        if ($this -> id_adresse -> removeElement($idAdresse)) {
+            // set the owning side to null (unless already changed)
+            if ($idAdresse -> getIdClient() === $this) {
+                $idAdresse -> setIdClient(null);
+            }
         }
 
         return $this;
     }
 
-    public function removeRole(role $role): static
+    public function getIdFournisseur(): ?Fournisseur
     {
-        $this -> role -> removeElement($role);
+        return $this -> id_fournisseur;
+    }
+
+    public function setIdFournisseur(Fournisseur $id_fournisseur): static
+    {
+        // set the owning side of the relation if necessary
+        if ($id_fournisseur -> getIdUtilisateur() !== $this) {
+            $id_fournisseur -> setIdUtilisateur($this);
+        }
+
+        $this -> id_fournisseur = $id_fournisseur;
 
         return $this;
     }
 
-    public function getCommande(): ?Commande
+    public function getIdRole(): ?role
     {
-        return $this -> commande;
+        return $this -> id_role;
     }
 
-    public function setCommande(?Commande $commande): static
+    public function setIdRole(role $id_role): static
     {
-        $this -> commande = $commande;
+        $this -> id_role = $id_role;
+
+        return $this;
+    }
+
+    public function getIdCommande(): ?commande
+    {
+        return $this -> id_commande;
+    }
+
+    public function setIdCommande(commande $id_commande): static
+    {
+        $this -> id_commande = $id_commande;
 
         return $this;
     }
@@ -293,24 +323,32 @@ class Utilisateur
     /**
      * @return Collection<int, produit>
      */
-    public function getProduit(): Collection
+    public function getIdProduit(): Collection
     {
-        return $this -> produit;
+        return $this -> id_produit;
     }
 
-    public function addProduit(produit $produit): static
+    public function addIdProduit(produit $idProduit): static
     {
-        if (!$this -> produit -> contains($produit)) {
-            $this -> produit -> add($produit);
+        if (!$this -> id_produit -> contains($idProduit)) {
+            $this -> id_produit -> add($idProduit);
+            $idProduit -> setIdUtilisateur($this);
         }
 
         return $this;
     }
 
-    public function removeProduit(produit $produit): static
+    public function removeIdProduit(produit $idProduit): static
     {
-        $this -> produit -> removeElement($produit);
+        if ($this -> id_produit -> removeElement($idProduit)) {
+            // set the owning side to null (unless already changed)
+            if ($idProduit -> getIdUtilisateur() === $this) {
+                $idProduit -> setIdUtilisateur(null);
+            }
+        }
 
         return $this;
     }
+
+    
 }

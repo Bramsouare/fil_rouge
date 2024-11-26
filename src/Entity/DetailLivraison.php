@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\DetailLivraisonRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -17,13 +19,20 @@ class DetailLivraison
     #[ORM\Column(type: Types::DECIMAL, precision: 15, scale: 2)]
     private ?string $quantite = null;
 
-    #[ORM\ManyToOne(inversedBy: 'detailLivraison')]
+    #[ORM\OneToOne(inversedBy: 'id_detailLivraison', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?livraison $id_livraison = null;
 
-    #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?produit $id_produit = null;
+    /**
+     * @var Collection<int, produit>
+     */
+    #[ORM\OneToMany(targetEntity: produit::class, mappedBy: 'id_detailLivraison', orphanRemoval: true)]
+    private Collection $id_produit;
+
+    public function __construct()
+    {
+        $this->id_produit = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -47,22 +56,42 @@ class DetailLivraison
         return $this -> id_livraison;
     }
 
-    public function setIdLivraison(?livraison $id_livraison): static
+    public function setIdLivraison(livraison $id_livraison): static
     {
         $this -> id_livraison = $id_livraison;
 
         return $this;
     }
 
-    public function getIdProduit(): ?produit
+    /**
+     * @return Collection<int, produit>
+     */
+    public function getIdProduit(): Collection
     {
         return $this -> id_produit;
     }
 
-    public function setIdProduit(?produit $id_produit): static
+    public function addIdProduit(produit $idProduit): static
     {
-        $this -> id_produit = $id_produit;
+        if (!$this -> id_produit -> contains($idProduit)) {
+            $this -> id_produit -> add($idProduit);
+            $idProduit -> setIdDetailLivraison($this);
+        }
 
         return $this;
     }
+
+    public function removeIdProduit(produit $idProduit): static
+    {
+        if ($this -> id_produit -> removeElement($idProduit)) {
+            // set the owning side to null (unless already changed)
+            if ($idProduit -> getIdDetailLivraison() === $this) {
+                $idProduit -> setIdDetailLivraison(null);
+            }
+        }
+
+        return $this;
+    }
+
+   
 }
