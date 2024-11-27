@@ -2,15 +2,16 @@
 
 namespace App\Form;
 
-use App\Entity\Adresse;
-use App\Entity\Utilisateur;
+use PHPUnit\TextUI\XmlConfiguration\CodeCoverage\Report\Text;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TelType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class InscriptionType extends AbstractType
 {
@@ -19,62 +20,82 @@ class InscriptionType extends AbstractType
         $builder
 
             -> add(
-                'utilisateur_prenom',
-                TextType::class,
+                'utilisateur_nom',
+                TextType::class, 
                 [
-                    'label' => 'Prénom'
+                    'label' => 'Nom',
+                    'required' => true,
                 ]
             )
 
             -> add(
-                'utilisateur_nom',
-                TextType::class,
+                'utilisateur_prenom',
+                TextType::class, 
                 [
-                    'label' => 'Nom'
+                    'label' => 'Prénom',
+                    'required' => true,
+                ]
+            )
+
+            -> add(
+                'adresse_libelle',
+                TextType::class, 
+                [
+                    'label' => 'Adresse',
+                    'required' => true,
+                ]
+            )
+
+            -> add(
+                'adresse_ville',
+                TextType::class, 
+                [
+                    'label' => 'Ville',
+                    'required' => true,
+                ]
+            )
+
+            -> add(
+                'adresse_postal',
+                NumberType::class, 
+                [
+                    'label' => 'Code postal',
+                    'required' => true,
                 ]
             )
 
             -> add(
                 'utilisateur_mail',
-                TextType::class,
+                EmailType::class, 
                 [
-                    'label' => 'Email'
-                ]
-            )
-
-            -> add(
-                'utilisateur_mdp',
-                PasswordType::class,
-                [
-                    'label' => 'Mots de passe'
+                    'label' => 'Email',
+                    'required' => true,
                 ]
             )
 
             -> add(
                 'utilisateur_telephone',
-                TextType::class,
+                TelType::class, 
                 [
-                    'label' => 'Téléphone'
-                ]
-            )
-
-            -> add(
-                'utilisateur_adresse',
-                EntityType::class,
-                [
-                    'class' => Adresse::class, // L'entité cible
-                    'choice_label' => 'adresse_libelle', // La propriété à afficher dans le formulaire
-                    'label' => 'Adresse',
-                    'expanded' => false, // Mettre true pour afficher comme des cases à cocher
+                    'label' => 'Téléphone',
+                    'required' => true,
                 ]
             )
             
+            -> add(
+                'utilisateur_mdp',
+                PasswordType::class, 
+                [
+                    'label' => 'Téléphone',
+                    'required' => true,
+                ]
+            )
 
             -> add(
-                'submit',
+                'Envoyer', 
                 SubmitType::class,
                 [
-                    'label' => 'Inscription',
+                    'label' => "Je m'inscris",
                     'attr' => 
                     [
                         'class' => 'btn btn-light'
@@ -86,10 +107,8 @@ class InscriptionType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver -> setDefaults(
-            [
-                'data_class' => Utilisateur::class,
-            ]
-        );
+        $resolver -> setDefaults([
+            // 'data_class' => Utilisateur::class,
+        ]);
     }
 }

@@ -118,18 +118,45 @@ class UtilisateurController extends AbstractController
 
     //Écoute la route /inscription et lui associe le nom de la route 'app_inscription'
     public function inscription(Request $request, EntityManagerInterface $entityManager): Response
-    {  
-        $utilisateur = new Utilisateur();
+    {   
 
-        $form = $this -> createForm(InscriptionType::class, $utilisateur);
+        $form = $this -> createForm(InscriptionType::class);
 
         $form -> handleRequest ($request);
 
         // Vérifie si le form est soumis et valide
         if ($form -> isSubmitted() && $form -> isValid())
         {
+            $data = $form -> getData(); 
+            $nom = $data['utilisateur_nom'];
+            $prenom = $data['utilisateur_prenom'];
+            $adresse_libelle = $data['adresse_libelle'];
+            $adresse_ville = $data['adresse_ville'];
+            $adresse_postal = $data['adresse_postal'];
+            $utilisateur_mail = $data['utilisateur_mail'];
+            $utilisateur_telephone = $data['utilisateur_telephone'];
+            $utilisateur_mdp = $data['utilisateur_mdp'];
+
+
+            $utilisateur = new Utilisateur();
+            $utilisateur -> setUtilisateurNom($nom);
+            $utilisateur -> setUtilisateurPrenom($prenom);
+            $utilisateur -> setUtilisateurMail($utilisateur_mail);
+            $utilisateur -> setUtilisateurTelephone($utilisateur_telephone);
+            $utilisateur -> setUtilisateurMdp($utilisateur_mdp);
+            
+            $adresse = new Adresse();
+            $adresse -> setAdresseLibelle($adresse_libelle);
+            $adresse -> setUtilisateur($utilisateur);
+            $adresse -> setAdresseVille($adresse_ville);
+            $adresse -> setAdressePostal($adresse_postal);
+
+            dump($adresse);
+            dd($utilisateur);
             $entityManager -> persist($utilisateur);
+            $entityManager -> persist($adresse);
             $entityManager -> flush();
+
 
             // Ajoutez ici le code pour gérer les données, comme les sauvegarder en base de données
             // Par exemple :

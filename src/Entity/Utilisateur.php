@@ -62,9 +62,9 @@ class Utilisateur
     public function __construct()
     {
         $this -> fournisseur = new ArrayCollection();
-        $this -> adresse = new ArrayCollection();
         $this -> produit = new ArrayCollection();
         $this -> commande = new ArrayCollection();
+        $this->utilisateur_adresse = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -216,15 +216,7 @@ class Utilisateur
         return $this;
     }
 
-    private ?Adresse $utilisateur_adresse = null;
-
-    /**
-     * @var Collection<int, Adresse>
-     */
-    #[ORM\OneToMany(targetEntity: Adresse::class, mappedBy: 'client', orphanRemoval: true)]
-    private Collection $adresse;
-
-
+  
 
     #[ORM\OneToOne(inversedBy: 'utilisateur', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
@@ -242,47 +234,13 @@ class Utilisateur
     #[ORM\OneToMany(targetEntity: Commande::class, mappedBy: 'utilisateur', orphanRemoval: true)]
     private Collection $commande;
 
-    public function getUtilisateurAdresse(): ?Adresse
-    {
-        return $this -> utilisateur_adresse;
-    }
-
-    public function setUtilisateurAdresse(?Adresse $utilisateur_adresse): self
-    {
-        $this -> utilisateur_adresse = $utilisateur_adresse;
-
-        return $this;
-    }
-
     /**
-     * @return Collection<int, Adresse>
+     * @var Collection<int, adresse>
      */
-    public function getAdresse(): Collection
-    {
-        return $this -> adresse;
-    }
+    #[ORM\OneToMany(targetEntity: Adresse::class, mappedBy: 'utilisateur', orphanRemoval: true)]
+    private Collection $utilisateur_adresse;
 
-    public function adAdresse(Adresse $Adresse): static
-    {
-        if (!$this -> adresse -> contains($Adresse)) {
-            $this -> adresse -> add($Adresse);
-            $Adresse -> setClient($this);
-        }
 
-        return $this;
-    }
-
-    public function removeAdresse(Adresse $Adresse): static
-    {
-        if ($this -> adresse -> removeElement($Adresse)) {
-            // set the owning side to null (unless already changed)
-            if ($Adresse -> getClient() === $this) {
-                $Adresse -> setClient(null);
-            }
-        }
-
-        return $this;
-    }
 
 
     public function getRole(): ?Role
@@ -306,7 +264,7 @@ class Utilisateur
         return $this -> produit;
     }
 
-    public function adProduit(Produit $Produit): static
+    public function addProduit(Produit $Produit): static
     {
         if (!$this -> produit -> contains($Produit)) {
             $this -> produit -> add($Produit);
@@ -352,6 +310,36 @@ class Utilisateur
             // set the owning side to null (unless already changed)
             if ($commande -> getUtilisateur() === $this) {
                 $commande -> setUtilisateur(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, adresse>
+     */
+    public function getUtilisateurAdresse(): Collection
+    {
+        return $this->utilisateur_adresse;
+    }
+
+    public function addUtilisateurAdresse(Adresse $utilisateurAdresse): static
+    {
+        if (!$this->utilisateur_adresse->contains($utilisateurAdresse)) {
+            $this->utilisateur_adresse->add($utilisateurAdresse);
+            $utilisateurAdresse->setUtilisateur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUtilisateurAdresse(Adresse $utilisateurAdresse): static
+    {
+        if ($this->utilisateur_adresse->removeElement($utilisateurAdresse)) {
+            // set the owning side to null (unless already changed)
+            if ($utilisateurAdresse->getUtilisateur() === $this) {
+                $utilisateurAdresse->setUtilisateur(null);
             }
         }
 
