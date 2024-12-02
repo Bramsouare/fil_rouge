@@ -8,18 +8,50 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class CatalogueController extends AbstractController
 {
-    #[Route('/catalogue', name: 'app_catalogue')]
+   
+    /*###################################################################################################################################
+        *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~    ACCUEIL CONTROLLER    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ###################################################################################################################################*/
 
-    public function index(): Response
+    #[Route(
+        '/',
+        name: 'app_accueil'
+        )
+    ]
+    public function accueil(): Response
     {
-        return $this -> render(
-
-            'catalogue/index.html.twig', 
-            [
-                'controller_name' => 'CatalogueController',
-            ]
-        );
+        return $this -> render
+            (
+                'catalogue/accueil.html.twig',
+                [
+                    'controller_name' => 'CatalogueController',
+                ]
+            )
+        ;
     }
+
+    /*####################################################################################################################################
+    *                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~      CATEGORIES CONTROLLER     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ####################################################################################################################################*/
+
+    #[Route(
+        '/categorie',
+        name: 'app_categorie'
+            )
+        ]
+    public function categorie(): Response
+    {
+        return $this -> render
+            (
+                'catalogue/categorie.html.twig',
+                [
+                    'controller_name' => 'CatalogueController',
+                ]
+            )
+        ;
+    }
+
+    
 
     /*####################################################################################################################################
     *                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~      INSTRUMENT CONTROLLER     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -34,12 +66,12 @@ class CatalogueController extends AbstractController
     {
         return $this -> render
             (
-                'instrument/index.html.twig',
+                'catalogue/instrument.html.twig',
                 [
-                    'controller_name' => 'InstrumentController',
+                    'controller_name' => 'CatalogueController',
                 ]
             )
         ;
     }
-    
+
 }

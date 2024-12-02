@@ -13,56 +13,12 @@ use App\Form\InscriptionType;
 use App\Entity\Payement;
 use App\Form\PayementType;
 use App\Entity\Adresse;
-use Doctrine\ORM\EntityManager;
-use Monolog\Handler\Curl\Util;
 
+use function Symfony\Component\Clock\now;
 
 class UtilisateurController extends AbstractController
 {
 
-    /*###################################################################################################################################
-        *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~    ACCUEIL CONTROLLER    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ###################################################################################################################################*/
-
-    #[Route(
-        '/',
-        name: 'app_accueil'
-        )
-    ]
-    public function accueil(): Response
-    {
-        return $this -> render
-            (
-                'accueil/index.html.twig',
-                [
-                    'controller_name' => 'UtilisateurController',
-                ]
-            )
-        ;
-    }
-
-    /*####################################################################################################################################
-    *                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~      CATEGORIES CONTROLLER     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ####################################################################################################################################*/
-
-    #[Route(
-        '/categorie',
-        name: 'app_categorie'
-            )
-        ]
-    public function categorie(): Response
-    {
-        return $this -> render
-            (
-                'categorie/index.html.twig',
-                [
-                    'controller_name' => 'UtilisateurController',
-                ]
-            )
-        ;
-    }
-
-    
     /*####################################################################################################################################
     *                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~      UTILISATEUR CONTROLLER     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ####################################################################################################################################*/
@@ -96,7 +52,7 @@ class UtilisateurController extends AbstractController
             return $this -> redirectToRoute('app_accueil');
         }
 
-        return $this -> render('utilisateur/index.html.twig', 
+        return $this -> render('utilisateur/connexion.html.twig', 
             [
                 'form' => $form -> createView(),
             ]
@@ -116,17 +72,21 @@ class UtilisateurController extends AbstractController
         )
     ]
 
-    //Écoute la route /inscription et lui associe le nom de la route 'app_inscription'
+    
+    // Écoute la route /inscription et lui associe le nom de la route 'app_inscription'
     public function inscription(Request $request, EntityManagerInterface $entityManager): Response
     {   
 
+        // Création du formulaire
         $form = $this -> createForm(InscriptionType::class);
 
+        // Traitement des données
         $form -> handleRequest ($request);
 
         // Vérifie si le form est soumis et valide
         if ($form -> isSubmitted() && $form -> isValid())
         {
+            // Création de l'entité Utilisateur et de l'entité Adresse avec les données du formulaire
             $data = $form -> getData(); 
             $nom = $data['utilisateur_nom'];
             $prenom = $data['utilisateur_prenom'];
@@ -137,37 +97,45 @@ class UtilisateurController extends AbstractController
             $utilisateur_telephone = $data['utilisateur_telephone'];
             $utilisateur_mdp = $data['utilisateur_mdp'];
 
-
             $utilisateur = new Utilisateur();
             $utilisateur -> setUtilisateurNom($nom);
+            $utilisateur -> setUtilisateurCoef('1');
+            $utilisateur -> setUtilisateurDerniereCo(now());
+            $utilisateur -> setUtilisateurVerifie(false);
             $utilisateur -> setUtilisateurPrenom($prenom);
             $utilisateur -> setUtilisateurMail($utilisateur_mail);
             $utilisateur -> setUtilisateurTelephone($utilisateur_telephone);
             $utilisateur -> setUtilisateurMdp($utilisateur_mdp);
+            $utilisateur -> setUtilisateurReference(password_hash('$utilisateur_mail',PASSWORD_DEFAULT));
             
+
             $adresse = new Adresse();
             $adresse -> setAdresseLibelle($adresse_libelle);
             $adresse -> setUtilisateur($utilisateur);
             $adresse -> setAdresseVille($adresse_ville);
             $adresse -> setAdressePostal($adresse_postal);
+            $adresse -> setAdresseType('1');
+            $adresse -> setAdresseTelephone($utilisateur_telephone);
 
-            dump($adresse);
-            dd($utilisateur);
+            // dump($adresse);
+            // dd($utilisateur);
+
+            // Persiste l'entité Utilisateur et l'entité Adresse
             $entityManager -> persist($utilisateur);
             $entityManager -> persist($adresse);
+
+            // Sauvegarde les modifications
             $entityManager -> flush();
 
-
-            // Ajoutez ici le code pour gérer les données, comme les sauvegarder en base de données
-            // Par exemple :
-            // $email = $data['email'];
-            // $password = $data['password'];   
-
+            // Redirige vers la page d'accueil
             return $this -> redirectToRoute('app_accueil');
         }
 
-        return $this -> render('inscription/index.html.twig',
+        // Affichage du formulaire 
+        return $this -> render('utilisateur/inscription.html.twig',
+
             [
+                // Création du formulaire et affichage du formulaire dans la vue
                 'form'=> $form -> createView(),
             ])
         ;
@@ -175,49 +143,6 @@ class UtilisateurController extends AbstractController
 
 
     /*####################################################################################################################################
-    *                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~      ADRESSE CONTROLLER     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ####################################################################################################################################*/
-
-    #[Route(
-        '/adresse',
-        name: 'app_adresse'
-        )
-    ]
-    public function adresse(): Response
-    {
-        return $this -> render
-            (
-                'adresse/index.html.twig',
-                [
-                    'controller_name' => 'UtilisateurController',
-                ]
-            )
-        ;
-    }
-
-
-    /*####################################################################################################################################
-    *                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~      FOURNISSEUR CONTROLLER     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ####################################################################################################################################*/
-
-    #[Route(
-        '/fournisseur',
-        name: 'app_fournisseur'
-        )
-    ]
-    public function fournisseur(): Response
-    {
-        return $this -> render
-            (
-                'fournisseur/index.html.twig',
-                [
-                    'controller_name' => 'UtilisateurController',
-                ]
-            )
-        ;
-    }
-
-        /*####################################################################################################################################
     *                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~      COMMANDE CONTROLLER     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ####################################################################################################################################*/
 
@@ -251,7 +176,7 @@ class UtilisateurController extends AbstractController
     {
         return $this -> render
             (
-                'panier/index.html.twig',
+                'utilisateur/panier.html.twig',
                 [
                     'controller_name' => 'UtilisateurController',
                 ]
@@ -333,7 +258,7 @@ class UtilisateurController extends AbstractController
     {
         return $this -> render
             (
-                'confirmation_com/index.html.twig',
+                '/utilisateur/confirmation_com.html.twig',
                 [
                     'controller_name' => 'UtilisateurController',
                 ]
@@ -354,7 +279,7 @@ class UtilisateurController extends AbstractController
     {
         return $this -> render
             (
-                'confirmation_mail/index.html.twig',
+                '/utilisateur/confirmation_mail.html.twig',
                 [
                     'controller_name' => 'UtilisateurController',
                 ]

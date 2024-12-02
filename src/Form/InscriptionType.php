@@ -86,7 +86,7 @@ class InscriptionType extends AbstractType
                 'utilisateur_mdp',
                 PasswordType::class, 
                 [
-                    'label' => 'Téléphone',
+                    'label' => 'Mot de passe',
                     'required' => true,
                 ]
             )
