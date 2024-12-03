@@ -6,11 +6,6 @@ body {
     box-sizing: border-box;
 }
 
-.logo {
-    width: 500px; 
-    height: auto;
-}
-
 
 footer {
     position: fixed; /* Fixe à un endroit spécifique */
@@ -31,8 +26,6 @@ footer a:hover {
     color: #73927a; /* Couleur en survol */
 }
 
-
-
 /* En-tête du tableau */
 .table thead th {
     background-color: #73927a;
@@ -50,5 +43,46 @@ footer a:hover {
     vertical-align: middle;  /* Aligne verticalement le contenu au centre */
 }
 
+/* Bar de navigation */
+.navbar {
+    height: 90px; /* Hauteur de la barre */
+    background-color: #0000; /* Couleur de fond */
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative; /* Nécessaire pour positionner le logo */
+}
+
+/* Logo */
+.logo-container {
+    flex-shrink: 0; /* Empêche le logo de se redimensionner */
+    position: relative; /* Position relative pour ajuster le logo */
+}
+
+.logo {
+    width: 260px; /* Ajustez la taille du logo */
+    height: auto; /* Garde les proportions */
+    position: relative;
+    bottom: -30px; /* Descend légèrement le logo en dessous de la barre */
+    z-index: 10; /* S'assure que le logo est au-dessus des autres éléments */
+}
+
+/* Barre de recherche */
+.search-bar {
+    flex-grow: 1; /* Utilise tout l'espace disponible entre le logo et les autres éléments */
+    margin-left: 20px; /* Crée un espace à gauche pour éloigner du logo */
+    max-width: 400px; /* Largeur maximale pour la barre de recherche */
+}
+
+/* Barre de navigation (liens à droite) */
+.navbar-nav {
+    margin-left: auto; /* Pousse les liens complètement à droite */
+}
+
+.nav-link {
+    color: white;
+    margin-right: 10px;
+}
 
 
