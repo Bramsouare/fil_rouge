@@ -12,7 +12,12 @@
 
             <!-- Affiche les erreurs de validation -->
             <div class="my-custom-class-for-errors">
-                {{ form_errors(form) }}
+
+                {% for message in app.flashes('error') %}
+                    <div class="alert alert-danger">
+                        {{ message }}
+                    </div>
+                {% endfor %}
             </div>
 
             <div class="row">

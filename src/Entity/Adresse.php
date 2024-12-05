@@ -48,7 +48,7 @@ class Adresse
 
     // Une relation avec l'entité Utilisateur.
     #[ORM\ManyToOne(inversedBy: 'utilisateur_adresse')] 
-    #[ORM\JoinColumn(nullable: false)] 
+    #[ORM\JoinColumn(nullable: true)] 
     private ?Utilisateur $utilisateur = null; 
 
     ##########################################################################################

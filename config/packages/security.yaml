@@ -14,7 +14,7 @@ security:
                 class: App\Entity\Utilisateur
 
                 # Indique quel champ sera utilisé pour identifier l'utilisateur
-                property: mail
+                property: utilisateur_mail
                 # Utilise l'adresse email
                 # used to reload user from session & other features (e.g. switch_user)
 
@@ -32,15 +32,17 @@ security:
 
             # Activation de l'authentification par formulaire
             form_login:
-                login_path: login # Route pour afficher la page de connexion
-                check_path: login # Route où le formulaire de connexion sera traité
-                username_parameter: utilisateur_mail # Nom du champ pour l'identifiant
-                password_parameter: utilisateur_mdp # Nom du champ pour le mot de passe
+                # login_path: app_connexion # Route pour afficher la page de connexion
+                # check_path: app_login # Route où le formulaire de connexion sera traité
+                # username_parameter: utilisateur_mail # Nom du champ pour l'identifiant
+                # password_parameter: utilisateur_mdp # Nom du champ pour le mot de passe
+                # enable_csrf: true
 
             # Configuration de la déconnexion
             logout:
-                path: logout # Route à appeler pour se déconnecter
-                target: / # Redirection après la déconnexion page d'accueil par défaut
+                # path: app_accueil # Route à appeler pour se déconnecter
+                # where to redirect after logout
+                target: app_accueil
 
             # Activation de la fonctionnalité "se souvenir de moi"
             remember_me:
@@ -50,11 +52,23 @@ security:
     # Contrôle d'accès pour définir les permissions sur les différentes routes
     access_control:
         # Restreint l'accès aux routes commençant par /admin aux utilisateurs ayant le rôle ROLE_ADMIN
-        - { path: ^/admin, roles: ROLE_ADMIN }
+        #- { path: ^/admin, roles: ROLE_ADMIN }
         # Restreint l'accès aux routes commençant par /profile aux utilisateurs ayant le rôle ROLE_USER
-        - { path: ^/profile, roles: ROLE_USER }
+        #- { path: ^/profile, roles: ROLE_USER }
+
         # Permet un accès anonyme à la route de connexion
-        - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        # - { path: ^/connection, roles: ROLE_USER }
+
+        # # Permet un accès anonyme à la route de connexion
+        # - { path: ^/inscription, roles: ROLE_USER }
+
+        #- { path: ^/profil, roles: ROLE_USER }  # Protection de la page de profil
+        - { path: ^/commande, roles: ROLE_USER }  # Protection de la page de commande
+        - { path: ^/payement, roles: ROLE_USER }  # Protection de la page de paiement
+
+        # Restreint l'accès aux routes commençant par /profile aux utilisateurs ayant le rôle ROLE_USER
+        #- { path: ^/, roles: ROLE_USER }
+
 
 # Configuration spécifique pour les tests
 when@test:

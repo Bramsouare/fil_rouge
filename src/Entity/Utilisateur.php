@@ -12,9 +12,11 @@ use Doctrine\ORM\Mapping as ORM;
 use App\Repository\UtilisateurRepository;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 // La classe est une entité gérée par Doctrine et associée à la table correspondante en base de données.
 #[ORM\Entity(repositoryClass: UtilisateurRepository::class)]
+#[UniqueEntity(fields: ['utilisateur_mail'], message: 'There is already an account with this utilisateur_mail')]
 
 class Utilisateur
 {
@@ -55,9 +57,6 @@ class Utilisateur
     #[ORM\Column(length: 255)]
     private ?string $utilisateur_telephone = null;
 
-    // Colonne utilisateur_verifie
-    #[ORM\Column]
-    private ?bool $utilisateur_verifie = null;
 
     // Colonne utilisateur_coef
     #[ORM\Column(length: 255)]
@@ -178,17 +177,6 @@ class Utilisateur
         return $this; // Retourne l'objet actuel
     }
 
-    public function isUtilisateurVerifie(): ?bool
-    {
-        return $this -> utilisateur_verifie; // Retourne la verification de l'utilisateur
-    }
-
-    public function setUtilisateurVerifie(bool $utilisateur_verifie): static
-    {
-        $this -> utilisateur_verifie = $utilisateur_verifie; // Modifie la verification de l'utilisateur
-
-        return $this; // Retourne l'objet actuel
-    }
 
     public function getUtilisateurCoef(): ?string
     {
@@ -271,6 +259,9 @@ class Utilisateur
     // Relation entre utilisateur et role
     #[ORM\OneToMany(targetEntity: role::class, mappedBy: 'utilisateur', orphanRemoval: true)]
     private Collection $role;
+
+    #[ORM\Column]
+    private bool $Verification = false;
 
     /**
      * @return Collection<int, produit>
@@ -381,7 +372,7 @@ class Utilisateur
     public function removeUtilisateurAdresse(Adresse $utilisateurAdresse): static
     {
         // Supprime l'adresse de la collection
-        if ($this -> utilisateur_adresse ->removeElement($utilisateurAdresse)) {
+        if ($this -> utilisateur_adresse -> removeElement($utilisateurAdresse)) {
             
             // Si l'adresse est liée au utilisateur
             if ($utilisateurAdresse -> getUtilisateur() === $this) {
@@ -433,6 +424,21 @@ class Utilisateur
         }
 
         return $this;// Retourne l'objet actuel
+    }
+
+    // Vérifie si l'utilisateur est verifié
+    public function isVerified(): bool
+    {
+        return $this -> Verification; // Retourne si l'utilisateur est verifié
+    }
+
+    // Modifie si l'utilisateur est verifié
+    public function setVerified(bool $Verification): static
+    {
+        // Si l'utilisateur est verifié 
+        $this -> Verification = $Verification;
+
+        return $this; // Retourne l'objet actuel
     }
     
 }

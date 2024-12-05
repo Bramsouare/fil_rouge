@@ -15,7 +15,7 @@ class UtilisateurType extends AbstractType
     {
         $builder
             -> add(
-                'email',
+                'utilisateur_mail',
                 EmailType::class, 
                 [
                     'label' => 'Email',
@@ -23,7 +23,7 @@ class UtilisateurType extends AbstractType
                 ]
             )
             -> add( 
-                'password',
+                'utilisateur_mdp',
                 PasswordType::class, 
                 [
                     'label' => 'Mot de passe',
