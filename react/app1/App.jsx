@@ -1,25 +1,32 @@
 import React from 'react';
 import {useState} from 'react';
 
+// Modifiez le projet précédent pour ajouter un deuxième champ texte pour le prénom. 
+// Lorsque L'application doit afficher les deux champs texte et les réafficher après 'Bonjour'.
 
-const Formulaire = () => {
+const App = () => {
+    
+    const [prenom, setPrenom] = useState('Ibrahima');
+    const [nom, setNom] = useState('Souare');
 
-    const [machin ,setMachin]=useState("");
+    const handleChangePrenom = (evt) => setPrenom (evt.target.value);
+    const handleChangeNom = (evt) => setNom (evt.target.value);
 
-    const handleChange=(ceQueTuViensDeMettre)=>{
-        setMachin(ceQueTuViensDeMettre.target.value);
-    }
+    return (
 
-    return(
         <div>
-            {machin}
-            <input type="text" onChange={handleChange} />
-        </div>
-    );
+            <input type="text" value = {prenom} onChange = {handleChangePrenom} />
 
+            <input type="text" value = {nom} onChange = {handleChangeNom} />
+            
+            <h1> Bonjour {prenom} {nom}</h1>
+
+        </div>
+    )
 }
 
-export default Formulaire;
+export default App;
+
 
 
 
