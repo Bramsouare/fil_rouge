@@ -1,42 +1,241 @@
-import React from 'react';
-import {useState} from 'react';
+import React from "react";
+import DataTable from "react-data-table-component";
+import { useState } from "react";
 
-// Modifiez le projet précédent pour ajouter un deuxième champ texte pour le prénom. 
-// Lorsque L'application doit afficher les deux champs texte et les réafficher après 'Bonjour'.
+// import axios from "axios";
 
 const App = () => {
-    
+
+    // Variables d'état pour le prénom et le nom
     const [prenom, setPrenom] = useState('Ibrahima');
     const [nom, setNom] = useState('Souare');
+    
 
-    const handleChangePrenom = (evt) => setPrenom (evt.target.value);
-    const handleChangeNom = (evt) => setNom (evt.target.value);
+    // Gestionnaires pour mettre à jour les champs de texte
+    const handleChangePrenom = (evt) => setPrenom(evt.target.value);
+    const handleChangeNom = (evt) => setNom(evt.target.value);
+
+    // Variable d'état pour le compteur
+    const [compteur, setCompteur] = useState(0);
+
+    // Gestionnaires pour les boutons
+    const handleIncrement = () => setCompteur(compteur + 1);
+    const handleDecrement = () => setCompteur(compteur - 1);
+
+    // Variable d'état pour la liste
+    const [liste, setListe] = useState([]);
+
+    // Variable d'état pour le nouvel élément
+    const [nouvelElement, setNouvelElement] = useState('');
+
+    // Gestionnaire pour ajouter un nouvel élément
+    const handleAddItem = () => {
+
+        // Si le nouvel élément n'est pas vide
+        if (nouvelElement.trim()) {
+
+            // Mise à jour de la liste
+            setListe([...liste, nouvelElement.trim()]);
+
+            // Efface le nouvel élément
+            setNouvelElement('');
+        }
+    };
+
+    // Tableau de colonnes pour la DataTable
+    const columns = 
+    [
+        {
+            style : {
+                fontWeight : 'bold'
+            },
+
+            name : <b>Nom</b>,
+            selector : (row) => row.nom,
+            sortable : true,
+        },
+        {
+            name : <b>Prenom</b>,
+            selector : (row) => row.prenom,
+            sortable : true,        
+        },
+        {
+            name : <b>Ville</b>,
+            selector : (row) => row.ville,
+            sortable : true,
+        }
+    ];
+
+    // Tableau de données pour la DataTable
+    const [data, setData] = useState(
+        [
+            { 
+            
+                nom : 'Souare',
+                prenom : 'Ibrahima',
+                ville : 'Beauvais'
+                
+            },
+            { 
+            
+                nom : 'lemsatef',
+                prenom : 'sara',
+                ville : 'Beauvais'
+            },
+            { 
+            
+                nom : 'Souare',
+                prenom : 'fatoumata',
+                ville : 'Paris'
+            }
+        ]
+    );
 
     return (
-
-        <div>
-            <input type="text" value = {prenom} onChange = {handleChangePrenom} />
-
-            <input type="text" value = {nom} onChange = {handleChangeNom} />
+        
+        <div className="container mt-5">
             
-            <h1> Bonjour {prenom} {nom}</h1>
+            {/* Affichage du message */}
 
+            <div className = "row justify-content-center my-5">
+
+                <div className = "col-auto">
+                    <h1 className = "text-center">Bonjour {prenom} {nom}</h1>
+                </div>
+
+            </div>
+
+            {/* Champs de saisie */} 
+
+            <div className="row justify-content-center my-5">
+
+                <div className="col-auto">
+
+                    <label>Prénom </label>
+                    <input
+                        type = "text"
+                        className = "form-control"
+                        value = {prenom}
+                        onChange = {handleChangePrenom}
+                    />
+
+                </div>
+
+                <div className = "col-auto">
+
+                    <label>Nom </label>
+                    <input
+                        type = "text"
+                        className = "form-control"
+                        value = {nom}
+                        onChange = {handleChangeNom}
+                    />
+
+                </div>
+            </div>
+
+            {/* Affichage du compteur */}
+
+            <div className = "row justify-content-center my-5">
+                
+                <div className = "col-auto text-center">
+
+                    <h2>Compteur : {compteur}</h2>
+
+                    <button className = "btn btn-primary me-2" onClick = {handleIncrement}>
+                        Augmenter
+                    </button>
+
+                    <button className="btn btn-danger" onClick = {handleDecrement}>
+                        Diminuer
+                    </button>
+
+                </div>
+            </div>
+        
+            {/* Liste */}
+
+            <div className = "container my-5">
+
+                <div className = "row justify-content-center">
+
+                    <div className = "col-auto">
+                        <h2 className = "text-center">Liste d'éléments</h2>
+                    </div>
+
+                </div>
+
+                {/* Champ d'ajout */}
+
+                <div className = "row justify-content-center mt-5">
+
+                    <div className = "col-auto">
+
+                        {/** Champ de saisie */}
+
+                        <input
+                            type = "text"
+                            className = "form-control"
+                            value = {nouvelElement}
+                            onChange = { (evt) => setNouvelElement (evt.target.value) }
+                            placeholder = "Entrez un élément"
+                        />
+                    </div>
+                    <div className = "col-auto">
+                        <button
+                            className = "btn btn-success"
+                            onClick = {handleAddItem}
+                        >
+                            Ajouter un élément
+                        </button>
+                    </div>
+                </div>
+
+                {/* Affichage de la liste */}
+
+                <div className = "row justify-content-center">
+
+                    <div className = "col-auto">
+
+                        <ul className = "list-group">
+
+                            {/** Contenu de la liste  */}
+
+                            {liste.map( (item, index) => (
+
+                                <li
+                                    className = "list-group-item"
+                                    key = {`${item}-${index}`}
+                                > 
+                                    {item}
+                                </li>
+                            ))}
+
+                        </ul>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            {/* Affichage de la DataTable */}
+
+            <DataTable
+                columns = {columns}
+                data = {data}
+                defaultSortFieldId = {1}
+            />
+    
         </div>
-    )
-}
+    );
+};
 
 export default App;
-
-
-
-
-
-
-
-
-
-
-
+   
+        
+        
+  
 
 
 
