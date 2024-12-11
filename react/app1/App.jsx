@@ -1,20 +1,12 @@
 import React from "react";
 import DataTable from "react-data-table-component";
 import { useState } from "react";
+import Champs from "./Champs.jsx";
 
 // import axios from "axios";
 
 const App = () => {
-
-    // Variables d'état pour le prénom et le nom
-    const [prenom, setPrenom] = useState('Ibrahima');
-    const [nom, setNom] = useState('Souare');
-    
-
-    // Gestionnaires pour mettre à jour les champs de texte
-    const handleChangePrenom = (evt) => setPrenom(evt.target.value);
-    const handleChangeNom = (evt) => setNom(evt.target.value);
-
+   
     // Variable d'état pour le compteur
     const [compteur, setCompteur] = useState(0);
 
@@ -91,6 +83,12 @@ const App = () => {
         ]
     );
 
+    /********************************************************/
+    // État pour prénom et nom
+    const [prenom, setPrenom] = useState("Ibrahima");
+    const [nom, setNom] = useState("Souare");
+    /********************************************************/
+
     return (
         
         <div className="container mt-5">
@@ -101,38 +99,20 @@ const App = () => {
 
                 <div className = "col-auto">
                     <h1 className = "text-center">Bonjour {prenom} {nom}</h1>
-                </div>
+                    </div>
 
             </div>
 
-            {/* Champs de saisie */} 
+            
+            {/* Champsde saisie */} 
 
-            <div className="row justify-content-center my-5">
+            <Champs
+                prenom={prenom}
+                setPrenom={setPrenom}
+                nom={nom}
+                setNom={setNom}
+            />
 
-                <div className="col-auto">
-
-                    <label>Prénom </label>
-                    <input
-                        type = "text"
-                        className = "form-control"
-                        value = {prenom}
-                        onChange = {handleChangePrenom}
-                    />
-
-                </div>
-
-                <div className = "col-auto">
-
-                    <label>Nom </label>
-                    <input
-                        type = "text"
-                        className = "form-control"
-                        value = {nom}
-                        onChange = {handleChangeNom}
-                    />
-
-                </div>
-            </div>
 
             {/* Affichage du compteur */}
 
