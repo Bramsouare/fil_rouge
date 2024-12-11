@@ -2,30 +2,46 @@ import React from "react";
 import DataTable from "react-data-table-component";
 import { useState } from "react";
 import Champs from "./Champs.jsx";
-
+import Liste from "./Liste.jsx";
 // import axios from "axios";
 
 const App = () => {
-   
-    // Variable d'état pour le compteur
+
+    //################################################
+    //########    État pour prénom et nom    #########
+    //################################################
+
+    const [prenom, setPrenom] = useState("Ibrahima");
+    const [nom, setNom] = useState("Souare");
+    
+    //################################################
+    //####   Variable d'état pour le compteur    #####
+    //################################################
+
     const [compteur, setCompteur] = useState(0);
 
-    // Gestionnaires pour les boutons
     const handleIncrement = () => setCompteur(compteur + 1);
     const handleDecrement = () => setCompteur(compteur - 1);
 
-    // Variable d'état pour la liste
+    //################################################
+    //#####    Variable d'état pour la liste     #####    
+    //################################################
+
     const [liste, setListe] = useState([]);
 
-    // Variable d'état pour le nouvel élément
+    //################################################
+    //##  Variable d'état pour le nouvel élément   ###
+    //################################################
+
     const [nouvelElement, setNouvelElement] = useState('');
 
-    // Gestionnaire pour ajouter un nouvel élément
+    //###############################################
+    //# Gestionnaire pour ajouter un nouvel élément #
+    //###############################################
     const handleAddItem = () => {
 
-        // Si le nouvel élément n'est pas vide
-        if (nouvelElement.trim()) {
-
+        if (nouvelElement.trim()) 
+        {
             // Mise à jour de la liste
             setListe([...liste, nouvelElement.trim()]);
 
@@ -34,7 +50,11 @@ const App = () => {
         }
     };
 
-    // Tableau de colonnes pour la DataTable
+   
+    //##############################################
+    //#   Tableau de colonnes pour la DataTable    #
+    //##############################################
+
     const columns = 
     [
         {
@@ -83,15 +103,9 @@ const App = () => {
         ]
     );
 
-    /********************************************************/
-    // État pour prénom et nom
-    const [prenom, setPrenom] = useState("Ibrahima");
-    const [nom, setNom] = useState("Souare");
-    /********************************************************/
-
     return (
         
-        <div className="container mt-5">
+        <div className = "container mt-5">
             
             {/* Affichage du message */}
 
@@ -102,103 +116,46 @@ const App = () => {
                     </div>
 
             </div>
-
             
-            {/* Champsde saisie */} 
-
+            {/* Champs de saisie */} 
             <Champs
-                prenom={prenom}
-                setPrenom={setPrenom}
-                nom={nom}
-                setNom={setNom}
+            
+                prenom = {prenom}
+                setPrenom = {setPrenom}
+                nom = {nom}
+                setNom = {setNom}
             />
 
-
             {/* Affichage du compteur */}
-
+            
             <div className = "row justify-content-center my-5">
                 
                 <div className = "col-auto text-center">
-
+    
                     <h2>Compteur : {compteur}</h2>
-
+    
                     <button className = "btn btn-primary me-2" onClick = {handleIncrement}>
                         Augmenter
                     </button>
-
-                    <button className="btn btn-danger" onClick = {handleDecrement}>
+    
+                    <button className = "btn btn-danger" onClick = {handleDecrement}>
                         Diminuer
                     </button>
-
+    
                 </div>
+    
             </div>
         
-            {/* Liste */}
+            {/* Ajouter une liste */}
+            <Liste
 
-            <div className = "container my-5">
-
-                <div className = "row justify-content-center">
-
-                    <div className = "col-auto">
-                        <h2 className = "text-center">Liste d'éléments</h2>
-                    </div>
-
-                </div>
-
-                {/* Champ d'ajout */}
-
-                <div className = "row justify-content-center mt-5">
-
-                    <div className = "col-auto">
-
-                        {/** Champ de saisie */}
-
-                        <input
-                            type = "text"
-                            className = "form-control"
-                            value = {nouvelElement}
-                            onChange = { (evt) => setNouvelElement (evt.target.value) }
-                            placeholder = "Entrez un élément"
-                        />
-                    </div>
-                    <div className = "col-auto">
-                        <button
-                            className = "btn btn-success"
-                            onClick = {handleAddItem}
-                        >
-                            Ajouter un élément
-                        </button>
-                    </div>
-                </div>
-
-                {/* Affichage de la liste */}
-
-                <div className = "row justify-content-center">
-
-                    <div className = "col-auto">
-
-                        <ul className = "list-group">
-
-                            {/** Contenu de la liste  */}
-
-                            {liste.map( (item, index) => (
-
-                                <li
-                                    className = "list-group-item"
-                                    key = {`${item}-${index}`}
-                                > 
-                                    {item}
-                                </li>
-                            ))}
-
-                        </ul>
-
-                    </div>
-
-                </div>
-
-            </div>
-
+                liste = {liste}
+                setListe = {setListe}
+                nouvelElement = {nouvelElement}
+                setNouvelElement = {setNouvelElement}
+                handleAddItem = {handleAddItem}
+            />
+            
             {/* Affichage de la DataTable */}
 
             <DataTable
