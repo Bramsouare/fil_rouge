@@ -19,18 +19,16 @@ const Movie = () =>
             sortable : true
         },
         {
-            name : <b>backdrop_path</b>,
+            name : <b>image</b>,
             selector : (row) => row.backdrop_path,
             sortable : true
         },
         {
-            name : <b>title</b>,
+            name : <b>titre</b>,
             selector : (row) => row.title,
             sortable : true
         },
 
-
-        
     ]
 
     // Déclare une fonction pour gérer la recherche
@@ -59,25 +57,35 @@ const Movie = () =>
     };
   
     return (
-       <>
-        <div className="mt-5 w-100 d-flex justify-content-center">
-            <div className=" flex-column w-50 mt-5">
-                <input
-                    type = "text"
-                    placeholder = "Rechercher un film..."
-                    className="mt-5"
-                    value = {query}
-                    onChange = {(e) => setQuery(e.target.value)} // Met à jour l'état "query"
+        <>
+            <div className="mt-5 w-100 d-flex justify-content-center">
+
+                <div className=" flex-column w-50 mt-5">
+
+                    <input
+
+                        type = "text"
+                        placeholder = "Rechercher un film..."
+                        className = "mt-5"
+                        value = {query}
+                        onChange = {(e) => setQuery(e.target.value)} // Met à jour l'état "query"
                     />
-                <button onClick = {handleSearch}>Rechercher</button>
-                <p>{erreur}</p>
-               <DataTable
-                columns={columns}
-                data={movies}
-                defaultSautFieldId={1}
-              />
-            </div> 
-        </div>
+
+                    <button onClick = {handleSearch}>Rechercher</button>
+
+                    <p>{erreur}</p>
+
+                    <DataTable
+
+                        columns = {columns}
+                        data = {movies}
+                        defaultSautFieldId = {1}
+                    />
+
+                </div> 
+
+            </div>
+
         </>
     );
 
