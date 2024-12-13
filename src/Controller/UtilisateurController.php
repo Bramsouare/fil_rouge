@@ -77,8 +77,8 @@ class UtilisateurController extends AbstractController
     // CRÉATION ET GESTION DE FORMULAIRE
 
     #[Route(
-        '/inscription',
-        name: 'app_inscription',
+        '/register',
+        name: 'app_register',
         
         )
     ]

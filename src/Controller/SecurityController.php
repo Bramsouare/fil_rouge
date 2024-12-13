@@ -20,34 +20,25 @@ class SecurityController extends AbstractController
         )
     ]
     
-    public function login(AuthenticationUtils $authenticationUtils): Response
-    {
-        // get the login error if there is one
-        $error = $authenticationUtils -> getLastAuthenticationError();
-
-        // last username entered by the user
-        $lastUsername = $authenticationUtils -> getLastUsername();
-
-        return $this -> render('security/login.html.twig', [
-            'last_username' => $lastUsername,
-            'error' => $error,
-        ]);
-    }
-
-    //     #[Route(
-    //     '/utilisateur', 
-    //     name: 'utilisateur_form'
-    //     )
-    // ]
-
     public function connexion(
 
         Request $request,
         EntityManagerInterface $entityManager,
+        AuthenticationUtils $authenticationUtils
+
     ): Response 
     {
+
+        // Erreur d'authentification 
+        $error = $authenticationUtils -> getLastAuthenticationError();
+
+        // Dernier nom d'utilisateur saisi 
+        $lastUsername = $authenticationUtils -> getLastUsername();
+
         // Création du formulaire pour l'inscription utilisateur
         $form = $this -> createForm(UtilisateurType::class);
+
+        // Traitement des données
         $form -> handleRequest($request);
 
         if ($form -> isSubmitted() && $form -> isValid()) 
@@ -59,6 +50,7 @@ class SecurityController extends AbstractController
             // Vérifier si l'email existe déjà
             $existe = $entityManager -> getRepository(Utilisateur::class)
 
+            // Recherche de l'utilisateur par son email
             -> findOneBy(['utilisateur_mail' => $utilisateur -> getUtilisateurMail()]);
 
             if ($existe) 
@@ -79,10 +71,19 @@ class SecurityController extends AbstractController
             return $this -> redirectToRoute('app_accueil');
         }
 
-        return $this -> render('utilisateur/inscription.html.twig', [
+        return $this -> render('security/login.html.twig', 
+        [
+            // Dernier nom d'utilisateur saisi
+            'last_username' => $lastUsername,
+
+            // Erreur d'authentification
+            'error' => $error,
+
+            // Formulaire
             'form' => $form -> createView(),
         ]);
     }
+    
 
     #[Route(path: '/logout', name: 'app_logout')]
     public function logout(): void
