@@ -8,7 +8,13 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class CatalogueController extends AbstractController
 {
-   
+    #[Route('/recherche', name: 'app_recherche')]
+    public function index(): Response
+    {
+        return $this->render('recherche/index.html.twig', [
+            'controller_name' => 'RechercheController',
+        ]);
+    }
     /*###################################################################################################################################
         *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~    ACCUEIL CONTROLLER    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ###################################################################################################################################*/

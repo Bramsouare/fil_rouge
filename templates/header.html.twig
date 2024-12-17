@@ -26,13 +26,15 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ path('app_instrument') }}">Instruments</a>
                     </li>
-                    
+                    <li class="nav-item">
+                        {# connection #}
+                        <a href="{{ path('app_connexion') }}" class="nav-link tex-light">
+                            connexion<i class="fa-light fa-user"></i> 
+                        </a>                    
+                    </li>
                 </ul>
                 
-                {# connection #}
-                <a href="{{ path('utilisateur_form') }}" class="nav-link tex-light">
-                    <i class="fa-light fa-user"></i>
-                </a>
+                
 
                 {# déconnection #}
                 {# <a href="{{ path('') }}" class="nav-link tex-light">
@@ -40,7 +42,7 @@
                 </a> #}
                     
                 {# Panier #}
-                <a href="{{ path('app_panier') }}" class="nav-link text-light">
+                <a href="#" class="nav-link text-light">
                     <i class="bi bi-cart"></i> 
                 </a>
             </div>

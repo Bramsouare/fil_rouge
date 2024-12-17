@@ -14,6 +14,30 @@ services:
       # - ./docker/db/data:/var/lib/postgresql/data:rw
 ###< doctrine/doctrine-bundle ###
 
+  # Capturer les emails envoyés par l'application.
+  mailhog:  
+
+    # Utiliser l'image officielle de Mailhog 
+    image: mailhog/mailhog  
+
+    # Nom du conteneur pour Mailhog.
+    container_name: mailhog  
+
+    # Exposer les ports de Mailhog à l'extérieur du conteneur.
+    ports:  
+
+      # Mapper le port 8025 pour l'interface web de Mailhog (accessible via http://localhost:8025).
+      - "8025:8025"  
+
+      # Mapper le port 1025 pour le serveur SMTP utilisé pour l'envoi des emails.
+      - "1025:1025"  
+
+    # Définir des variables d'environnement pour le service Mailhog.
+    environment:  
+
+      # Spécifier le type de stockage pour Mailhog (ici, "maildir" qui permet de stocker les emails dans des fichiers).
+      - MH_STORAGE=maildir  
+      
 volumes:
 ###> doctrine/doctrine-bundle ###
   database_data:

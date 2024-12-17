@@ -32,22 +32,25 @@ security:
 
             # Activation de l'authentification par formulaire
             form_login:
-                # login_path: app_connexion # Route pour afficher la page de connexion
-                # check_path: app_login # Route où le formulaire de connexion sera traité
+                login_path: app_connexion # Route pour afficher le FORMULAIRE de connexion
+                check_path: app_login # BOUTON qui traite le formulaire de connexion
+            custom_authenticator: App\Security\LoginFormAuthenticator
+            entry_point: App\Security\LoginFormAuthenticator
                 # username_parameter: utilisateur_mail # Nom du champ pour l'identifiant
                 # password_parameter: utilisateur_mdp # Nom du champ pour le mot de passe
                 # enable_csrf: true
 
             # Configuration de la déconnexion
             logout:
-                # path: app_accueil # Route à appeler pour se déconnecter
-                # where to redirect after logout
+                path: app_logout
+                # redirection après déconnexion
                 target: app_accueil
 
             # Activation de la fonctionnalité "se souvenir de moi"
             remember_me:
                 secret: '%kernel.secret%' # Utilise la clé secrète de l'application pour sécuriser les cookies
                 lifetime: 604800 # Durée de vie en secondes (7 jours ici)
+           
 
     # Contrôle d'accès pour définir les permissions sur les différentes routes
     access_control:

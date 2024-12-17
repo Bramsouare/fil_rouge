@@ -70,14 +70,14 @@
                 Connection
             </button>
 
-            <div class = "text-center mt-3">
+           
+        </form>
+     <div class = "text-center mt-3">
                 <a href = "{{ path('app_register') }}" 
                     class = "btn btn-link">Vous n’êtes pas encore membre ? Inscrivez-vous ici.
                 </a>
             </div>
 
-        </form>
-    
     </div>
 
 {% endblock %}
