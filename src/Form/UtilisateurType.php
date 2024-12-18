@@ -53,7 +53,7 @@ class UtilisateurType extends AbstractType
         // Les données du form mappée sur l'object de la classe lors de la soumission puis mise a jour.
         $resolver -> setDefaults(
             [
-                'data_class' => Utilisateur::class,
+                // 'data_class' => Utilisateur::class,
             ]
     );
     }

@@ -54,35 +54,41 @@ class UtilisateurController extends AbstractController
         if ($form -> isSubmitted() && $form -> isValid()) 
         {
             // Récupérer les données du formulaire
-            /** @var Utilisateur $utilisateur */
-            $utilisateur = $form -> getData();
+            $dataForm = $form -> getData();
+            $mailForm = $dataForm["utilisateur_mail"];
+            $mdpForm = $dataForm ['utilisateur_mdp'];
 
-            // Vérifier si l'email existe déjà
+
             $existe = $entityManager -> getRepository(Utilisateur::class)
-
-                // Recherche de l'utilisateur par son email
-                -> findOneBy(['utilisateur_mail' => $utilisateur -> getUtilisateurMail()])
+            
+                -> findBy(['utilisateur_mail' => $mailForm,'utilisateur_mdp' => $mdpForm ])
             ;
-
-            if ($existe) 
+               
+            // si le mail est correct ET que le mdp est correct alors
+            if ($dataForm === $mailForm & $dataForm === $mdpForm)
             {
-                $this -> addFlash('error', 'Cet email est déjà utilisé.');
-
+                // si le mot de passe est correct alors
+                if ($mdpForm === $dataForm)
+                {
+                    // on se connecte
+                    return $this -> redirectToRoute('app_accueil');
+                }
+            }
+            elseif ($dataForm !== $mailForm || $dataForm !== $mdpForm)
+            {
+                $this -> addFlash('error', 'Veuillez entrée un e-mail ou le mot de passe valide !');
                 return $this -> redirectToRoute('app_connexion');
             }
 
-            // Hachage du mot de passe
-            $utilisateur -> setUtilisateurMdp(password_hash($utilisateur -> getUtilisateurMdp(), PASSWORD_DEFAULT));
+// envoyer derniere date de connexion à la base de donnée
 
-            // Sauvegarde en base de données
-            $entityManager -> persist($utilisateur);
-            $entityManager -> flush();
-
-            $this -> addFlash('success', 'Inscription réussie, vous pouvez maintenant vous connecter.');
-            return $this -> redirectToRoute('app_accueil');
+            
+            
         }
-        return $this -> render('utilisateur/connexion.html.twig', [
-            'form' => $form
+        
+        return $this -> render('utilisateur/connexion.html.twig',
+        [
+            'form' => $form -> createView(),
         ]);
     }
     // TRAITEMENT DES BOUTON ( BTN DE CONNEXION ET BTN DE DÉCONNEXION)
