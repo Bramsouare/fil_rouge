@@ -4,8 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Adresse;
 use App\Entity\Utilisateur;
+use App\Form\ConnexionType;
 use App\Form\InscriptionType;
-use App\Form\UtilisateurType;
 use App\Security\EmailVerifier;
 use Symfony\Component\Mime\Address;
 use Doctrine\ORM\EntityManagerInterface;
@@ -46,7 +46,7 @@ class UtilisateurController extends AbstractController
 
     {
         // Création du formulaire pour l'inscription utilisateur
-        $form = $this -> createForm(UtilisateurType::class);
+        $form = $this -> createForm(ConnexionType::class);
 
         // Traitement des données
         $form -> handleRequest($request);
@@ -58,11 +58,8 @@ class UtilisateurController extends AbstractController
             $mailForm = $dataForm["utilisateur_mail"];
             $mdpForm = $dataForm ['utilisateur_mdp'];
 
-
-            $existe = $entityManager -> getRepository(Utilisateur::class)
-            
-                -> findBy(['utilisateur_mail' => $mailForm,'utilisateur_mdp' => $mdpForm ])
-            ;
+            //sert tjrs et seulement à récuperer un ou des objets dans la base de donnée 
+            $existe = $entityManager -> getRepository(Utilisateur::class)-> findBy(['utilisateur_mail' => $mailForm]);
                
             // si le mail est correct ET que le mdp est correct alors
             if ($dataForm === $mailForm & $dataForm === $mdpForm)
@@ -82,8 +79,7 @@ class UtilisateurController extends AbstractController
 
 // envoyer derniere date de connexion à la base de donnée
 
-            
-            
+        
         }
         
         return $this -> render('utilisateur/connexion.html.twig',

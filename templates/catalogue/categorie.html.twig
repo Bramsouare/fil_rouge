@@ -12,7 +12,7 @@
 
             <div class="col-4 my-5">
                 <div class="card h-100 d-flex flex-column">
-                    <img src="/image/violon1.webp" alt="Violon" class="card-img-top h-75">
+                    <img src="{{ asset('/image/violon1.webp') }}" alt="Violon" class="card-img-top h-75">
                     <div class="card-body text-center">
                         <p class="card-text h-25">Violon</p>
                     </div>
@@ -21,7 +21,7 @@
 
             <div class="col-4 my-5">
                 <div class="card h-100 d-flex flex-column">
-                    <img src="/image/acoustique1.webp" alt="Guitare acoustique" class="card-img-top h-75">
+                    <img src="{{ asset('/image/acoustique1.webp') }}" alt="Guitare acoustique" class="card-img-top h-75">
                     <div class="card-body text-center">
                         <p class="card-text h-25">Guitare Acoustique</p>
                     </div>
@@ -30,7 +30,7 @@
 
             <div class="col-4 my-5">
                 <div class="card h-100 d-flex flex-column">
-                    <img src="/image/guitare_elec1.webp" alt="Guitare électrique" class="card-img-top h-75">
+                    <img src="{{ asset('/image/guitare_elec1.webp') }}" alt="Guitare électrique" class="card-img-top h-75">
                     <div class="card-body text-center">
                         <p class="card-text h-25">Guitare Électrique</p>
                     </div>
@@ -39,7 +39,7 @@
 
             <div class="col-4 my-5">
                 <div class="card h-100 d-flex flex-column">
-                    <img src="/image/saxo1.webp" alt="Saxophone" class="card-img-top h-75">
+                    <img src="{{ asset('/image/saxo1.webp') }}" alt="Saxophone" class="card-img-top h-75">
                     <div class="card-body text-center">
                         <p class="card-text h-25">Saxophone</p>
                     </div>
@@ -48,7 +48,7 @@
 
             <div class="col-4 my-5">
                 <div class="card h-100 d-flex flex-column">
-                    <img src="/image/piano1.webp" alt="Piano" class="card-img-top h-75">
+                    <img src="{{ asset('/image/piano1.webp') }}" alt="Piano" class="card-img-top h-75">
                     <div class="card-body text-center">
                         <p class="card-text h-25">Piano</p>
                     </div>
@@ -57,7 +57,7 @@
 
             <div class="col-4 my-5">
                 <div class="card h-100 d-flex flex-column">
-                    <img src="/image/batterie1.webp" alt="Batterie" class="card-img-top h-75">
+                    <img src="{{ asset('/image/batterie1.webp') }}" alt="Batterie" class="card-img-top h-75">
                     <div class="card-body text-center">
                         <p class="card-text h-25">Batterie</p>
                     </div>
@@ -68,44 +68,44 @@
         <!-- Best Sellers -->
         <div class="d-flex align-items-center justify-content-center my-1">
             <h1 class"text-white">Best Sellers</h1>
-            <img src="/image/best.webp" alt="Best Sellers" style="width: 70px; height: 70px; margin-left: 20px;">
+            <img src="{{ asset('/image/best.webp') }}" alt="Best Sellers" style="width: 70px; height: 70px; margin-left: 20px;">
         </div>
 
         <div class="row row-cols-1 row-cols-md-3 g-4 justify-content-center mb-3">
 
             <div class="col-4 my-5">
                 <div class="card h-100 d-flex flex-column">
-                    <img src="/image/violon1.webp" alt="Violon" class="card-img-top h-75">
+                    <img src="{{ asset('/image/violon1.webp') }}" alt="Violon" class="card-img-top h-75">
                     <div class="card-body text-center">
                         <p class="card-text h-25">Violon</p>
                     </div>
                 </div>
                 <div class="text-center my-2">
-                    <a href="{{ path('app_panier') }}" class="btn btn-light">Ajouter au panier</a>
+                    {# <a href="{{ path('app_panier') }}" class="btn btn-light">Ajouter au panier</a> #}
                 </div>
             </div>
 
             <div class="col-4 my-5">
                 <div class="card h-100 d-flex flex-column">
-                    <img src="/image/saxo1.webp" alt="Saxophone" class="card-img-top h-75">
+                    <img src="{{ asset('/image/saxo1.webp') }}" alt="Saxophone" class="card-img-top h-75">
                     <div class="card-body text-center">
                         <p class="card-text h-25">Saxophone</p>
                     </div>
                 </div>
                 <div class="text-center my-2">
-                    <a href="{{ path('app_panier') }}" class="btn btn-light">Ajouter au panier</a>
+                    {# <a href="{{ path('app_panier') }}" class="btn btn-light">Ajouter au panier</a> #}
                 </div>
             </div>
 
             <div class="col-4 my-5">
                 <div class="card h-100 d-flex flex-column">
-                    <img src="/image/piano1.webp" alt="Piano" class="card-img-top h-75">
+                    <img src="{{ asset('/image/piano1.webp') }}" alt="Piano" class="card-img-top h-75">
                     <div class="card-body text-center">
                         <p class="card-text h-25">Piano</p>
                     </div>
                 </div>
                 <div class="text-center my-2">
-                    <a href="{{ path('app_panier') }}" class="btn btn-light">Ajouter au panier</a>
+                    {# <a href="{{ path('app_panier') }}" class="btn btn-light">Ajouter au panier</a> #}
                 </div>
             </div>
 

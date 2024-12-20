@@ -5,7 +5,7 @@
         <div class="container-fluid">
             <!-- Logo -->
             <a class="navbar-brand logo-container">
-                <img src="/image/logo.webp" alt="Logo" class="logo">
+                <img src="{{ asset('/image/logo.webp') }}" alt="Logo" class="logo">
             </a>
 
             <!-- Barre de recherche -->
@@ -27,19 +27,18 @@
                         <a class="nav-link" href="{{ path('app_instrument') }}">Instruments</a>
                     </li>
                     <li class="nav-item">
-                        {# connection #}
+                        
                         <a href="{{ path('app_connexion') }}" class="nav-link tex-light">
                             connexion<i class="fa-light fa-user"></i> 
                         </a>                    
                     </li>
+                    <li class="nav-item">
+                    
+                        <a href="{{ path('app_logout') }}" class="nav-link tex-light">
+                            déconnexion<i class="fa-light fa-user"></i> 
+                        </a>                    
+                    </li>
                 </ul>
-                
-                
-
-                {# déconnection #}
-                {# <a href="{{ path('') }}" class="nav-link tex-light">
-                    <i class="fa-solid fa-right-from-bracket"></i>                
-                </a> #}
                     
                 {# Panier #}
                 <a href="#" class="nav-link text-light">
