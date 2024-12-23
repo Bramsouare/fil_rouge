@@ -26,25 +26,18 @@ class DetailLivraison
     #[ORM\Column(type: Types::DECIMAL, precision: 15, scale: 2)]
     private ?string $quantite = null;
 
-    // La relation entre produit et detail de la commande
-    /**
-     * @var Collection<int, produit>
-     */
-    #[ORM\OneToMany(targetEntity: Produit::class, mappedBy: 'detailLivraison', orphanRemoval: true)]
-    private Collection $produit;
+    #[ORM\ManyToOne(inversedBy: 'detailLivraisons')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?produit $produit = null;
 
-    // La relation entre detail de la commande et la livraison
-    /**
-     * @var Collection<int, Livraison>
-     */
-    #[ORM\OneToMany(targetEntity: Livraison::class, mappedBy: 'detailLivraison', orphanRemoval: true)]
-    private Collection $livraisons;
+    #[ORM\ManyToOne(inversedBy: 'detailLivraisons')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?livraison $livraison = null;
 
     // Le constructeur de la classe
     public function __construct()
     {
-        $this->produit = new ArrayCollection();
-        $this->livraisons = new ArrayCollection();
+       
     }
 
     ##########################################################################################
@@ -67,88 +60,30 @@ class DetailLivraison
         return $this; // Retourne l'objet actuel
     }
 
-    // La relation entre produit et detail de la commande
-    /**
-     * @return Collection<int, produit>
-     */
-    public function getProduit(): Collection
+    public function getProduit(): ?produit
     {
-        return $this -> produit; // Retourne la collection des produits
+        return $this->produit;
     }
 
-    // Ajoute un produit a la commande
-    public function addProduit(Produit $Produit): static
+    public function setProduit(?produit $produit): static
     {
-        // Si le produit n'existe pas dans la collection
-        if (!$this -> produit -> contains($Produit)) {
+        $this->produit = $produit;
 
-            // Ajoute le produit a la collection
-            $this -> produit -> add($Produit);
-
-            // Lie le produit a la commande
-            $Produit -> setDetailLivraison($this);
-        }
-
-        return $this; // Retourne l'objet actuel
+        return $this;
     }
 
-    // Supprime un produit de la commande
-    public function removeProduit(Produit $Produit): static
+    public function getLivraison(): ?livraison
     {
-        // Si le produit existe dans la collection
-        if ($this -> produit -> removeElement($Produit)) {
-            
-            // Si le produit est lie a la commande
-            if ($Produit -> getDetailLivraison() === $this) {
-
-                // Lie le produit a null
-                $Produit -> setDetailLivraison(null);
-            }
-        }
-
-        return $this; // Retourne l'objet actuel
+        return $this->livraison;
     }
 
-    // La relation entre detail de la commande et la livraison
-    /**
-     * @return Collection<int, Livraison>
-     */
-    public function getLivraisons(): Collection
+    public function setLivraison(?livraison $livraison): static
     {
-        return $this -> livraisons; // Retourne la collection des livraisons
+        $this->livraison = $livraison;
+
+        return $this;
     }
 
-    // Ajoute une livraison a la commande
-    public function addLivraison(Livraison $livraison): static
-    {
-        // Si la livraison n'existe pas dans la collection
-        if (!$this -> livraisons -> contains($livraison)) {
-
-            // Ajoute la livraison a la collection
-            $this -> livraisons -> add($livraison);
-
-            // Lie la livraison a la commande
-            $livraison -> setDetailLivraison($this);
-        }
-
-        return $this; // Retourne l'objet actuel
-    }
-
-    // Supprime une livraison de la commande
-    public function removeLivraison(Livraison $livraison): static
-    {
-        // Si la livraison existe dans la collection
-        if ($this -> livraisons -> removeElement($livraison)) {
-
-            // Si la livraison est lie a la commande
-            if ($livraison -> getDetailLivraison() === $this) {
-
-                // Lie la livraison a null
-                $livraison -> setDetailLivraison(null);
-            }
-        }
-
-        return $this; // Retourne l'objet actuel
-    }
+    
    
 }

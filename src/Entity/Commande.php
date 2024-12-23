@@ -62,12 +62,6 @@ class Commande
     ###############
 
     /**
-     * @var Collection<int, produit>
-     */
-    #[ORM\OneToMany(targetEntity: produit::class, mappedBy: 'commande', orphanRemoval: true)]
-    private Collection $produit;
-
-    /**
      * @var Collection<int, livraison>
      */
     #[ORM\OneToMany(targetEntity: Livraison::class, mappedBy: 'commande', orphanRemoval: true)]
@@ -77,20 +71,23 @@ class Commande
     #[ORM\OneToOne(mappedBy: 'commande', cascade: ['persist', 'remove'])]
     private ?Facture $facture = null;
 
-    // Relations entre commande et detailCommande
-    #[ORM\OneToOne(mappedBy: 'commande', cascade: ['persist', 'remove'])]
-    private ?DetailCommande $detailCommande = null;
-
     // Relations entre commande et utilisateur
     #[ORM\ManyToOne(inversedBy: 'commande')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Utilisateur $utilisateur = null;
 
+    /**
+     * @var Collection<int, DetailCommande>
+     */
+    #[ORM\OneToMany(targetEntity: DetailCommande::class, mappedBy: 'commande', orphanRemoval: true)]
+    private Collection $detailCommandes;
+
     // Constructeur de l'entité
     public function __construct()
     {
-        $this -> produit = new ArrayCollection();
+        
         $this -> livraison = new ArrayCollection();
+        $this->detailCommandes = new ArrayCollection();
     }
 
     ##########################################################################################
@@ -199,48 +196,6 @@ class Commande
     }
 
     /**
-     * @return Collection<int, produit>
-     */
-
-    public function getProduit(): Collection
-    {
-        return $this -> produit; // Retourne la collection des produits de la commande.
-    }
-
-    // Ajoute un produit a la commande
-    public function addProduit(Produit $Produit): static
-    {
-        // Si le produit n'existe pas dans la collection
-        if (!$this -> produit -> contains($Produit)) {
-
-            // Ajoute le produit a la collection
-            $this -> produit -> add($Produit);
-
-            // Lie le produit a la commande
-            $Produit -> setCommande($this);
-        }
-
-        return $this; // Retourne l'objet actuel.
-    }
-
-    // Supprime un produit de la commande
-    public function removeProduit(Produit $Produit): static
-    {
-        // Si le produit existe dans la collection
-        if ($this -> produit -> removeElement($Produit)) {
-
-            // Si le produit est lie a la commande
-            if ($Produit -> getCommande() === $this) {
-
-                // Lie le produit a null
-                $Produit -> setCommande(null);
-            }
-        }
-
-        return $this; // Retourne l'objet actuel.
-    }
-
-    /**
      * @return Collection<int, livraison>
      */
     public function getLivraison(): Collection
@@ -302,27 +257,6 @@ class Commande
         return $this; // Retourne l'objet actuel.
     }
 
-    public function getDetailCommande(): ?DetailCommande
-    {
-        return $this -> detailCommande; // Retourne le detail de la commande.
-    }
-
-    // Lie le detail de la commande a la commande
-    public function setDetailCommande(DetailCommande $detailCommande): static
-    {
-        // Si le detail de la commande n'est pas liee a la commande
-        if ($detailCommande -> getCommande() !== $this) {
-
-            // Lie le detail de la commande a la commande
-            $detailCommande -> setCommande($this);
-        }
-
-        // Lie la commande au detail de la commande
-        $this -> detailCommande = $detailCommande;
-
-        return $this; // Retourne l'objet actuel.
-    }
-
     public function getUtilisateur(): ?Utilisateur
     {
         return $this -> utilisateur; // Retourne l'utilisateur de la commande.
@@ -333,6 +267,36 @@ class Commande
         $this -> utilisateur = $utilisateur; // Modifie l'utilisateur de la commande.
 
         return $this; // Retourne l'objet actuel.
+    }
+
+    /**
+     * @return Collection<int, DetailCommande>
+     */
+    public function getDetailCommandes(): Collection
+    {
+        return $this->detailCommandes;
+    }
+
+    public function addDetailCommande(DetailCommande $detailCommande): static
+    {
+        if (!$this->detailCommandes->contains($detailCommande)) {
+            $this->detailCommandes->add($detailCommande);
+            $detailCommande->setCommande($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDetailCommande(DetailCommande $detailCommande): static
+    {
+        if ($this->detailCommandes->removeElement($detailCommande)) {
+            // set the owning side to null (unless already changed)
+            if ($detailCommande->getCommande() === $this) {
+                $detailCommande->setCommande(null);
+            }
+        }
+
+        return $this;
     }
 
 }

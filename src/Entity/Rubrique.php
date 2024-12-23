@@ -40,7 +40,6 @@ class Rubrique
     #[ORM\OneToMany(targetEntity: Produit::class, mappedBy: 'rubrique', orphanRemoval: true)]
     private Collection $produit;
 
-    // Auto relation entre la rubrique et la rubrique
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'parent')]
     #[ORM\JoinColumn(nullable: false)]
     private ?self $rubrique = null;
@@ -139,14 +138,14 @@ class Rubrique
 
     public function getRubrique(): ?self
     {
-        return $this -> rubrique; // Retourne la rubrique
+        return $this->rubrique;
     }
 
     public function setRubrique(?self $rubrique): static
     {
-        $this -> rubrique = $rubrique; // Modifie la rubrique
+        $this->rubrique = $rubrique;
 
-        return $this; // Retourne l'objet actuel
+        return $this;
     }
 
 }

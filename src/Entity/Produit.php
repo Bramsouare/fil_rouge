@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Entity\Utilisateur;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\ProduitRepository;
@@ -48,11 +50,6 @@ class Produit
     #[ORM\Column(length: 255)]
     private ?string $produit_stock = null;
 
-    // Relation entre la tva et le produit
-    #[ORM\ManyToOne(inversedBy: 'produit')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Tva $tva = null;
-
     // Relation entre la rubrique et le produit
     #[ORM\ManyToOne(inversedBy: 'produit')]
     #[ORM\JoinColumn(nullable: false)]
@@ -63,25 +60,34 @@ class Produit
     #[ORM\JoinColumn(nullable: false)]
     private ?Fournisseur $fournisseur = null;
 
-    // Relation entre l'utilisateur et le produit
-    #[ORM\ManyToOne(inversedBy: 'produit')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Utilisateur $utilisateur = null;
+    /**
+     * @var Collection<int, Utilisateur>
+     */
+    #[ORM\ManyToMany(targetEntity: Utilisateur::class, mappedBy: 'produit')]
+    private Collection $utilisateurs;
 
-    // Relation entre la commande et le produit
-    #[ORM\ManyToOne(inversedBy: 'produit')]
+    #[ORM\ManyToOne(inversedBy: 'produits')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Commande $commande = null;
+    private ?tva $tva = null;
 
-    // Relation entre la commande et le produit
-    #[ORM\ManyToOne(inversedBy: 'produit')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?DetailCommande $detailCommande = null;
+    /**
+     * @var Collection<int, DetailCommande>
+     */
+    #[ORM\OneToMany(targetEntity: DetailCommande::class, mappedBy: 'produit', orphanRemoval: true)]
+    private Collection $detailCommandes;
 
-    // Relation entre la livraison et le produit
-    #[ORM\ManyToOne(inversedBy: 'produit')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?DetailLivraison $detailLivraison = null;
+    /**
+     * @var Collection<int, DetailLivraison>
+     */
+    #[ORM\OneToMany(targetEntity: DetailLivraison::class, mappedBy: 'produit', orphanRemoval: true)]
+    private Collection $detailLivraisons;
+
+    public function __construct()
+    {
+        $this->utilisateurs = new ArrayCollection();
+        $this->detailCommandes = new ArrayCollection();
+        $this->detailLivraisons = new ArrayCollection();
+    }
 
     ##########################################################################################
     # Méthodes getters et setters permettant de lire et modifier les propriétés de l'entité. #
@@ -175,18 +181,6 @@ class Produit
         return $this; // Retourne l'objet actuel
     }
 
-    public function getTva(): ?Tva
-    {
-        return $this -> tva; // Retourne la tva du produit
-    }
-
-    public function setTva(?Tva $tva): static
-    {
-        $this -> tva = $tva; // Modifie la tva du produit
-
-        return $this; // Retourne l'objet actuel
-    }
-
     public function getRubrique(): ?Rubrique
     {
         return $this -> rubrique; // Retourne la rubrique du produit
@@ -211,51 +205,102 @@ class Produit
         return $this; // Retourne l'objet actuel
     }
 
-    public function getUtilisateur(): ?Utilisateur
+    /**
+     * @return Collection<int, Utilisateur>
+     */
+    public function getUtilisateurs(): Collection
     {
-        return $this -> utilisateur; // Retourne l'utilisateur du produit
+        return $this->utilisateurs;
     }
 
-    public function setUtilisateur(?Utilisateur $utilisateur): static
+    public function addUtilisateur(Utilisateur $utilisateur): static
     {
-        $this -> utilisateur = $utilisateur; // Modifie l'utilisateur du produit
+        if (!$this->utilisateurs->contains($utilisateur)) {
+            $this->utilisateurs->add($utilisateur);
+            $utilisateur->addProduit($this);
+        }
 
-        return $this; // Retourne l'objet actuel
+        return $this;
     }
 
-    public function getCommande(): ?Commande
+    public function removeUtilisateur(Utilisateur $utilisateur): static
     {
-        return $this -> commande; // Retourne la commande
+        if ($this->utilisateurs->removeElement($utilisateur)) {
+            $utilisateur->removeProduit($this);
+        }
+
+        return $this;
     }
 
-    public function setCommande(?Commande $commande): static
+    public function getTva(): ?tva
     {
-        $this -> commande = $commande; // Modifie la commande
-
-        return $this; // Retourne l'objet actuel
+        return $this->tva;
     }
 
-    public function getDetailCommande(): ?DetailCommande
+    public function setTva(?tva $tva): static
     {
-        return $this -> detailCommande; // Retourne le detail de la commande
+        $this->tva = $tva;
+
+        return $this;
     }
 
-    public function setDetailCommande(?DetailCommande $detailCommande): static
+    /**
+     * @return Collection<int, DetailCommande>
+     */
+    public function getDetailCommandes(): Collection
     {
-        $this -> detailCommande = $detailCommande; // Modifie le detail de la commande
-
-        return $this; // Retourne l'objet actuel
+        return $this->detailCommandes;
     }
 
-    public function getDetailLivraison(): ?DetailLivraison
+    public function addDetailCommande(DetailCommande $detailCommande): static
     {
-        return $this -> detailLivraison; // Retourne le detail de la livraison
+        if (!$this->detailCommandes->contains($detailCommande)) {
+            $this->detailCommandes->add($detailCommande);
+            $detailCommande->setProduit($this);
+        }
+
+        return $this;
     }
 
-    public function setDetailLivraison(?DetailLivraison $detailLivraison): static
+    public function removeDetailCommande(DetailCommande $detailCommande): static
     {
-        $this -> detailLivraison = $detailLivraison; // Modifie le detail de la livraison
+        if ($this->detailCommandes->removeElement($detailCommande)) {
+            // set the owning side to null (unless already changed)
+            if ($detailCommande->getProduit() === $this) {
+                $detailCommande->setProduit(null);
+            }
+        }
 
-        return $this; // Retourne l'objet actuel
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, DetailLivraison>
+     */
+    public function getDetailLivraisons(): Collection
+    {
+        return $this->detailLivraisons;
+    }
+
+    public function addDetailLivraison(DetailLivraison $detailLivraison): static
+    {
+        if (!$this->detailLivraisons->contains($detailLivraison)) {
+            $this->detailLivraisons->add($detailLivraison);
+            $detailLivraison->setProduit($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDetailLivraison(DetailLivraison $detailLivraison): static
+    {
+        if ($this->detailLivraisons->removeElement($detailLivraison)) {
+            // set the owning side to null (unless already changed)
+            if ($detailLivraison->getProduit() === $this) {
+                $detailLivraison->setProduit(null);
+            }
+        }
+
+        return $this;
     }
 }

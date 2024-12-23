@@ -31,24 +31,17 @@ class DetailCommande
     #[ORM\Column(type: Types::DECIMAL, precision: 19, scale: 4)]
     private ?string $prix_de_vente = null;
 
-    // Le produit de la commande
-    #[ORM\OneToOne(inversedBy: 'detailCommande', cascade: ['persist', 'remove'])]
+    #[ORM\ManyToOne(inversedBy: 'detailCommandes')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Commande $commande = null;
+    private ?produit $produit = null;
 
-    // Les produits de la commande
-    /**
-     * @var Collection<int, produit>
-     */
-    // Relation entre la commande et le produit
-    #[ORM\OneToMany(targetEntity: Produit::class, mappedBy: 'detailCommande', orphanRemoval: true)]
-    private Collection $produit;
+    #[ORM\ManyToOne(inversedBy: 'detailCommandes')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?commande $commande = null;
 
     // Le constructeur de la classe 
     public function __construct()
     {
-        $this -> commande = new ArrayCollection();
-        $this -> produit = new ArrayCollection();
     }
 
     ##########################################################################################
@@ -84,59 +77,28 @@ class DetailCommande
         return $this; // Retourne l'objet actuel
     }
 
-
-    public function getCommande(): ?Commande
+    public function getProduit(): ?produit
     {
-        return $this -> commande; // Retourne la commande
+        return $this->produit;
     }
 
-    public function setCommande(Commande $commande): static
+    public function setProduit(?produit $produit): static
     {
-        $this -> commande = $commande; // Modifie la commande
+        $this->produit = $produit;
 
-        return $this; // Retourne l'objet actuel
+        return $this;
     }
 
-    // Relation entre la commande et le produit
-    /**
-     * @return Collection<int, produit>
-     */
-    public function getProduit(): Collection
+    public function getCommande(): ?commande
     {
-        return $this -> produit; // Retourne la collection des produits
+        return $this->commande;
     }
 
-    // Ajoute un produit a la commande
-    public function addProduit(Produit $Produit): static
+    public function setCommande(?commande $commande): static
     {
-        // Si le produit n'existe pas dans la collection
-        if (!$this -> produit -> contains($Produit)) {
+        $this->commande = $commande;
 
-            // Ajoute le produit a la collection
-            $this -> produit -> add($Produit);
-
-            // Lie le produit a la commande
-            $Produit -> setDetailCommande($this);
-        }
-
-        return $this; // Retourne l'objet actuel
-    }
-
-    // Supprime un produit de la commande
-    public function removeProduit(Produit $Produit): static
-    {
-        // Si le produit existe dans la collection
-        if ($this -> produit -> removeElement($Produit)) {
-            
-            // Si le produit est lie a la commande
-            if ($Produit -> getDetailCommande() === $this) {
-
-                // Lie le produit a null
-                $Produit -> setDetailCommande(null);
-            }
-        }
-
-        return $this; // Retourne l'objet actuel
+        return $this;
     }
 
 }

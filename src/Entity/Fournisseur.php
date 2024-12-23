@@ -59,16 +59,20 @@ class Fournisseur
     #[ORM\OneToMany(targetEntity: Produit::class, mappedBy: 'fournisseur', orphanRemoval: true)]
     private Collection $produit;
 
-    // Relation avec l'entité Utilisateur
-    #[ORM\OneToOne(inversedBy: 'fournisseur', cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Utilisateur $utilisateur = null;
+    /**
+     * @var Collection<int, utilisateur>
+     */
+    #[ORM\ManyToMany(targetEntity: utilisateur::class, inversedBy: 'fournisseurs')]
+    private Collection $id_utilisateur;
+
+    
 
     // Constructeur
     public function __construct()
     {
         $this -> adresse = new ArrayCollection();
         $this -> produit = new ArrayCollection();
+        $this->id_utilisateur = new ArrayCollection();
     }
 
     ##########################################################################################
@@ -223,16 +227,30 @@ class Fournisseur
         return $this; // Retourne l'objet actuel
     }
 
-
-    public function getUtilisateur(): ?Utilisateur
+    /**
+     * @return Collection<int, utilisateur>
+     */
+    public function getIdUtilisateur(): Collection
     {
-        return $this -> utilisateur; // Retourne l'utilisateur 
+        return $this->id_utilisateur;
     }
 
-    public function setUtilisateur(Utilisateur $utilisateur): static
+    public function addIdUtilisateur(utilisateur $idUtilisateur): static
     {
-        $this -> utilisateur = $utilisateur; // Modifie l'utilisateur
+        if (!$this->id_utilisateur->contains($idUtilisateur)) {
+            $this->id_utilisateur->add($idUtilisateur);
+        }
 
-        return $this; // Retourne l'objet actuel
+        return $this;
     }
+
+    public function removeIdUtilisateur(utilisateur $idUtilisateur): static
+    {
+        $this->id_utilisateur->removeElement($idUtilisateur);
+
+        return $this;
+    }
+
+
+    
 }

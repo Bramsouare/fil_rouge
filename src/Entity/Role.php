@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Entity\Utilisateur;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\RoleRepository;
 
@@ -27,10 +29,16 @@ class Role
     #[ORM\Column(length: 255)]
     private ?string $role_niveau = null;
 
-    // Relation entre utilisateur et role
-    #[ORM\ManyToOne(inversedBy: 'role')]
-    #[ORM\JoinColumn(nullable: true)]
-    private ?Utilisateur $utilisateur = null;
+    /**
+     * @var Collection<int, Utilisateur>
+     */
+    #[ORM\OneToMany(targetEntity: Utilisateur::class, mappedBy: 'role', orphanRemoval: true)]
+    private Collection $utilisateurs;
+
+    public function __construct()
+    {
+        $this->utilisateurs = new ArrayCollection();
+    }
 
     ##########################################################################################
     # Méthodes getters et setters permettant de lire et modifier les propriétés de l'entité. #
@@ -64,15 +72,34 @@ class Role
         return $this; // Retourne l'objet actuel
     }
 
-    public function getUtilisateur(): ?Utilisateur
+    /**
+     * @return Collection<int, Utilisateur>
+     */
+    public function getUtilisateurs(): Collection
     {
-        return $this -> utilisateur; // Retourne l'utilisateur
+        return $this->utilisateurs;
     }
 
-    public function setUtilisateur(?Utilisateur $utilisateur): static
+    public function addUtilisateur(Utilisateur $utilisateur): static
     {
-        $this -> utilisateur = $utilisateur; // Modifie l'utilisateur
+        if (!$this->utilisateurs->contains($utilisateur)) {
+            $this->utilisateurs->add($utilisateur);
+            $utilisateur->setRole($this);
+        }
 
-        return $this; // Retourne l'objet actuel
+        return $this;
     }
+
+    public function removeUtilisateur(Utilisateur $utilisateur): static
+    {
+        if ($this->utilisateurs->removeElement($utilisateur)) {
+            // set the owning side to null (unless already changed)
+            if ($utilisateur->getRole() === $this) {
+                $utilisateur->setRole(null);
+            }
+        }
+
+        return $this;
+    }
+
 }

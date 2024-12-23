@@ -66,22 +66,15 @@ class Utilisateur
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $utilisateur_derniere_co = null;
 
-    /**
-     * @var Collection<int, fournisseur>
-     */
-    // Relation entre utilisateur et fournisseur
-    #[ORM\ManyToMany(targetEntity: Fournisseur::class)]
-    private Collection $fournisseur;
-
     // Constructeur
     public function __construct()
     {
         // Initialisation des collections
-        $this -> fournisseur = new ArrayCollection();
-        $this -> produit = new ArrayCollection();
+        $this -> fournisseurs = new ArrayCollection();
         $this -> commande = new ArrayCollection();
         $this -> utilisateur_adresse = new ArrayCollection();
-        $this -> role = new ArrayCollection();
+        $this->produit = new ArrayCollection();
+      
     }
 
     ##########################################################################################
@@ -202,43 +195,7 @@ class Utilisateur
         return $this; // Retourne l'objet actuel
     }
 
-    /**
-     * @return Collection<int, fournisseur>
-     */
-    public function getFournisseur(): Collection
-    {
-        return $this -> fournisseur; // Retourne les fournisseurs de l'utilisateur
-    }
-
-    // Ajoute un fournisseur au utilisateur
-    public function addFournisseur(Fournisseur $fournisseur): static
-    {
-        // Si le fournisseur n'existe pas dans la collection
-        if (!$this -> fournisseur -> contains($fournisseur)) {
-
-            // Ajoute le fournisseur a la collection
-            $this -> fournisseur -> add($fournisseur);
-        }
-
-        return $this; // Retourne l'objet actuel
-    }
-
-    // Supprime un fournisseur au utilisateur
-    public function removeFournisseur(Fournisseur $fournisseur): static
-    {
-        // Supprime le fournisseur de la collection
-        $this -> fournisseur -> removeElement($fournisseur);
-
-        return $this; // Retourne l'objet actuel
-    }
-
-    /**
-     * @var Collection<int, produit>
-     */
-    // Relation entre utilisateur et produit
-    #[ORM\OneToMany(targetEntity: Produit::class, mappedBy: 'utilisateur', orphanRemoval: true)]
-    private Collection $produit;
-
+    
     /**
      * @var Collection<int, commande>
      */
@@ -253,55 +210,24 @@ class Utilisateur
     #[ORM\OneToMany(targetEntity: Adresse::class, mappedBy: 'utilisateur', orphanRemoval: true)]
     private Collection $utilisateur_adresse;
 
-    /**
-     * @var Collection<int, role>
-     */
-    // Relation entre utilisateur et role
-    #[ORM\OneToMany(targetEntity: role::class, mappedBy: 'utilisateur', orphanRemoval: true)]
-    private Collection $role;
-
     #[ORM\Column]
     private bool $Verification = false;
 
     /**
-     * @return Collection<int, produit>
+     * @var Collection<int, Fournisseur>
      */
-    public function getProduit(): Collection
-    {
-        return $this -> produit; // Retourne la collection des produits
-    }
+    #[ORM\ManyToMany(targetEntity: Fournisseur::class, mappedBy: 'id_utilisateur')]
+    private Collection $fournisseurs;
 
-    // Ajoute un produit au utilisateur
-    public function addProduit(Produit $Produit): static
-    {
-        // Si le produit n'existe pas dans la collection
-        if (!$this -> produit -> contains($Produit)) {
+    #[ORM\ManyToOne(inversedBy: 'utilisateurs')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?role $role = null;
 
-            // Ajoute le produit a la collection
-            $this -> produit -> add($Produit);
-
-            // Lie le produit a l'utilisateur
-            $Produit -> setUtilisateur($this);
-        }
-
-        return $this; // Retourne l'objet actuel
-    }
-
-    // Supprime un produit de l'utilisateur
-    public function removeProduit(Produit $Produit): static
-    {
-        // Supprime le produit de la collection
-        if ($this -> produit -> removeElement($Produit)) {
-            
-            // Si le produit est lié au fournisseur
-            if ($Produit -> getUtilisateur() === $this) {
-                // Lie le produit a null
-                $Produit -> setUtilisateur(null);
-            }
-        }
-
-        return $this; // Retourne l'objet actuel
-    }
+    /**
+     * @var Collection<int, produit>
+     */
+    #[ORM\ManyToMany(targetEntity: produit::class, inversedBy: 'utilisateurs')]
+    private Collection $produit;
 
     /**
      * @return Collection<int, commande>
@@ -385,47 +311,6 @@ class Utilisateur
         return $this; // Retourne l'objet actuel
     }
 
-    /**
-     * @return Collection<int, role>
-     */
-    public function getRole(): Collection
-    {
-        return $this -> role; // Retourne la collection des roles
-    }
-
-    // Ajoute un role au utilisateur
-    public function addRole(role $role): static
-    {
-        // Si le role n'existe pas dans la collection
-        if (!$this -> role -> contains($role)) {
-
-            // Ajoute le role a la collection
-            $this -> role -> add($role);
-
-            // Lie le role a l'utilisateur
-            $role -> setUtilisateur($this);
-        }
-
-        return $this; // Retourne l'objet actuel
-    }
-
-    // Supprime un role de l'utilisateur
-    public function removeRole(role $role): static
-    {
-        // Supprime le role de la collection
-        if ($this -> role -> removeElement($role)) {
-            
-            // Si le role est lié au utilisateur
-            if ($role -> getUtilisateur() === $this) {
-
-                // Lie le role a null
-                $role -> setUtilisateur(null);
-            }
-        }
-
-        return $this;// Retourne l'objet actuel
-    }
-
     // Vérifie si l'utilisateur est verifié
     public function isVerified(): bool
     {
@@ -439,6 +324,69 @@ class Utilisateur
         $this -> Verification = $Verification;
 
         return $this; // Retourne l'objet actuel
+    }
+
+    /**
+     * @return Collection<int, Fournisseur>
+     */
+    public function getFournisseurs(): Collection
+    {
+        return $this->fournisseurs;
+    }
+
+    public function addFournisseur(Fournisseur $fournisseur): static
+    {
+        if (!$this->fournisseurs->contains($fournisseur)) {
+            $this->fournisseurs->add($fournisseur);
+            $fournisseur->addIdUtilisateur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFournisseur(Fournisseur $fournisseur): static
+    {
+        if ($this->fournisseurs->removeElement($fournisseur)) {
+            $fournisseur->removeIdUtilisateur($this);
+        }
+
+        return $this;
+    }
+
+    public function getRole(): ?role
+    {
+        return $this->role;
+    }
+
+    public function setRole(?role $role): static
+    {
+        $this->role = $role;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, produit>
+     */
+    public function getProduit(): Collection
+    {
+        return $this->produit;
+    }
+
+    public function addProduit(produit $produit): static
+    {
+        if (!$this->produit->contains($produit)) {
+            $this->produit->add($produit);
+        }
+
+        return $this;
+    }
+
+    public function removeProduit(produit $produit): static
+    {
+        $this->produit->removeElement($produit);
+
+        return $this;
     }
     
 }

@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\LivraisonRepository;
 use App\Entity\DetailLivraison;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -37,10 +38,16 @@ class Livraison
     #[ORM\JoinColumn(nullable: false)]
     private ?Commande $commande = null;
 
-    // Relation entre le detail de la livraison et la livraison
-    #[ORM\ManyToOne(inversedBy: 'livraisons')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?DetailLivraison $detailLivraison = null;
+    /**
+     * @var Collection<int, DetailLivraison>
+     */
+    #[ORM\OneToMany(targetEntity: DetailLivraison::class, mappedBy: 'livraison', orphanRemoval: true)]
+    private Collection $detailLivraisons;
+
+    public function __construct()
+    {
+        $this->detailLivraisons = new ArrayCollection();
+    }
 
     ##########################################################################################
     # Méthodes getters et setters permettant de lire et modifier les propriétés de l'entité. #
@@ -86,7 +93,6 @@ class Livraison
         return $this; // Retourne l'objet actuel
     }
 
-    
     /**
      * @return Collection<int, DetailLivraison>
      */
@@ -103,16 +109,34 @@ class Livraison
         return $this; // Retourne l'objet actuel
     }
 
-    public function getDetailLivraison(): ?DetailLivraison
+    /**
+     * @return Collection<int, DetailLivraison>
+     */
+    public function getDetailLivraisons(): Collection
     {
-        return $this -> detailLivraison; // Retourne le detail de la livraison
+        return $this->detailLivraisons;
     }
 
-    public function setDetailLivraison(?DetailLivraison $detailLivraison): static
+    public function addDetailLivraison(DetailLivraison $detailLivraison): static
     {
-        $this -> detailLivraison = $detailLivraison; // Modifie le detail de la livraison
+        if (!$this->detailLivraisons->contains($detailLivraison)) {
+            $this->detailLivraisons->add($detailLivraison);
+            $detailLivraison->setLivraison($this);
+        }
 
-        return $this; // Retourne l'objet actuel
+        return $this;
+    }
+
+    public function removeDetailLivraison(DetailLivraison $detailLivraison): static
+    {
+        if ($this->detailLivraisons->removeElement($detailLivraison)) {
+            // set the owning side to null (unless already changed)
+            if ($detailLivraison->getLivraison() === $this) {
+                $detailLivraison->setLivraison(null);
+            }
+        }
+
+        return $this;
     }
    
 }
