@@ -68,7 +68,7 @@ class Produit
 
     #[ORM\ManyToOne(inversedBy: 'produits')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?tva $tva = null;
+    private ?Tva $tva = null;
 
     /**
      * @var Collection<int, DetailCommande>
@@ -232,12 +232,12 @@ class Produit
         return $this;
     }
 
-    public function getTva(): ?tva
+    public function getTva(): ?Tva
     {
         return $this->tva;
     }
 
-    public function setTva(?tva $tva): static
+    public function setTva(?Tva $tva): static
     {
         $this->tva = $tva;
 

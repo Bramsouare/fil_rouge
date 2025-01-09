@@ -1,0 +1,171 @@
+-- Base de données : village_green
+-- DROP DATABASE village_green;
+create DATABASE village_green;
+
+use village_green;
+-- --------------------------------------------------------
+-- Table : adresse
+-- --------------------------------------------------------
+CREATE TABLE adresse (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    adresse_libelle VARCHAR(255) NOT NULL,
+    adresse_ville VARCHAR(255) NOT NULL,
+    adresse_postal VARCHAR(255) NOT NULL,
+    adresse_type VARCHAR(255),
+    adresse_telephone VARCHAR(255)
+);
+
+-- --------------------------------------------------------
+-- Table : commande
+-- --------------------------------------------------------
+CREATE TABLE commande (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    commande_paiement VARCHAR(255),
+    commande_date DATETIME NOT NULL,
+    commande_date_paiement DATETIME,
+    commande_differe BOOLEAN,
+    commande_statut VARCHAR(255), 
+    commande_reference VARCHAR(255),
+    commande_facture_date DATETIME,
+    commande_total_ht DECIMAL(15, 2)
+);
+
+-- --------------------------------------------------------
+-- Table : detail_commande
+-- --------------------------------------------------------
+CREATE TABLE detail_commande (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    quantite DECIMAL(15, 2),
+    prix_de_vente DECIMAL(19, 4)
+);
+
+-- --------------------------------------------------------
+-- Table : detail_livraison
+-- --------------------------------------------------------
+CREATE TABLE detail_livraison (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    quantite DECIMAL(15, 2) 
+);
+
+-- --------------------------------------------------------
+-- Table : facture
+-- --------------------------------------------------------
+CREATE TABLE facture (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    facture_libelle VARCHAR(255) NOT NULL
+);
+
+-- --------------------------------------------------------
+-- Table : fournisseur
+-- --------------------------------------------------------
+CREATE TABLE fournisseur (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    fournisseur_siret VARCHAR(255),
+    fournisseur_nom VARCHAR(255) NOT NULL,
+    fournisseur_telephone VARCHAR(255),
+    fournisseur_mail VARCHAR(255),
+    fournisseur_constructeur BOOLEAN
+);
+
+-- --------------------------------------------------------
+-- Table : livraison
+-- --------------------------------------------------------
+CREATE TABLE livraison (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    livraison_statut VARCHAR(255),
+    livraison_date DATETIME,
+    livraison_reference VARCHAR(255)
+);
+
+-- --------------------------------------------------------
+-- Table : produit
+-- --------------------------------------------------------
+CREATE TABLE produit (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    tva_id INT,
+    produit_libelle VARCHAR(255) NOT NULL,
+    produit_description TEXT,
+    produit_prix_ht DECIMAL(15, 2) NOT NULL,
+    produit_reference VARCHAR(255),
+    produit_image VARCHAR(255),
+    produit_actif BOOLEAN,
+    produit_stock VARCHAR(255),
+    FOREIGN KEY (tva_id) REFERENCES tva(id)
+);
+
+INSERT INTO produit 
+	(id, produit_libelle, produit_description, produit_prix_ht, produit_reference, produit_image, produit_actif, produit_stock)
+VALUES 
+(1, 'Saxophone alto', 'Saxophone alto en laiton avec étui et accessoires. Idéal pour débutants.', 550.00, 'VENT001', 'saxo1.webp', 1, 5),
+(2, 'Saxophone ténor', 'Saxophone ténor en laiton avec une belle finition. Son riche et chaleureux.', 600.00, 'VENT002', 'saxo2.webp', 1, 5),
+(3, 'Guitare acoustique standard', 'Guitare acoustique en bois massif avec un son riche et clair. Idéale pour les débutants.', 300.00, 'CORDE001', 'acoustique1.webp', 1, 10),
+(4, 'Guitare acoustique haut de gamme', 'Guitare acoustique haut de gamme en bois de palissandre avec une finition soignée.', 750.00, 'CORDE002', 'acoustique2.webp', 1, 8),
+(5, 'Guitare électrique modèle 1', 'Guitare électrique modèle 1 avec corps en érable et micros humbucker pour un son puissant.', 500.00, 'CORDE003', 'guitare_elec1.webp', 1, 15),
+(6, 'Guitare électrique modèle 2', 'Guitare électrique modèle 2 avec micros single-coil et corps en alder pour un son clair et lumineux.', 550.00, 'CORDE004', 'guitare_elec2.webp', 1, 12),
+(7, 'Batterie acoustique standard', 'Batterie acoustique complète avec 5 pièces, idéale pour les débutants.', 700.00, 'PERC001', 'batterie1.webp', 1, 10),
+(8, 'Batterie acoustique professionnelle', 'Batterie acoustique professionnelle avec toms et cymbales de haute qualité.', 1500.00, 'PERC002', 'batterie2.webp', 1, 6),
+(9, 'Piano numérique', 'Piano numérique avec 88 touches et plusieurs sons pré-programmés.', 800.00, 'PIANO001', 'piano1.webp', 1, 4),
+(10, 'Piano acoustique', 'Piano acoustique à queue avec finition en bois noble pour une sonorité authentique.', 5000.00, 'PIANO002', 'piano2.webp', 1, 2),
+(11, 'Violon acoustique standard', 'Violon acoustique en bois avec des cordes en acier, idéal pour les débutants.', 250.00, 'CORDE005', 'violon1.webp', 1, 10),
+(12, 'Violon acoustique haut de gamme', 'Violon acoustique haut de gamme avec une finition en bois de qualité supérieure, sonorité riche et chaleureuse.', 800.00, 'CORDE006', 'violon2.webp', 1, 5);
+
+-- --------------------------------------------------------
+-- Table : role
+-- --------------------------------------------------------
+CREATE TABLE role (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    role_type VARCHAR(255),
+    role_niveau VARCHAR(255)
+);
+
+-- --------------------------------------------------------
+-- Table : rubrique
+-- --------------------------------------------------------
+CREATE TABLE rubrique (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+     INT,
+    rubrique_libelle VARCHAR(255) NOT NULL,
+    rubrique_image VARCHAR(255),
+    rubrique_description VARCHAR(255),
+    FOREIGN KEY (rubrique_id) REFERENCES rubrique(id)
+);
+
+INSERT INTO rubrique
+	(id, rubrique_libelle, rubrique_image, rubrique_description)
+VALUES
+(1, 'Instruments à vent', 'saxo1.webp', 'Rubrique regroupant les instruments à vent tels que saxophones, trompettes et flûtes.'),
+(2, 'Instruments à cordes', 'acoustique1.webp', 'Rubrique dédiée aux instruments à cordes comme guitares, et violons.'),
+(3, 'Instruments de percussion', 'batterie1.webp', 'Rubrique couvrant les instruments de percussion comme batteries et tambours.'),
+(4, 'Pianos et claviers', 'piano1.webp', 'Rubrique pour les pianos acoustiques, numériques et autres claviers.');
+
+-- --------------------------------------------------------
+-- Table : tva
+-- --------------------------------------------------------
+CREATE TABLE tva (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    tva_taux DECIMAL(15, 2) NOT NULL
+);
+
+INSERT INTO tva
+	(id, tva_taux)
+VALUES
+(1, 18.6);
+
+-- --------------------------------------------------------
+-- Table : utilisateur
+-- --------------------------------------------------------
+CREATE TABLE utilisateur (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    utilisateur_prenom VARCHAR(255),
+    utilisateur_nom VARCHAR(255),
+    utilisateur_siret VARCHAR(255),
+    utilisateur_mail VARCHAR(255) NOT NULL,
+    utilisateur_reference VARCHAR(255),
+    utilisateur_mdp VARCHAR(255) NOT NULL,
+    utilisateur_telephone VARCHAR(255),
+    utilisateur_coef VARCHAR(255),
+    utilisateur_derniere_co DATETIME,
+    verification BOOLEAN
+);
+
+

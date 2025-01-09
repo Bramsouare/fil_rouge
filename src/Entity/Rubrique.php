@@ -41,7 +41,7 @@ class Rubrique
     private Collection $produit;
 
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'parent')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?self $rubrique = null;
 
     // Constructeur
@@ -50,6 +50,7 @@ class Rubrique
         $this -> produit = new ArrayCollection();
     }
 
+    
     ##########################################################################################
     # Méthodes getters et setters permettant de lire et modifier les propriétés de l'entité. #
     ##########################################################################################
@@ -93,7 +94,6 @@ class Rubrique
 
         return $this; // Retourne l'objet actuel
     }
-
 
     /**
      * @return Collection<int, produit>
@@ -147,5 +147,4 @@ class Rubrique
 
         return $this;
     }
-
 }

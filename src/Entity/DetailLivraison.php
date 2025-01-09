@@ -28,11 +28,11 @@ class DetailLivraison
 
     #[ORM\ManyToOne(inversedBy: 'detailLivraisons')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?produit $produit = null;
+    private ?Produit $produit = null;
 
     #[ORM\ManyToOne(inversedBy: 'detailLivraisons')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?livraison $livraison = null;
+    private ?Livraison $livraison = null;
 
     // Le constructeur de la classe
     public function __construct()
@@ -60,24 +60,24 @@ class DetailLivraison
         return $this; // Retourne l'objet actuel
     }
 
-    public function getProduit(): ?produit
+    public function getProduit(): ?Produit
     {
         return $this->produit;
     }
 
-    public function setProduit(?produit $produit): static
+    public function setProduit(?Produit $produit): static
     {
         $this->produit = $produit;
 
         return $this;
     }
 
-    public function getLivraison(): ?livraison
+    public function getLivraison(): ?Livraison
     {
         return $this->livraison;
     }
 
-    public function setLivraison(?livraison $livraison): static
+    public function setLivraison(?Livraison $livraison): static
     {
         $this->livraison = $livraison;
 

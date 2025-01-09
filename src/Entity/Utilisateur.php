@@ -56,8 +56,8 @@ class Utilisateur
     // Colonne utilisateur_telephone
     #[ORM\Column(length: 255)]
     private ?string $utilisateur_telephone = null;
-
-
+    
+// TODO boolen ??
     // Colonne utilisateur_coef
     #[ORM\Column(length: 255)]
     private ?string $utilisateur_coef = null;
@@ -66,136 +66,10 @@ class Utilisateur
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $utilisateur_derniere_co = null;
 
-    // Constructeur
-    public function __construct()
-    {
-        // Initialisation des collections
-        $this -> fournisseurs = new ArrayCollection();
-        $this -> commande = new ArrayCollection();
-        $this -> utilisateur_adresse = new ArrayCollection();
-        $this->produit = new ArrayCollection();
-      
-    }
+    #[ORM\ManyToOne(inversedBy: 'utilisateurs')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Role $role = null;
 
-    ##########################################################################################
-    # Méthodes getters et setters permettant de lire et modifier les propriétés de l'entité. #
-    ##########################################################################################
-
-    public function getId(): ?int
-    {
-        return $this -> id; // Retourne l'id de l'utilisateur
-    }
-
-    public function getUtilisateurPrenom(): ?string
-    {
-        return $this -> utilisateur_prenom; // Retourne le prenom de l'utilisateur
-    }
-
-    public function setUtilisateurPrenom(string $utilisateur_prenom): static
-    {
-        $this -> utilisateur_prenom = $utilisateur_prenom; // Modifie le prenom de l'utilisateur
-
-        return $this; // Retourne l'objet actuel
-    }
-
-    public function getUtilisateurNom(): ?string
-    {
-        return $this -> utilisateur_nom; // Retourne le nom de l'utilisateur
-    }
-
-    public function setUtilisateurNom(string $utilisateur_nom): static
-    {
-        $this -> utilisateur_nom = $utilisateur_nom; // Modifie le nom de l'utilisateur
-
-        return $this; // Retourne l'objet actuel
-    }
-
-    public function getUtilisateurSiret(): ?string
-    {
-        return $this -> utilisateur_siret; // Retourne le siret de l'utilisateur
-    }
-
-    public function setUtilisateurSiret(?string $utilisateur_siret): static
-    {
-        $this -> utilisateur_siret = $utilisateur_siret; // Modifie le siret de l'utilisateur
-
-        return $this; // Retourne l'objet actuel
-    }
-
-    public function getUtilisateurMail(): ?string
-    {
-        return $this -> utilisateur_mail; // Retourne le mail de l'utilisateur
-    }
-
-    public function setUtilisateurMail(string $utilisateur_mail): static
-    {
-        $this -> utilisateur_mail = $utilisateur_mail; // Modifie le mail de l'utilisateur
-
-        return $this; // Retourne l'objet actuel
-    }
-
-    public function getUtilisateurReference(): ?string
-    {
-        return $this -> utilisateur_reference; // Retourne la reference de l'utilisateur
-    }
-
-    public function setUtilisateurReference(string $utilisateur_reference): static
-    {
-        $this -> utilisateur_reference = $utilisateur_reference; // Modifie la reference de l'utilisateur
-
-        return $this; // Retourne l'objet actuel
-    }
-
-    public function getUtilisateurMdp(): ?string
-    {
-        return $this -> utilisateur_mdp; // Retourne le mot de passe de l'utilisateur
-    }
-
-    public function setUtilisateurMdp(string $utilisateur_mdp): static
-    {
-        $this -> utilisateur_mdp = $utilisateur_mdp; // Modifie le mot de passe de l'utilisateur
-
-        return $this; // Retourne l'objet actuel
-    }
-
-    public function getUtilisateurTelephone(): ?string
-    {
-        return $this -> utilisateur_telephone; // Retourne le telephone de l'utilisateur
-    }
-
-    public function setUtilisateurTelephone(string $utilisateur_telephone): static
-    {
-        $this -> utilisateur_telephone = $utilisateur_telephone; // Modifie le telephone de l'utilisateur
-
-        return $this; // Retourne l'objet actuel
-    }
-
-
-    public function getUtilisateurCoef(): ?string
-    {
-        return $this -> utilisateur_coef; // Retourne le coef de l'utilisateur
-    }
-
-    public function setUtilisateurCoef(string $utilisateur_coef): static
-    {
-        $this -> utilisateur_coef = $utilisateur_coef; // Modifie le coef de l'utilisateur
-
-        return $this; // Retourne l'objet actuel
-    }
-
-    public function getUtilisateurDerniereCo(): ?\DateTimeInterface
-    {
-        return $this -> utilisateur_derniere_co; // Retourne la derniere connexion de l'utilisateur
-    }
-
-    public function setUtilisateurDerniereCo(\DateTimeInterface $utilisateur_derniere_co): static
-    {
-        $this -> utilisateur_derniere_co = $utilisateur_derniere_co; // Modifie la derniere connexion de l'utilisateur
-
-        return $this; // Retourne l'objet actuel
-    }
-
-    
     /**
      * @var Collection<int, commande>
      */
@@ -214,40 +88,175 @@ class Utilisateur
     private bool $Verification = false;
 
     /**
-     * @var Collection<int, Fournisseur>
-     */
-    #[ORM\ManyToMany(targetEntity: Fournisseur::class, mappedBy: 'id_utilisateur')]
-    private Collection $fournisseurs;
-
-    #[ORM\ManyToOne(inversedBy: 'utilisateurs')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?role $role = null;
-
-    /**
      * @var Collection<int, produit>
      */
-    #[ORM\ManyToMany(targetEntity: produit::class, inversedBy: 'utilisateurs')]
+    #[ORM\ManyToMany(targetEntity: Produit::class, inversedBy: 'utilisateurs')]
     private Collection $produit;
+
+    /**
+     * @var Collection<int, fournisseur>
+     */
+    #[ORM\OneToMany(targetEntity: Fournisseur::class, mappedBy: 'utilisateur', orphanRemoval: true)]
+    private Collection $fournisseur;
+
+    public function __construct()
+    {
+        // Initialisation des collections
+
+        $this->commande = new ArrayCollection();
+        $this->utilisateur_adresse = new ArrayCollection();
+        $this->produit = new ArrayCollection();
+        $this->fournisseur = new ArrayCollection();
+    }
+
+    ##########################################################################################
+    # Méthodes getters et setters permettant de lire et modifier les propriétés de l'entité. #
+    ##########################################################################################
+
+    public function getId(): ?int
+    {
+        return $this->id; // Retourne l'id de l'utilisateur
+    }
+
+    public function getUtilisateurPrenom(): ?string
+    {
+        return $this->utilisateur_prenom; // Retourne le prenom de l'utilisateur
+    }
+
+    public function setUtilisateurPrenom(string $utilisateur_prenom): static
+    {
+        $this->utilisateur_prenom = $utilisateur_prenom; // Modifie le prenom de l'utilisateur
+
+        return $this; // Retourne l'objet actuel
+    }
+
+    public function getUtilisateurNom(): ?string
+    {
+        return $this->utilisateur_nom; // Retourne le nom de l'utilisateur
+    }
+
+    public function setUtilisateurNom(string $utilisateur_nom): static
+    {
+        $this->utilisateur_nom = $utilisateur_nom; // Modifie le nom de l'utilisateur
+
+        return $this; // Retourne l'objet actuel
+    }
+
+    public function getUtilisateurSiret(): ?string
+    {
+        return $this->utilisateur_siret; // Retourne le siret de l'utilisateur
+    }
+
+    public function setUtilisateurSiret(?string $utilisateur_siret): static
+    {
+        $this->utilisateur_siret = $utilisateur_siret; // Modifie le siret de l'utilisateur
+
+        return $this; // Retourne l'objet actuel
+    }
+
+    public function getUtilisateurMail(): ?string
+    {
+        return $this->utilisateur_mail; // Retourne le mail de l'utilisateur
+    }
+
+    public function setUtilisateurMail(string $utilisateur_mail): static
+    {
+        $this->utilisateur_mail = $utilisateur_mail; // Modifie le mail de l'utilisateur
+
+        return $this; // Retourne l'objet actuel
+    }
+
+    public function getUtilisateurReference(): ?string
+    {
+        return $this->utilisateur_reference; // Retourne la reference de l'utilisateur
+    }
+
+    public function setUtilisateurReference(string $utilisateur_reference): static
+    {
+        $this->utilisateur_reference = $utilisateur_reference; // Modifie la reference de l'utilisateur
+
+        return $this; // Retourne l'objet actuel
+    }
+
+    public function getUtilisateurMdp(): ?string
+    {
+        return $this->utilisateur_mdp; // Retourne le mot de passe de l'utilisateur
+    }
+
+    public function setUtilisateurMdp(string $utilisateur_mdp): static
+    {
+        $this->utilisateur_mdp = $utilisateur_mdp; // Modifie le mot de passe de l'utilisateur
+
+        return $this; // Retourne l'objet actuel
+    }
+
+    public function getUtilisateurTelephone(): ?string
+    {
+        return $this->utilisateur_telephone; // Retourne le telephone de l'utilisateur
+    }
+
+    public function setUtilisateurTelephone(string $utilisateur_telephone): static
+    {
+        $this->utilisateur_telephone = $utilisateur_telephone; // Modifie le telephone de l'utilisateur
+
+        return $this; // Retourne l'objet actuel
+    }
+
+    public function getUtilisateurCoef(): ?string
+    {
+        return $this->utilisateur_coef; // Retourne le coef de l'utilisateur
+    }
+
+    public function setUtilisateurCoef(string $utilisateur_coef): static
+    {
+        $this->utilisateur_coef = $utilisateur_coef; // Modifie le coef de l'utilisateur
+
+        return $this; // Retourne l'objet actuel
+    }
+
+    public function getUtilisateurDerniereCo(): ?\DateTimeInterface
+    {
+        return $this->utilisateur_derniere_co; // Retourne la derniere connexion de l'utilisateur
+    }
+
+    public function setUtilisateurDerniereCo(\DateTimeInterface $utilisateur_derniere_co): static
+    {
+        $this->utilisateur_derniere_co = $utilisateur_derniere_co; // Modifie la derniere connexion de l'utilisateur
+
+        return $this; // Retourne l'objet actuel
+    }
+
+    public function getRole(): ?Role
+    {
+        return $this->role;
+    }
+
+    public function setRole(?Role $role): static
+    {
+        $this->role = $role;
+
+        return $this;
+    }
 
     /**
      * @return Collection<int, commande>
      */
     public function getCommande(): Collection
     {
-        return $this -> commande; // Retourne la collection des commandes
+        return $this->commande; // Retourne la collection des commandes
     }
 
     // Ajoute une commande au utilisateur
     public function addCommande(Commande $commande): static
     {
         // Si la commande n'existe pas dans la collection
-        if (!$this -> commande -> contains($commande)) {
+        if (!$this->commande->contains($commande)) {
 
             // Ajoute la commande a la collection
-            $this -> commande -> add($commande);
+            $this->commande->add($commande);
 
             // Lie la commande a l'utilisateur
-            $commande -> setUtilisateur($this);
+            $commande->setUtilisateur($this);
         }
 
         return $this; // Retourne l'objet actuel
@@ -257,13 +266,13 @@ class Utilisateur
     public function removeCommande(Commande $commande): static
     {
         // Supprime la commande de la collection
-        if ($this -> commande -> removeElement($commande)) {
-            
+        if ($this->commande->removeElement($commande)) {
+
             // Si la commande est lié au utilisateur
-            if ($commande -> getUtilisateur() === $this) {
+            if ($commande->getUtilisateur() === $this) {
 
                 // Lie la commande a null
-                $commande -> setUtilisateur(null);
+                $commande->setUtilisateur(null);
             }
         }
 
@@ -275,20 +284,20 @@ class Utilisateur
      */
     public function getUtilisateurAdresse(): Collection
     {
-        return $this -> utilisateur_adresse; // Retourne la collection des adresses
+        return $this->utilisateur_adresse; // Retourne la collection des adresses
     }
 
     // Ajoute une adresse au utilisateur
     public function addUtilisateurAdresse(Adresse $utilisateurAdresse): static
     {
         // Si l'adresse n'existe pas dans la collection
-        if (!$this -> utilisateur_adresse -> contains($utilisateurAdresse)) {
+        if (!$this->utilisateur_adresse->contains($utilisateurAdresse)) {
 
             // Ajoute l'adresse a la collection
-            $this -> utilisateur_adresse -> add($utilisateurAdresse);
+            $this->utilisateur_adresse->add($utilisateurAdresse);
 
             // Lie l'adresse a l'utilisateur
-            $utilisateurAdresse -> setUtilisateur($this);
+            $utilisateurAdresse->setUtilisateur($this);
         }
 
         return $this; // Retourne l'objet actuel
@@ -298,14 +307,14 @@ class Utilisateur
     public function removeUtilisateurAdresse(Adresse $utilisateurAdresse): static
     {
         // Supprime l'adresse de la collection
-        if ($this -> utilisateur_adresse -> removeElement($utilisateurAdresse)) {
-            
+        if ($this->utilisateur_adresse->removeElement($utilisateurAdresse)) {
+
             // Si l'adresse est liée au utilisateur
-            if ($utilisateurAdresse -> getUtilisateur() === $this) {
+            if ($utilisateurAdresse->getUtilisateur() === $this) {
 
                 // Lie l'adresse a null
-                $utilisateurAdresse -> setUtilisateur(null);
-            } 
+                $utilisateurAdresse->setUtilisateur(null);
+            }
         }
 
         return $this; // Retourne l'objet actuel
@@ -314,55 +323,16 @@ class Utilisateur
     // Vérifie si l'utilisateur est verifié
     public function isVerified(): bool
     {
-        return $this -> Verification; // Retourne si l'utilisateur est verifié
+        return $this->Verification; // Retourne si l'utilisateur est verifié
     }
 
     // Modifie si l'utilisateur est verifié
     public function setVerified(bool $Verification): static
     {
         // Si l'utilisateur est verifié 
-        $this -> Verification = $Verification;
+        $this->Verification = $Verification;
 
         return $this; // Retourne l'objet actuel
-    }
-
-    /**
-     * @return Collection<int, Fournisseur>
-     */
-    public function getFournisseurs(): Collection
-    {
-        return $this->fournisseurs;
-    }
-
-    public function addFournisseur(Fournisseur $fournisseur): static
-    {
-        if (!$this->fournisseurs->contains($fournisseur)) {
-            $this->fournisseurs->add($fournisseur);
-            $fournisseur->addIdUtilisateur($this);
-        }
-
-        return $this;
-    }
-
-    public function removeFournisseur(Fournisseur $fournisseur): static
-    {
-        if ($this->fournisseurs->removeElement($fournisseur)) {
-            $fournisseur->removeIdUtilisateur($this);
-        }
-
-        return $this;
-    }
-
-    public function getRole(): ?role
-    {
-        return $this->role;
-    }
-
-    public function setRole(?role $role): static
-    {
-        $this->role = $role;
-
-        return $this;
     }
 
     /**
@@ -373,7 +343,7 @@ class Utilisateur
         return $this->produit;
     }
 
-    public function addProduit(produit $produit): static
+    public function addProduit(Produit $produit): static
     {
         if (!$this->produit->contains($produit)) {
             $this->produit->add($produit);
@@ -382,11 +352,40 @@ class Utilisateur
         return $this;
     }
 
-    public function removeProduit(produit $produit): static
+    public function removeProduit(Produit $produit): static
     {
         $this->produit->removeElement($produit);
 
         return $this;
     }
-    
+
+    /**
+     * @return Collection<int, fournisseur>
+     */
+    public function getFournisseur(): Collection
+    {
+        return $this->fournisseur;
+    }
+
+    public function addFournisseur(fournisseur $fournisseur): static
+    {
+        if (!$this->fournisseur->contains($fournisseur)) {
+            $this->fournisseur->add($fournisseur);
+            $fournisseur->setUtilisateur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFournisseur(Fournisseur $fournisseur): static
+    {
+        if ($this->fournisseur->removeElement($fournisseur)) {
+            // set the owning side to null (unless already changed)
+            if ($fournisseur->getUtilisateur() === $this) {
+                $fournisseur->setUtilisateur(null);
+            }
+        }
+
+        return $this;
+    }
 }

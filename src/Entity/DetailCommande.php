@@ -33,11 +33,11 @@ class DetailCommande
 
     #[ORM\ManyToOne(inversedBy: 'detailCommandes')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?produit $produit = null;
+    private ?Produit $produit = null;
 
     #[ORM\ManyToOne(inversedBy: 'detailCommandes')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?commande $commande = null;
+    private ?Commande $commande = null;
 
     // Le constructeur de la classe 
     public function __construct()
@@ -77,24 +77,24 @@ class DetailCommande
         return $this; // Retourne l'objet actuel
     }
 
-    public function getProduit(): ?produit
+    public function getProduit(): ?Produit
     {
         return $this->produit;
     }
 
-    public function setProduit(?produit $produit): static
+    public function setProduit(?Produit $produit): static
     {
         $this->produit = $produit;
 
         return $this;
     }
 
-    public function getCommande(): ?commande
+    public function getCommande(): ?Commande
     {
         return $this->commande;
     }
 
-    public function setCommande(?commande $commande): static
+    public function setCommande(?Commande $commande): static
     {
         $this->commande = $commande;
 

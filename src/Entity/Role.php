@@ -25,8 +25,9 @@ class Role
     #[ORM\Column(length: 255)]
     private ?string $role_type = null;
 
-    // Colonne role_niveau
-    #[ORM\Column(length: 255)]
+// TODO  SUP Colonne role_niveau
+
+    #[ORM\Column(length: 255, nullable:true)]
     private ?string $role_niveau = null;
 
     /**

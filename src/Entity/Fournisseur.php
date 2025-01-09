@@ -59,20 +59,17 @@ class Fournisseur
     #[ORM\OneToMany(targetEntity: Produit::class, mappedBy: 'fournisseur', orphanRemoval: true)]
     private Collection $produit;
 
-    /**
-     * @var Collection<int, utilisateur>
-     */
-    #[ORM\ManyToMany(targetEntity: utilisateur::class, inversedBy: 'fournisseurs')]
-    private Collection $id_utilisateur;
+    #[ORM\ManyToOne(inversedBy: 'fournisseur')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Utilisateur $utilisateur = null;
 
     
-
     // Constructeur
     public function __construct()
     {
         $this -> adresse = new ArrayCollection();
         $this -> produit = new ArrayCollection();
-        $this->id_utilisateur = new ArrayCollection();
+       
     }
 
     ##########################################################################################
@@ -227,30 +224,17 @@ class Fournisseur
         return $this; // Retourne l'objet actuel
     }
 
-    /**
-     * @return Collection<int, utilisateur>
-     */
-    public function getIdUtilisateur(): Collection
+    public function getUtilisateur(): ?Utilisateur
     {
-        return $this->id_utilisateur;
+        return $this->utilisateur;
     }
 
-    public function addIdUtilisateur(utilisateur $idUtilisateur): static
+    public function setUtilisateur(?Utilisateur $utilisateur): static
     {
-        if (!$this->id_utilisateur->contains($idUtilisateur)) {
-            $this->id_utilisateur->add($idUtilisateur);
-        }
-
-        return $this;
-    }
-
-    public function removeIdUtilisateur(utilisateur $idUtilisateur): static
-    {
-        $this->id_utilisateur->removeElement($idUtilisateur);
+        $this->utilisateur = $utilisateur;
 
         return $this;
     }
 
 
-    
 }

@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Role;
 use App\Entity\Adresse;
 use App\Entity\Utilisateur;
 use App\Form\ConnexionType;
@@ -37,73 +38,65 @@ class UtilisateurController extends AbstractController
             name: 'app_connexion'
         )
     ]
-
     public function connexion(
 
         Request $request,
         EntityManagerInterface $entityManager,
-    ): Response 
-
-    {
+    ): Response {
         // Création du formulaire pour l'inscription utilisateur
-        $form = $this -> createForm(ConnexionType::class);
+        $form = $this->createForm(ConnexionType::class);
 
         // Traitement des données
-        $form -> handleRequest($request);
+        $form->handleRequest($request);
 
-        if ($form -> isSubmitted() && $form -> isValid()) 
-        {
-            // Récupérer les données du formulaire
-            $dataForm = $form -> getData();
+        if ($form->isSubmitted() && $form->isValid()) {
+            $dataForm = $form->getData();
             $mailForm = $dataForm["utilisateur_mail"];
-            $mdpForm = $dataForm ['utilisateur_mdp'];
-
-            //sert tjrs et seulement à récuperer un ou des objets dans la base de donnée 
-            $existe = $entityManager -> getRepository(Utilisateur::class)-> findBy(['utilisateur_mail' => $mailForm]);
-               
-            // si le mail est correct ET que le mdp est correct alors
-            if ($dataForm === $mailForm & $dataForm === $mdpForm)
-            {
-                // si le mot de passe est correct alors
-                if ($mdpForm === $dataForm)
-                {
-                    // on se connecte
-                    return $this -> redirectToRoute('app_accueil');
-                }
-            }
-            elseif ($dataForm !== $mailForm || $dataForm !== $mdpForm)
-            {
-                $this -> addFlash('error', 'Veuillez entrée un e-mail ou le mot de passe valide !');
-                return $this -> redirectToRoute('app_connexion');
-            }
-
-// envoyer derniere date de connexion à la base de donnée
-
+            $mdpForm = $dataForm['utilisateur_mdp'];
         
+            // Recherche de l'utilisateur par email uniquement
+            $objUser = $entityManager->getRepository(Utilisateur::class)->findOneBy(['utilisateur_mail' => $mailForm]);
+        
+            if (!$objUser || !password_verify($mdpForm, $objUser->getUtilisateurMdp())) {
+                $this->addFlash('error', 'Veuillez entrer un e-mail ou un mot de passe valide !');
+                return $this->redirectToRoute('app_connexion');
+            }
+        
+            return $this->redirectToRoute('app_accueil');
         }
         
-        return $this -> render('utilisateur/connexion.html.twig',
-        [
-            'form' => $form -> createView(),
-        ]);
+
+        return $this->render(
+            'utilisateur/connexion.html.twig',
+            [
+                'form' => $form->createView(),
+            ]
+        );
     }
     // TRAITEMENT DES BOUTON ( BTN DE CONNEXION ET BTN DE DÉCONNEXION)
 
+    /**
+     * Fonction qui permet de traiter les requêtes HTTP de login
+     *
+     * @param AuthenticationUtils $authenticationUtils Objet d'un classe contenant des outils d'authentification
+     */
     #[Route(path: '/login', name: 'app_login')]
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
 
         // get the login error if there is one
-        $error = $authenticationUtils -> getLastAuthenticationError();
+        $error = $authenticationUtils->getLastAuthenticationError();
 
         // last username entered by the user
-        $lastUsername = $authenticationUtils -> getLastUsername();
+        $lastUsername = $authenticationUtils->getLastUsername();
 
-        return $this -> render('security/connexion.html.twig', 
-        [
-            'last_username' => $lastUsername,
-            'error' => $error,
-        ]);
+        return $this->render(
+            'security/connexion.html.twig',
+            [
+                'last_username' => $lastUsername,
+                'error' => $error,
+            ]
+        );
     }
 
     #[Route(path: '/logout', name: 'app_logout')]
@@ -124,36 +117,32 @@ class UtilisateurController extends AbstractController
             name: 'app_inscription',
 
         )
-    ]    
-
+    ]
     // Les données de l'user permettant d'interagire avec la bd
     public function index(Request $request, Security $security, EntityManagerInterface $entityManager): Response
     {
-
         // Création du formulaire
-        $form = $this -> createForm(InscriptionType::class);
+        $form = $this->createForm(InscriptionType::class);
 
         // Récupère les données soumises
-        $form -> handleRequest($request);
+        $form->handleRequest($request);
 
         // Vérifie si le form est soumis et valide
-        if ($form -> isSubmitted() && $form -> isValid()) 
-        {
+        if ($form->isSubmitted() && $form->isValid()) {
             // vérifie si le mail est unique dans la bd
-            $email = $form -> getData(['utilisateur_mail']);
-            $utilisateur = $entityManager -> getRepository(Utilisateur::class) -> findBy(['utilisateur_mail' => $email]);
+            $email = $form->getData(['utilisateur_mail']);
+            $utilisateur = $entityManager->getRepository(Utilisateur::class)->findBy(['utilisateur_mail' => $email]);
 
             // Si le mail est unique alors on redirige vers la page de connexion
-            if (count($utilisateur) > 0) 
-            {
-                $this -> addFlash('error', 'Ce mail existe deja');
-                return $this -> redirectToRoute('app_connexion');
+            if (count($utilisateur) > 0) {
+                $this->addFlash('error', 'Ce mail existe deja');
+                return $this->redirectToRoute('app_connexion');
             }
 
             // Création de l'entité Utilisateur et de l'entité Adresse avec les données du formulaire
 
-            $data = $form -> getData(); // Récupère les donées du form
-            $nom = $data['utilisateur_nom']; 
+            $data = $form->getData(); // Récupère les donées du form
+            $nom = $data['utilisateur_nom'];
             $prenom = $data['utilisateur_prenom'];
             $adresse_libelle = $data['adresse_libelle'];
             $adresse_ville = $data['adresse_ville'];
@@ -163,38 +152,41 @@ class UtilisateurController extends AbstractController
             $utilisateur_mdp = password_hash($data['utilisateur_mdp'], PASSWORD_DEFAULT);
 
             $utilisateur = new Utilisateur();
-            $utilisateur -> setUtilisateurNom($nom);
-            $utilisateur -> setUtilisateurCoef('1');
-            $utilisateur -> setUtilisateurDerniereCo(new \DateTime());
-            $utilisateur -> setVerified(false);
-            $utilisateur -> setUtilisateurPrenom($prenom);
-            $utilisateur -> setUtilisateurMail($utilisateur_mail);
-            $utilisateur -> setUtilisateurTelephone($utilisateur_telephone);
-            $utilisateur -> setUtilisateurReference($utilisateur_mail);
-            $utilisateur -> setUtilisateurMdp($utilisateur_mdp );
+            $utilisateur->setUtilisateurNom($nom);
+            $utilisateur->setUtilisateurCoef('1');
+            $utilisateur->setUtilisateurDerniereCo(new \DateTime());
+            $utilisateur->setVerified(false);
+            $utilisateur->setUtilisateurPrenom($prenom);
+            $utilisateur->setUtilisateurMail($utilisateur_mail);
+            $utilisateur->setUtilisateurTelephone($utilisateur_telephone);
+            $utilisateur->setUtilisateurReference($utilisateur_mail);
+            $utilisateur->setUtilisateurMdp($utilisateur_mdp);
+            $role = $entityManager->getRepository(Role::class)->findOneBy(["role_type" => "Client"]);
+            $utilisateur->setRole($role);
 
 
             $adresse = new Adresse();
-            $adresse -> setAdresseLibelle($adresse_libelle);
-            $adresse -> setUtilisateur($utilisateur);
-            $adresse -> setAdresseVille($adresse_ville);
-            $adresse -> setAdressePostal($adresse_postal);
-            $adresse -> setAdresseType('1');
-            $adresse -> setAdresseTelephone($utilisateur_telephone);
-            $adresse -> setUtilisateur($utilisateur); // Lier l'adresse à l'utilisateur
+            $adresse->setAdresseLibelle($adresse_libelle);
+            $adresse->setAdressePostal($adresse_postal);
+            $adresse->setAdresseType('1');
+            $adresse->setAdresseTelephone($utilisateur_telephone);
+            $adresse->setAdresseVille($adresse_ville);
+            //   $adresse -> setUtilisateur($utilisateur); // Lier l'adresse à l'utilisateur
 
             // dump($adresse);
             // dd($utilisateur);
 
             // Prépare l'entité Utilisateur et l'entité Adresse pour la bd
-            $entityManager -> persist($utilisateur);
-            $entityManager -> persist($adresse);
+            $entityManager->persist($utilisateur);
+            $entityManager->persist($adresse);
+
+
 
             // Sauvegarde les modifications en base
-            $entityManager -> flush();
+            $entityManager->flush();
 
             // Envoie de l'email de confirmation d'adresse  
-            $this -> emailVerifier -> sendEmailConfirmation(
+            $this->emailVerifier->sendEmailConfirmation(
                 'app_verify_email',
                 $utilisateur,
 
@@ -202,25 +194,25 @@ class UtilisateurController extends AbstractController
                 (new TemplatedEmail())
 
                     // Paramètres de l'email
-                    -> from(new Address('contact@villagegreen.com', 'villagegreen support'))
-                    -> to((string) $utilisateur -> getUtilisateurMail())
-                    -> subject('Confirmation du mail')
-                    -> htmlTemplate(
+                    ->from(new Address('contact@villagegreen.com', 'villagegreen support'))
+                    ->to((string) $utilisateur->getUtilisateurMail())
+                    ->subject('Confirmation du mail')
+                    ->htmlTemplate(
                         'mail/confirmation_email.html.twig'
                     )
             );
 
             // Redirige vers la page d'accueil
-            return $this -> redirectToRoute('app_accueil');
+            return $this->redirectToRoute('app_accueil');
         }
 
         // Affichage du formulaire 
-        return $this -> render(
+        return $this->render(
             'utilisateur/inscription.html.twig',
 
             [
                 // Création du formulaire et affichage du formulaire dans la vue
-                'form' => $form -> createView(),
+                'form' => $form->createView(),
             ]
         );
     }
@@ -233,53 +225,47 @@ class UtilisateurController extends AbstractController
         )
     ]
 
-    
+
     public function verifyUserEmail(
 
         // Paramètres de la route /verify/email 
         Request $request,
         TranslatorInterface $translator,
         UtilisateurRepository $utilisateurRepository
-    ): Response 
-    
-    {
+    ): Response {
         // ID transmit dans le lien
-        $id = $request -> query -> get('id');
+        $id = $request->query->get('id');
         // Recherche de l'user avec l'id
-        $user = $utilisateurRepository -> find($id);
+        $user = $utilisateurRepository->find($id);
 
-        if (null === $id || null === $user) 
-        {
-            return $this -> redirectToRoute('app_inscription');
+        if (null === $id || null === $user) {
+            return $this->redirectToRoute('app_inscription');
         }
 
         // Gestion d'erreur
-        try 
-        {
-            $this -> emailVerifier -> handleEmailConfirmation($request, $user);
-        } 
-        catch (VerifyEmailExceptionInterface $exception) 
-        {
-            $this -> addFlash(
+        try {
+            $this->emailVerifier->handleEmailConfirmation($request, $user);
+        } catch (VerifyEmailExceptionInterface $exception) {
+            $this->addFlash(
 
                 'verify_email_error',
 
-                $translator -> trans(
+                $translator->trans(
 
-                    $exception -> getReason(),
+                    $exception->getReason(),
 
                     [],
                     'VerifyEmailBundle'
                 )
             );
 
-            return $this -> redirectToRoute('app_inscription');
+            return $this->redirectToRoute('app_inscription');
         }
 
         // Message flash de confirmation d'adresse 
-        $this -> addFlash('success', 'Ton adresse est vérifier.');
+        $this->addFlash('success', 'Ton adresse est vérifier.');
 
-        return $this -> redirectToRoute('app_accueil');
+        return $this->redirectToRoute('app_accueil');
     }
     /*####################################################################################################################################
     *                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~      COMMANDE CONTROLLER     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
