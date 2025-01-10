@@ -53,18 +53,18 @@ class UtilisateurController extends AbstractController
             $dataForm = $form->getData();
             $mailForm = $dataForm["utilisateur_mail"];
             $mdpForm = $dataForm['utilisateur_mdp'];
-        
+
             // Recherche de l'utilisateur par email uniquement
             $objUser = $entityManager->getRepository(Utilisateur::class)->findOneBy(['utilisateur_mail' => $mailForm]);
-        
+
             if (!$objUser || !password_verify($mdpForm, $objUser->getUtilisateurMdp())) {
                 $this->addFlash('error', 'Veuillez entrer un e-mail ou un mot de passe valide !');
                 return $this->redirectToRoute('app_connexion');
             }
-        
+
             return $this->redirectToRoute('app_accueil');
         }
-        
+
 
         return $this->render(
             'utilisateur/connexion.html.twig',
