@@ -9,12 +9,12 @@
         
         <p>
             Bonjour
-            {# {{ client.prenom }}, #}
+            {{ utilisateur.utilisateurNom }},{{ utilisateur.utilisateurPrenom }}
         </p>
         <p>
             Nous vous remercions pour votre commande sur Village Green ! Nous sommes heureux de confirmer que votre commande a été enregistrée avec succès.
             Nous avons bien reçu votre commande passée le 
-            {# {{ commande.date|date('d/m/Y') }},  #}
+            {# {{ commande.commanDate|date('d/m/Y') }},  #}
             et elle est actuellement en cours de traitement.
         </p>
 

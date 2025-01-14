@@ -10,36 +10,29 @@
         
         <div class="row row-cols-1 row-cols-md-3 g-4 justify-content-center">
 
-        {# {% for element in collection %} #}
+        {% for rubrique in rubriques %}
 
-            <div class="col-4 my-5">
+            <div class="col-3 my-5">
+
                 <div class="card h-100 d-flex flex-column">
-                    <img src="{{ asset('image/acoustique1.webp')}}" alt="Guitare acoustique" class="card-img-top h-75">
+
+                    <a href="{{ path('app_rubrique_produits', { id:rubrique.id }) }}">
+
+                        <img 
+                            src="{{ asset('image/' ~ rubrique.rubriqueImage) }}" 
+                            alt="{{ rubrique.rubriqueLibelle }}" 
+                            class="card-img-top h-80"
+                        >
+                    </a>
                     <div class="card-body text-center">
-                        <p class="card-text h-25">Instrument a cordes</p>
+                        <p class="card-text h-25">{{ rubrique.rubriqueDescription }}</p>
                     </div>
+
                 </div>
+
             </div>
 
-            <div class="col-4 my-5">
-                <div class="card h-100 d-flex flex-column">
-                    <img src="{{ asset('image/saxo1.webp') }}" alt="Saxophone" class="card-img-top h-75">
-                    <div class="card-body text-center">
-                        <p class="card-text h-25">Instrument a vents</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-4 my-5">
-                <div class="card h-100 d-flex flex-column">
-                    <img src="{{ asset('image/batterie1.webp') }}" alt="Batterie" class="card-img-top h-75">
-                    <div class="card-body text-center">
-                        <p class="card-text h-25">Instrument a percutions</p>
-                    </div>
-                </div>
-            </div>
-
-        {# {% endfor %} #}
+        {% endfor %}
 
         </div>
         <!-- Best Sellers -->
@@ -50,41 +43,31 @@
 
         <div class="row row-cols-1 row-cols-md-3 g-4 justify-content-center mb-3">
 
-            <div class="col-4 my-5">
-                <div class="card h-100 d-flex flex-column">
-                    <img src="{{ asset('/image/violon1.webp') }}" alt="Violon" class="card-img-top h-75">
-                    <div class="card-body text-center">
-                        <p class="card-text h-25">Violon</p>
-                    </div>
-                </div>
-                <div class="text-center my-2">
-                    <a href="#" class="btn btn-light">Ajouter au panier</a>
-                </div>
-            </div>
+            {% for produit in produits %}
 
-            <div class="col-4 my-5">
-                <div class="card h-100 d-flex flex-column">
-                    <img src="{{ asset('/image/saxo1.webp') }}" alt="Saxophone" class="card-img-top h-75">
-                    <div class="card-body text-center">
-                        <p class="card-text h-25">Saxophone</p>
-                    </div>
-                </div>
-                <div class="text-center my-2">
-                    <a href="#" class="btn btn-light">Ajouter au panier</a>
-                </div>
-            </div>
+                <div class="col-3 my-5">
 
-            <div class="col-4 my-5">
-                <div class="card h-100 d-flex flex-column">
-                    <img src="{{ asset('/image/piano1.webp') }}" alt="Piano" class="card-img-top h-75">
-                    <div class="card-body text-center">
-                        <p class="card-text h-25">Piano</p>
+                    <div class="card h-100 d-flex flex-column">
+                        <img 
+                            src="{{ asset('/image/'~ produit.produitImage) }}" 
+                            alt="{{ produit.produitLibelle}}" 
+                            class="card-img-top h-50"
+                        >
+                        <div class="card-body text-center">
+                            <p class="card-text">{{ produit.produitDescription }}</p>
+                            <p class="card_text">Réf : {{ produit.produitReference }}</p>
+                            <p class="card_text">Stock : {{ produit.produitStock }} en stock.</p>
+                            <p><strong>Prix : </strong>{{ produit.produitPrixHt }} €</p>
+                        </div>
                     </div>
+
+                    <div class="text-center my-2">
+                        <a href="#" class="btn btn-light">Ajouter au panier</a>
+                    </div>
+                    
                 </div>
-                <div class="text-center my-2">
-                    <a href="#" class="btn btn-light">Ajouter au panier</a>
-                </div>
-            </div>
+
+            {% endfor %}
 
         </div>
 

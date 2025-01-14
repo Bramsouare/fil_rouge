@@ -6,18 +6,18 @@
 
     <div class="container mt-5">
     
-        <h1 class="text-center mb-4 text-white">Toutes nos instruments</h1>
+        <h1 class="text-center mb-4 text-white">Nos propositions</h1>
         
         <div class="row row-cols-1 row-cols-md-4 g-4">
 
             {% for produit in produits %}
             
-                <div class="col-3 my-5">
+                <div class="d-flex justify-content-center col-3 my-5">
                     <div class="card h-100 d-flex flex-column">
                         <img 
                             src="{{ asset('/image/'~ produit.produitImage) }}" 
                             alt="{{ produit.produitLibelle}}" 
-                            class="card-img-top h-50"
+                            class="card-img-top h-75"
                         >
                         <div class="card-body text-center">
                             <p class="card-text">{{ produit.produitDescription }}</p>
@@ -27,12 +27,16 @@
                         </div>
                     </div>
 
+                    <!-- Espace pour le bouton -->
                     <div class="text-center my-2">
-                        <a href="#" class="btn btn-light">Ajouter au panier</a>
+                        {# <a href="{{ path('app_panier') }}" class="btn btn-light">Ajouter au panier</a> #}
                     </div>
 
                 </div>
 
+                {% else %}
+                    <p>Aucun produit trouvé pour cette rubrique.</p>
+            
             {% endfor %}
 
         </div>
