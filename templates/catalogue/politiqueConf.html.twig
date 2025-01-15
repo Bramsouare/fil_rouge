@@ -1,65 +1,111 @@
-<div class="container d-flex justify-content-center">
-    <div class="row w-100">
-        <div class="col-10 mx-auto">
-            <!-- Mentions Légales -->
-            <h1 style="text-align: center;"><strong>MENTIONS LÉGALES</strong></h1>
-            <p style="text-align: center;"><strong>Nom du site :</strong> Village Green</p>
-            <p style="text-align: center;"><strong>Éditeur :</strong> Village Green SARL</p>
-            <p style="text-align: center;"><strong>Siège social :</strong> 1 rue de la victoire, 75000 Paris, France</p>
-            <p style="text-align: center;"><strong>SIRET :</strong> 987 654 321 00015</p>
-            <p style="text-align: center;"><strong>Responsable de publication :</strong> Ibrahima Souaré</p>
-            <p style="text-align: center;"><strong>Email :</strong> contact@villagegreen.com</p>
-            <p style="text-align: center;"><strong>Téléphone :</strong> 01 23 45 67 89</p>
-            <p style="text-align: center;"><strong>Hébergeur :</strong> OVHcloud, 2 rue Kellermann, 59100 Roubaix, France</p>
+{% extends 'base.html.twig' %}
 
-            <!-- Conditions Générales d'Utilisation -->
-            <h1 style="text-align: center;"><strong>CONDITIONS GÉNÉRALES D'UTILISATION</strong></h1>
-            <h2 style="text-align: center;">1. Présentation du site</h2>
-            <p style="text-align: center;">
-                Le site <strong>Village Green</strong> est dédié à la vente d'instruments de musique. Il est édité par Village Green SARL, immatriculée sous le numéro 987 654 321 00015. 
-                Contact : contact@villagegreen.com.
-            </p>
-            <h2 style="text-align: center;">2. Acceptation des CGU</h2>
-            <p style="text-align: center;">
-                En utilisant le site, vous acceptez les présentes CGU. Elles peuvent être modifiées à tout moment.
-            </p>
-            <h2 style="text-align: center;">3. Services proposés</h2>
-            <p style="text-align: center;">
-                Village Green propose la vente d'instruments de musique et accessoires. Chaque produit dispose d'une fiche descriptive.
-            </p>
-            <h2 style="text-align: center;">4. Création de compte utilisateur</h2>
-            <p style="text-align: center;">
-                La création d’un compte est obligatoire pour effectuer des achats. Vous êtes responsable de vos identifiants.
-            </p>
-            <h2 style="text-align: center;">5. Prix et paiements</h2>
-            <p style="text-align: center;">
-                Les prix sont indiqués en euros TTC. Paiement sécurisé via carte bancaire, PayPal ou virement bancaire.
-            </p>
+{% block title %}Village green{% endblock %}
 
-            <!-- Politique de Confidentialité -->
-            <h1 style="text-align: center;"><strong>POLITIQUE DE CONFIDENTIALITÉ</strong></h1>
-            <h2 style="text-align: center;">1. Introduction</h2>
-            <p style="text-align: center;">
-                Cette Politique explique comment <strong>Village Green</strong> collecte, utilise et protège vos données personnelles.
-            </p>
-            <h2 style="text-align: center;">2. Responsable du traitement</h2>
-            <p style="text-align: center;">
-                Responsable : Village Green SARL. Contact : privacy@villagegreen.com.
-            </p>
-            <h2 style="text-align: center;">3. Données collectées</h2>
-            <ul style="text-align: center; list-style: none; padding: 0;">
-                <li><strong>Données personnelles fournies :</strong> Nom, email, adresse, téléphone, etc.</li>
-                <li><strong>Données collectées automatiquement :</strong> IP, navigateur, historique.</li>
-                <li><strong>Données transactionnelles :</strong> Commandes, paiements.</li>
-            </ul>
-            <h2 style="text-align: center;">4. Finalités du traitement</h2>
-            <ul style="text-align: center; list-style: none; padding: 0;">
-                <li>Gérer vos commandes et livraisons.</li>
-                <li>Envoyer des communications promotionnelles.</li>
-                <li>Améliorer l’expérience utilisateur.</li>
-            </ul>
+{% block body %}
 
-            <p style="text-align: end;"><em>Date de dernière mise à jour : 14 janvier 2025</em></p>
+    <div class="container d-flex justify-content-center">
+
+        <div class="row w-100">
+            <div class="col-10 mx-auto  my-5">
+                <h1 style="text-align: center;"><strong>POLITIQUE DE CONFIDENTIALITÉ</strong></h1><br>
+
+                <p style="text-align: center;">Date de dernière mise à jour : <strong>14 janvier 2025</strong></p>
+
+                <h2 style="text-align: center;">1. Introduction</h2>
+                <p style="text-align: center;">
+                    La présente politique de confidentialité explique comment <strong>Village Green</strong>, immatriculée sous le numéro SIRET <strong>987 654 321 00015</strong>, collecte, utilise, stocke et protège vos données personnelles conformément au RGPD.
+                </p>
+
+                <h2 style="text-align: center;">2. Responsable du traitement</h2>
+                <p style="text-align: center;">
+                    Le responsable du traitement des données personnelles est : <strong>Village Green SARL</strong>. <br>
+                    Adresse : <strong>1 rue de la Victoire, 75000 Paris, France</strong><br>
+                    Email : <a href="mailto:privacy@villagegreen.com">privacy@villagegreen.com</a><br>
+                    Téléphone : <strong>01 23 45 67 89</strong>
+                </p>
+
+                <h2 style="text-align: center;">3. Données collectées</h2>
+                <ul style="text-align: center; list-style: none; padding: 0;">
+                    <li><strong>Données fournies volontairement :</strong> Nom, prénom, adresse email, numéro de téléphone, adresse postale, informations de paiement.</li>
+                    <li><strong>Données collectées automatiquement :</strong> Adresse IP, type de navigateur, système d'exploitation, historique de navigation.</li>
+                    <li><strong>Données transactionnelles :</strong> Commandes, factures, paiements.</li>
+                </ul>
+
+                <h2 style="text-align: center;">4. Finalités du traitement</h2>
+                <p style="text-align: center;">Les données collectées sont utilisées pour :</p>
+                <ul style="text-align: center; list-style: none; padding: 0;">
+                    <li>Gérer vos commandes, livraisons et paiements.</li>
+                    <li>Fournir un service client et répondre à vos demandes.</li>
+                    <li>Envoyer des communications marketing, si vous y avez consenti.</li>
+                    <li>Améliorer nos services et votre expérience utilisateur.</li>
+                    <li>Respecter nos obligations légales et réglementaires.</li>
+                </ul>
+
+                <h2 style="text-align: center;">5. Base légale du traitement</h2>
+                <p style="text-align: center;">
+                    Le traitement de vos données repose sur les bases légales suivantes :
+                </p>
+                <ul style="text-align: center; list-style: none; padding: 0;">
+                    <li>Exécution d’un contrat (gestion de vos commandes).</li>
+                    <li>Consentement (envoi d'emails marketing).</li>
+                    <li>Obligations légales (conservation des factures).</li>
+                </ul>
+
+                <h2 style="text-align: center;">6. Partage des données</h2>
+                <p style="text-align: center;">
+                    Vos données personnelles peuvent être partagées avec :
+                </p>
+                <ul style="text-align: center; list-style: none; padding: 0;">
+                    <li>Nos partenaires logistiques (livraison).</li>
+                    <li>Nos prestataires de paiement sécurisés.</li>
+                    <li>Les autorités légales, si requis par la loi.</li>
+                </ul>
+
+                <h2 style="text-align: center;">7. Durée de conservation</h2>
+                <p style="text-align: center;">
+                    Vos données sont conservées aussi longtemps que nécessaire pour remplir les finalités décrites, ou conformément aux durées légales de conservation :
+                </p>
+                <ul style="text-align: center; list-style: none; padding: 0;">
+                    <li><strong>Données liées aux commandes :</strong> 10 ans (obligations comptables).</li>
+                    <li><strong>Données marketing :</strong> Jusqu'à votre désinscription ou 3 ans après votre dernière interaction.</li>
+                </ul>
+
+                <h2 style="text-align: center;">8. Vos droits</h2>
+                <p style="text-align: center;">
+                    Conformément au RGPD, vous disposez des droits suivants :
+                </p>
+                <ul style="text-align: center; list-style: none; padding: 0;">
+                    <li><strong>Droit d’accès :</strong> Obtenir une copie de vos données personnelles.</li>
+                    <li><strong>Droit de rectification :</strong> Corriger des données inexactes ou incomplètes.</li>
+                    <li><strong>Droit à l’effacement :</strong> Demander la suppression de vos données (sous certaines conditions).</li>
+                    <li><strong>Droit d’opposition :</strong> Vous opposer à l’utilisation de vos données à des fins de marketing.</li>
+                    <li><strong>Droit à la portabilité :</strong> Recevoir vos données dans un format structuré et lisible.</li>
+                    <li><strong>Droit de limitation :</strong> Limiter le traitement de vos données.</li>
+                    <li><strong>Droit de retrait du consentement :</strong> Retirer votre consentement à tout moment.</li>
+                </ul>
+                <p style="text-align: center;">
+                    Pour exercer vos droits, contactez-nous à <a href="mailto:privacy@villagegreen.com">privacy@villagegreen.com</a>.
+                </p>
+
+                <h2 style="text-align: center;">9. Sécurité</h2>
+                <p style="text-align: center;">
+                    Nous mettons en œuvre des mesures de sécurité techniques et organisationnelles pour protéger vos données contre tout accès non autorisé, perte ou altération.
+                </p>
+
+                <h2 style="text-align: center;">10. Cookies</h2>
+                <p style="text-align: center;">
+                    Le Site utilise des cookies pour améliorer votre expérience. Vous pouvez gérer vos préférences en matière de cookies via les paramètres de votre navigateur. Pour plus d'informations, consultez notre <a href="{{ path('app_politiqueConf') }}">Politique de Cookies</a>.
+                </p>
+
+                <h2 style="text-align: center;">11. Modifications de la politique</h2>
+                <p style="text-align: center;">
+                    Cette politique peut être mise à jour. Consultez cette page régulièrement pour rester informé des modifications.
+                </p>
+
+                <p style="text-align: end;"><em>Date de dernière mise à jour : 14 janvier 2025</em></p>
+            </div>
         </div>
     </div>
-</div>
+
+{% endblock %}

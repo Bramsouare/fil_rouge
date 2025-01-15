@@ -32,13 +32,13 @@ security:
 
             # Activation de l'authentification par formulaire
             form_login:
-                login_path: app_connexion # Route pour afficher le FORMULAIRE de connexion
+                login_path: app_login # Route pour afficher le FORMULAIRE de connexion
                 check_path: app_login # BOUTON qui traite le formulaire de connexion
             custom_authenticator: App\Security\LoginFormAuthenticator
             entry_point: App\Security\LoginFormAuthenticator
                 # username_parameter: utilisateur_mail # Nom du champ pour l'identifiant
                 # password_parameter: utilisateur_mdp # Nom du champ pour le mot de passe
-                # enable_csrf: true
+                enable_csrf: true
 
             # Configuration de la déconnexion
             logout:

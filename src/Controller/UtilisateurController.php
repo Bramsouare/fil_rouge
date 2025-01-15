@@ -39,7 +39,7 @@ class UtilisateurController extends AbstractController
         )
     ]
     public function connexion(
-
+        AuthenticationUtils $authenticationUtils,
         Request $request,
         EntityManagerInterface $entityManager,
     ): Response {
@@ -56,7 +56,8 @@ class UtilisateurController extends AbstractController
 
             // Recherche de l'utilisateur par email uniquement
             $objUser = $entityManager->getRepository(Utilisateur::class)->findOneBy(['utilisateur_mail' => $mailForm]);
-
+           
+            dump($objUser);
             if (!$objUser || !password_verify($mdpForm, $objUser->getUtilisateurMdp())) {
                 $this->addFlash('error', 'Veuillez entrer un e-mail ou un mot de passe valide !');
                 return $this->redirectToRoute('app_connexion');
@@ -141,7 +142,7 @@ class UtilisateurController extends AbstractController
 
             // Création de l'entité Utilisateur et de l'entité Adresse avec les données du formulaire
 
-            $data = $form->getData(); // Récupère les donées du form
+            $data = $form->getData(); 
             $nom = $data['utilisateur_nom'];
             $prenom = $data['utilisateur_prenom'];
             $adresse_libelle = $data['adresse_libelle'];
@@ -315,21 +316,21 @@ class UtilisateurController extends AbstractController
     *                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~      COMMANDE CONTROLLER     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ####################################################################################################################################*/
 
-    // #[
-    //     Route(
-    //         '/commande',
-    //         name: 'app_commande',
-    //     )
-    // ]
-    // public function commande(): Response
-    // {
-    //     return $this->render(
-    //             'commande/index.html.twig',
-    //             [
-    //                 'controller_name' => 'UtilisateurController',
-    //             ]
-    //         );
-    // }
+    #[
+        Route(
+            '/commande',
+            name: 'app_commande',
+        )
+    ]
+    public function commande(): Response
+    {
+        return $this->render(
+                'commande/index.html.twig',
+                [
+                    'controller_name' => 'UtilisateurController',
+                ]
+            );
+    }
 
     /*####################################################################################################################################
     *                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~     PANIER CONTROLLER     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
