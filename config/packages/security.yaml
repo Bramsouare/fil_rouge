@@ -44,7 +44,7 @@ security:
             logout:
                 path: app_logout
                 # redirection après déconnexion
-                target: app_accueil
+                target: app_login
 
             # Activation de la fonctionnalité "se souvenir de moi"
             remember_me:

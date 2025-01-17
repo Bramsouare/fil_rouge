@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Entity\Role;
 use App\Entity\Adresse;
 use App\Entity\Utilisateur;
-use App\Form\ConnexionType;
 use App\Form\InscriptionType;
 use App\Security\EmailVerifier;
 use Symfony\Component\Mime\Address;
@@ -32,48 +31,56 @@ class UtilisateurController extends AbstractController
 
     // CRÉATION ET GESTION DE FORMULAIRE
     // Utilise les fonctions de la classe AbstractController: création et gestion du formulaire
-    #[
-        Route(
-            path: '/connexion',
-            name: 'app_connexion'
-        )
-    ]
-    public function connexion(
-        AuthenticationUtils $authenticationUtils,
-        Request $request,
-        EntityManagerInterface $entityManager,
-    ): Response {
-        // Création du formulaire pour l'inscription utilisateur
-        $form = $this->createForm(ConnexionType::class);
+    // #[
+    //     Route(
+    //         path: '/connexion',
+    //         name: 'app_connexion'
+    //     )
+    // ]
+    // public function connexion(
+    //     Request $request,
+    //     EntityManagerInterface $entityManager,
+    // ): Response {
+    //     // Création du formulaire pour l'inscription utilisateur
+    //     $form = $this->createForm(ConnexionType::class);
 
-        // Traitement des données
-        $form->handleRequest($request);
+    //     // Traitement des données
+    //     $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $dataForm = $form->getData();
-            $mailForm = $dataForm["utilisateur_mail"];
-            $mdpForm = $dataForm['utilisateur_mdp'];
+    //     if ($form->isSubmitted() && $form->isValid()) {
+    //         $dataForm = $form->getData();
+    //         $mailForm = $dataForm["utilisateur_mail"];
+    //         $mdpForm = $dataForm['utilisateur_mdp'];
 
-            // Recherche de l'utilisateur par email uniquement
-            $objUser = $entityManager->getRepository(Utilisateur::class)->findOneBy(['utilisateur_mail' => $mailForm]);
+    //         // Recherche de l'utilisateur par email uniquement
+    //         $objUser = $entityManager->getRepository(Utilisateur::class)->findOneBy(['utilisateur_mail' => $mailForm]);
            
-            dump($objUser);
-            if (!$objUser || !password_verify($mdpForm, $objUser->getUtilisateurMdp())) {
-                $this->addFlash('error', 'Veuillez entrer un e-mail ou un mot de passe valide !');
-                return $this->redirectToRoute('app_connexion');
-            }
+    //         dump($objUser);
+    //         if (!$objUser || !password_verify($mdpForm, $objUser->getUtilisateurMdp())) {
+    //             $this->addFlash('error', 'Veuillez entrer un e-mail ou un mot de passe valide !');
+    //             return $this->redirectToRoute('app_login');
+    //         }
 
-            return $this->redirectToRoute('app_accueil');
-        }
+    //         return $this->redirectToRoute('app_accueil');
+    //     }
 
 
-        return $this->render(
-            'utilisateur/connexion.html.twig',
-            [
-                'form' => $form->createView(),
-            ]
-        );
-    }
+    //     return $this->render(
+    //         'utilisateur/connexion.html.twig',
+    //         [
+    //             'form' => $form->createView(),
+    //         ]
+    //     );
+    // }
+
+    // EX: debug
+    // error_log(str_repeat('#', 80));
+        // error_log(sprintf('YK [%s:%d] %s', __FILE__, __LINE__, $this->classOrAlias));
+        
+        // error_log(sprintf('YK [%s:%d] %s', __FILE__, __LINE__, get_class($repository)));
+        // error_log(sprintf('YK [%s:%d] %s', __FILE__, __LINE__, $this->property));
+        // error_log(sprintf('YK [%s:%d] %s', __FILE__, __LINE__, $identifier));
+        // error_log(str_repeat('#', 80));
     // TRAITEMENT DES BOUTON ( BTN DE CONNEXION ET BTN DE DÉCONNEXION)
 
     /**
@@ -104,7 +111,7 @@ class UtilisateurController extends AbstractController
     public function logout(): void
     {
         // Cette méthode est interceptée par Symfony via le pare-feu dans security.yaml.
-        throw new \LogicException('Cette méthode peut être vide.');
+        throw new \LogicException();
     }
     /*####################################################################################################################################
     *                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~      INSCRIPTION CONTROLLER     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                     

@@ -12,13 +12,14 @@ use Doctrine\ORM\Mapping as ORM;
 use App\Repository\UtilisateurRepository;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 // La classe est une entité gérée par Doctrine et associée à la table correspondante en base de données.
 #[ORM\Entity(repositoryClass: UtilisateurRepository::class)]
 #[UniqueEntity(fields: ['utilisateur_mail'], message: 'There is already an account with this utilisateur_mail')]
-
-class Utilisateur
+class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 {
     // Clé de l'entité.
     #[ORM\Id]
@@ -65,6 +66,33 @@ class Utilisateur
     // Colonne utilisateur_derniere_co
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $utilisateur_derniere_co = null;
+
+##########################################################################################
+
+   
+    public function getUserIdentifier(): string
+    {
+        return $this->utilisateur_mail; 
+    }
+
+
+    public function getPassword(): string
+    {
+        return $this->utilisateur_mdp;
+    }
+
+    public function getRoles(): array
+    {
+        return ['ROLE_USER'];
+    }
+
+    public function eraseCredentials(): void
+    {
+        // Si vous stockez des données sensibles temporairement dans l'entité (comme un mot de passe en clair),
+        // vous pouvez les nettoyer ici.
+    }
+
+###########################################################################################
 
     #[ORM\ManyToOne(inversedBy: 'utilisateurs')]
     #[ORM\JoinColumn(nullable: false)]
@@ -388,4 +416,5 @@ class Utilisateur
 
         return $this;
     }
+
 }
