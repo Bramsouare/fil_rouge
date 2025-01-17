@@ -9,12 +9,12 @@
         <h1 class="text-center my-5 text-white">Connexion</h1>
 
         <form action="{{ path('app_login') }}" method="post">
-
+ 
             <!-- Affiche les erreurs de validation sous forme de liste -->
             {% if error %}
                 <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
             {% endif %}
-
+{# TODO  #}
             {% if app.user %}
                 <div class="mb-3">
                     Bonjour vous êtes connecté : {{ app.user.username }}, <a href="{{ path('app_logout') }}">Logout</a>

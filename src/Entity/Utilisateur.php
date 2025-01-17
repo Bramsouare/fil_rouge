@@ -67,33 +67,6 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $utilisateur_derniere_co = null;
 
-##########################################################################################
-
-   
-    public function getUserIdentifier(): string
-    {
-        return $this->utilisateur_mail; 
-    }
-
-
-    public function getPassword(): string
-    {
-        return $this->utilisateur_mdp;
-    }
-
-    public function getRoles(): array
-    {
-        return ['ROLE_USER'];
-    }
-
-    public function eraseCredentials(): void
-    {
-        // Si vous stockez des données sensibles temporairement dans l'entité (comme un mot de passe en clair),
-        // vous pouvez les nettoyer ici.
-    }
-
-###########################################################################################
-
     #[ORM\ManyToOne(inversedBy: 'utilisateurs')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Role $role = null;
@@ -218,6 +191,11 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         return $this; // Retourne l'objet actuel
     }
 
+    public function getPassword(): string
+    {
+        return $this->utilisateur_mdp;
+    }
+
     public function getUtilisateurTelephone(): ?string
     {
         return $this->utilisateur_telephone; // Retourne le telephone de l'utilisateur
@@ -264,6 +242,22 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         $this->role = $role;
 
         return $this;
+    }
+
+    public function getRoles(): array
+    {
+        return ['ROLE_USER'];
+    }
+
+    public function getUserIdentifier(): string
+    {
+        return $this->utilisateur_mail; 
+    }
+
+    public function eraseCredentials(): void
+    {
+        // Si vous stockez des données sensibles temporairement dans l'entité (comme un mot de passe en clair),
+        // vous pouvez les nettoyer ici.
     }
 
     /**

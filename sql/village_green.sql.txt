@@ -11,7 +11,583 @@ CREATE TABLE adresse (
     adresse_libelle VARCHAR(255) NOT NULL,
     adresse_ville VARCHAR(255) NOT NULL,
     adresse_postal VARCHAR(255) NOT NULL,
-    adresse_type VARCHAR(255),
+    adresse_type VARCHAR(255),-- phpMyAdmin SQL Dump
+-- version 5.2.1deb3
+-- https://www.phpmyadmin.net/
+--
+-- Hôte : localhost:3306
+-- Généré le : ven. 17 jan. 2025 à 09:56
+-- Version du serveur : 10.11.8-MariaDB-0ubuntu0.24.04.1
+-- Version de PHP : 8.3.6
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
+--
+-- Base de données : `village_green`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `adresse`
+--
+
+CREATE TABLE `adresse` (
+  `id` int(11) NOT NULL,
+  `fournisseur_id` int(11) DEFAULT NULL,
+  `utilisateur_id` int(11) DEFAULT NULL,
+  `adresse_libelle` varchar(255) NOT NULL,
+  `adresse_ville` varchar(255) NOT NULL,
+  `adresse_postal` varchar(255) NOT NULL,
+  `adresse_type` varchar(255) NOT NULL,
+  `adresse_telephone` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Déchargement des données de la table `adresse`
+--
+
+INSERT INTO `adresse` (`id`, `fournisseur_id`, `utilisateur_id`, `adresse_libelle`, `adresse_ville`, `adresse_postal`, `adresse_type`, `adresse_telephone`) VALUES
+(5, NULL, NULL, '742 evergreen terasse', 'springfield', '63742', '1', '0123456789'),
+(6, NULL, NULL, '742 evergreen terasse', 'springfield', '63742', '1', '0123456789'),
+(7, NULL, NULL, '742 evergreen terasse', 'springfield', '63742', '1', '0123456789'),
+(8, NULL, NULL, '742 evergreen terasse', 'springfield', '63742', '1', '0123456789'),
+(9, NULL, NULL, '742 evergreen terasse', 'springfield', '63742', '1', '0123456789');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `commande`
+--
+
+CREATE TABLE `commande` (
+  `id` int(11) NOT NULL,
+  `utilisateur_id` int(11) NOT NULL,
+  `commande_paiement` varchar(255) NOT NULL,
+  `commande_date` datetime NOT NULL,
+  `commande_date_paiement` datetime NOT NULL,
+  `commande_differe` tinyint(1) NOT NULL,
+  `commande_statut` varchar(255) NOT NULL,
+  `commande_reference` varchar(255) NOT NULL,
+  `commande_facture_date` datetime NOT NULL,
+  `commande_total_ht` decimal(10,10) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `detail_commande`
+--
+
+CREATE TABLE `detail_commande` (
+  `id` int(11) NOT NULL,
+  `produit_id` int(11) NOT NULL,
+  `commande_id` int(11) NOT NULL,
+  `quantite` decimal(15,2) NOT NULL,
+  `prix_de_vente` decimal(19,4) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `detail_livraison`
+--
+
+CREATE TABLE `detail_livraison` (
+  `id` int(11) NOT NULL,
+  `produit_id` int(11) NOT NULL,
+  `livraison_id` int(11) NOT NULL,
+  `quantite` decimal(15,2) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `facture`
+--
+
+CREATE TABLE `facture` (
+  `id` int(11) NOT NULL,
+  `commande_id` int(11) NOT NULL,
+  `facture_libelle` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `fournisseur`
+--
+
+CREATE TABLE `fournisseur` (
+  `id` int(11) NOT NULL,
+  `utilisateur_id` int(11) NOT NULL,
+  `fournisseur_siret` varchar(255) NOT NULL,
+  `fournisseur_nom` varchar(255) NOT NULL,
+  `fournisseur_telephone` varchar(255) NOT NULL,
+  `fournisseur_mail` varchar(255) NOT NULL,
+  `fournisseur_constructeur` tinyint(1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Déchargement des données de la table `fournisseur`
+--
+
+INSERT INTO `fournisseur` (`id`, `utilisateur_id`, `fournisseur_siret`, `fournisseur_nom`, `fournisseur_telephone`, `fournisseur_mail`, `fournisseur_constructeur`) VALUES
+(1, 1, '123456789', 'beat', '123456789', 'beat@gmaiol.com', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `livraison`
+--
+
+CREATE TABLE `livraison` (
+  `id` int(11) NOT NULL,
+  `commande_id` int(11) NOT NULL,
+  `livraison_statut` varchar(255) NOT NULL,
+  `livraison_date` datetime NOT NULL,
+  `livraison_reference` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `messenger_messages`
+--
+
+CREATE TABLE `messenger_messages` (
+  `id` bigint(20) NOT NULL,
+  `body` longtext NOT NULL,
+  `headers` longtext NOT NULL,
+  `queue_name` varchar(190) NOT NULL,
+  `created_at` datetime NOT NULL COMMENT '(DC2Type:datetime_immutable)',
+  `available_at` datetime NOT NULL COMMENT '(DC2Type:datetime_immutable)',
+  `delivered_at` datetime DEFAULT NULL COMMENT '(DC2Type:datetime_immutable)'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `produit`
+--
+
+CREATE TABLE `produit` (
+  `id` int(11) NOT NULL,
+  `rubrique_id` int(11) NOT NULL,
+  `fournisseur_id` int(11) NOT NULL,
+  `tva_id` int(11) NOT NULL,
+  `produit_libelle` varchar(255) NOT NULL,
+  `produit_description` longtext NOT NULL,
+  `produit_prix_ht` decimal(15,2) NOT NULL,
+  `produit_reference` varchar(255) NOT NULL,
+  `produit_image` varchar(255) NOT NULL,
+  `produit_actif` tinyint(1) NOT NULL,
+  `produit_stock` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Déchargement des données de la table `produit`
+--
+
+INSERT INTO `produit` (`id`, `rubrique_id`, `fournisseur_id`, `tva_id`, `produit_libelle`, `produit_description`, `produit_prix_ht`, `produit_reference`, `produit_image`, `produit_actif`, `produit_stock`) VALUES
+(1, 1, 1, 1, 'Saxophone alto', 'Saxophone alto en laiton avec étui et accessoires. Idéal pour débutants.', 550.00, 'VENT001', 'saxo1.webp', 1, '5'),
+(2, 1, 1, 1, 'Saxophone ténor', 'Saxophone ténor en laiton avec une belle finition. Son riche et chaleureux.', 600.00, 'VENT002', 'saxo2.webp', 1, '5'),
+(3, 2, 1, 1, 'Guitare acoustique standard', 'Guitare acoustique en bois massif avec un son riche et clair. Idéale pour les débutants.', 300.00, 'CORDE001', 'acoustique1.webp', 1, '10'),
+(4, 2, 1, 1, 'Guitare acoustique haut de gamme', 'Guitare acoustique haut de gamme en bois de palissandre avec une finition soignée.', 750.00, 'CORDE002', 'acoustique2.webp', 1, '8'),
+(5, 2, 1, 1, 'Guitare électrique modèle 1', 'Guitare électrique modèle 1 avec corps en érable et micros humbucker pour un son puissant.', 500.00, 'CORDE003', 'guitare_elec1.webp', 1, '15'),
+(6, 2, 1, 1, 'Guitare électrique modèle 2', 'Guitare électrique modèle 2 avec micros single-coil et corps en alder pour un son clair et lumineux.', 550.00, 'CORDE004', 'guitare_elec2.webp', 1, '12'),
+(7, 3, 1, 1, 'Batterie acoustique standard', 'Batterie acoustique complète avec 5 pièces, idéale pour les débutants.', 700.00, 'PERC001', 'batterie1.webp', 1, '10'),
+(8, 3, 1, 1, 'Batterie acoustique professionnelle', 'Batterie acoustique professionnelle avec toms et cymbales de haute qualité.', 1500.00, 'PERC002', 'batterie2.webp', 1, '6'),
+(9, 4, 1, 1, 'Piano numérique', 'Piano numérique avec 88 touches et plusieurs sons pré-programmés.', 800.00, 'PIANO001', 'piano1.webp', 1, '4'),
+(10, 4, 1, 1, 'Piano acoustique', 'Piano acoustique à queue avec finition en bois noble pour une sonorité authentique.', 5000.00, 'PIANO002', 'piano2.webp', 1, '2'),
+(11, 2, 1, 1, 'Violon acoustique standard', 'Violon acoustique en bois avec des cordes en acier, idéal pour les débutants.', 250.00, 'CORDE005', 'violon1.webp', 1, '10'),
+(12, 2, 1, 1, 'Violon acoustique haut de gamme', 'Violon acoustique haut de gamme avec une finition en bois de qualité supérieure, sonorité riche et chaleureuse.', 800.00, 'CORDE006', 'violon2.webp', 1, '5');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `role`
+--
+
+CREATE TABLE `role` (
+  `id` int(11) NOT NULL,
+  `role_type` varchar(255) NOT NULL,
+  `role_niveau` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Déchargement des données de la table `role`
+--
+
+INSERT INTO `role` (`id`, `role_type`, `role_niveau`) VALUES
+(1, 'client', ''),
+(2, 'professionnel', ''),
+(3, 'admin', '');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `rubrique`
+--
+
+CREATE TABLE `rubrique` (
+  `id` int(11) NOT NULL,
+  `rubrique_id` int(11) DEFAULT NULL,
+  `rubrique_libelle` varchar(255) NOT NULL,
+  `rubrique_image` varchar(255) NOT NULL,
+  `rubrique_description` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Déchargement des données de la table `rubrique`
+--
+
+INSERT INTO `rubrique` (`id`, `rubrique_id`, `rubrique_libelle`, `rubrique_image`, `rubrique_description`) VALUES
+(1, 1, 'Instruments à vent', 'saxo1.webp', 'Rubrique regroupant les instruments à vent tels que saxophones, trompettes et flûtes.'),
+(2, 2, 'Instruments à cordes', 'acoustique1.webp', 'Rubrique dédiée aux instruments à cordes comme guitares, et violons.'),
+(3, 3, 'Instruments de percussion', 'batterie1.webp', 'Rubrique couvrant les instruments de percussion comme les batteries.'),
+(4, 4, 'Pianos et claviers', 'piano1.webp', 'Rubrique pour les pianos acoustiques, numériques et autres claviers.');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `tva`
+--
+
+CREATE TABLE `tva` (
+  `id` int(11) NOT NULL,
+  `tva_taux` decimal(10,2) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Déchargement des données de la table `tva`
+--
+
+INSERT INTO `tva` (`id`, `tva_taux`) VALUES
+(1, 18.60);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `utilisateur`
+--
+
+CREATE TABLE `utilisateur` (
+  `id` int(11) NOT NULL,
+  `role_id` int(11) NOT NULL,
+  `utilisateur_prenom` varchar(255) NOT NULL,
+  `utilisateur_nom` varchar(255) NOT NULL,
+  `utilisateur_siret` varchar(255) DEFAULT NULL,
+  `utilisateur_mail` varchar(255) NOT NULL,
+  `utilisateur_reference` varchar(255) NOT NULL,
+  `utilisateur_mdp` varchar(255) NOT NULL,
+  `utilisateur_telephone` varchar(255) NOT NULL,
+  `utilisateur_coef` varchar(255) NOT NULL,
+  `utilisateur_derniere_co` datetime NOT NULL,
+  `verification` tinyint(1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Déchargement des données de la table `utilisateur`
+--
+
+INSERT INTO `utilisateur` (`id`, `role_id`, `utilisateur_prenom`, `utilisateur_nom`, `utilisateur_siret`, `utilisateur_mail`, `utilisateur_reference`, `utilisateur_mdp`, `utilisateur_telephone`, `utilisateur_coef`, `utilisateur_derniere_co`, `verification`) VALUES
+(1, 2, 'Ibrahima', 'Souare', '', 'souare@gmail.com', '001', '123456789', '0123456789', '18.6', '2024-06-10 07:40:21', 1),
+(6, 1, 'Homer', 'Simpson', NULL, 'homer@simpson.com', 'homer@simpson.com', '$2y$10$04m4Y/5OKOFXFm3h/UAYk.6bg7Im6SyMF6JCU3SIwvFoSxUzxfcPK', '0123456789', '1', '2025-01-15 11:37:05', 1),
+(7, 1, 'Homer', 'Simpson', NULL, 'homer1@simpson.com', 'homer1@simpson.com', '$2y$10$qngVwR3n4LC3uoadciDSsOMk7hr3Ehs0pjOOBvAwqh6mKm8Qkt/iW', '0123456789', '1', '2025-01-15 15:28:14', 0),
+(8, 1, 'Homer', 'Simpson', NULL, 'homerr@simpson.com', 'homerr@simpson.com', '$2y$10$EiOaTTd5aRrQNN.GmLEd2.xaVFg9tzHWQzNI/N7s/bFxRv5PHmr2.', '0123456789', '1', '2025-01-15 15:52:09', 0),
+(9, 1, 'Homer', 'Simpson', NULL, 'homerrr@simpson.com', 'homerrr@simpson.com', '$2y$10$waq18WGvuPa9slQ3hmNixewawMA0diQREVDcdi26Jx7NtfxbiOIn6', '0123456789', '1', '2025-01-15 15:53:46', 0),
+(10, 1, 'Homer', 'Simpson', NULL, 'homer2@simpson.com', 'homer2@simpson.com', '$2y$10$KnyGmZ4b.xh8mq6mwcsAveNnMxMbL9Iuo8y0MG3WX/DhYDGZw13uG', '0123456789', '1', '2025-01-16 13:08:05', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `utilisateur_produit`
+--
+
+CREATE TABLE `utilisateur_produit` (
+  `utilisateur_id` int(11) NOT NULL,
+  `produit_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Index pour les tables déchargées
+--
+
+--
+-- Index pour la table `adresse`
+--
+ALTER TABLE `adresse`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `IDX_C35F0816670C757F` (`fournisseur_id`),
+  ADD KEY `IDX_C35F0816FB88E14F` (`utilisateur_id`);
+
+--
+-- Index pour la table `commande`
+--
+ALTER TABLE `commande`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `IDX_6EEAA67DFB88E14F` (`utilisateur_id`);
+
+--
+-- Index pour la table `detail_commande`
+--
+ALTER TABLE `detail_commande`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `IDX_98344FA6F347EFB` (`produit_id`),
+  ADD KEY `IDX_98344FA682EA2E54` (`commande_id`);
+
+--
+-- Index pour la table `detail_livraison`
+--
+ALTER TABLE `detail_livraison`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `IDX_B7FB4AAAF347EFB` (`produit_id`),
+  ADD KEY `IDX_B7FB4AAA8E54FB25` (`livraison_id`);
+
+--
+-- Index pour la table `facture`
+--
+ALTER TABLE `facture`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `UNIQ_FE86641082EA2E54` (`commande_id`);
+
+--
+-- Index pour la table `fournisseur`
+--
+ALTER TABLE `fournisseur`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `IDX_369ECA32FB88E14F` (`utilisateur_id`);
+
+--
+-- Index pour la table `livraison`
+--
+ALTER TABLE `livraison`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `IDX_A60C9F1F82EA2E54` (`commande_id`);
+
+--
+-- Index pour la table `messenger_messages`
+--
+ALTER TABLE `messenger_messages`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `IDX_75EA56E0FB7336F0` (`queue_name`),
+  ADD KEY `IDX_75EA56E0E3BD61CE` (`available_at`),
+  ADD KEY `IDX_75EA56E016BA31DB` (`delivered_at`);
+
+--
+-- Index pour la table `produit`
+--
+ALTER TABLE `produit`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `IDX_29A5EC273BD38833` (`rubrique_id`),
+  ADD KEY `IDX_29A5EC27670C757F` (`fournisseur_id`),
+  ADD KEY `IDX_29A5EC274D79775F` (`tva_id`);
+
+--
+-- Index pour la table `role`
+--
+ALTER TABLE `role`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `rubrique`
+--
+ALTER TABLE `rubrique`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `IDX_8FA4097C3BD38833` (`rubrique_id`);
+
+--
+-- Index pour la table `tva`
+--
+ALTER TABLE `tva`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `utilisateur`
+--
+ALTER TABLE `utilisateur`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `IDX_1D1C63B3D60322AC` (`role_id`);
+
+--
+-- Index pour la table `utilisateur_produit`
+--
+ALTER TABLE `utilisateur_produit`
+  ADD PRIMARY KEY (`utilisateur_id`,`produit_id`),
+  ADD KEY `IDX_53AE1BB5FB88E14F` (`utilisateur_id`),
+  ADD KEY `IDX_53AE1BB5F347EFB` (`produit_id`);
+
+--
+-- AUTO_INCREMENT pour les tables déchargées
+--
+
+--
+-- AUTO_INCREMENT pour la table `adresse`
+--
+ALTER TABLE `adresse`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+
+--
+-- AUTO_INCREMENT pour la table `commande`
+--
+ALTER TABLE `commande`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `detail_commande`
+--
+ALTER TABLE `detail_commande`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `detail_livraison`
+--
+ALTER TABLE `detail_livraison`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `facture`
+--
+ALTER TABLE `facture`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `fournisseur`
+--
+ALTER TABLE `fournisseur`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT pour la table `livraison`
+--
+ALTER TABLE `livraison`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `messenger_messages`
+--
+ALTER TABLE `messenger_messages`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `produit`
+--
+ALTER TABLE `produit`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+
+--
+-- AUTO_INCREMENT pour la table `role`
+--
+ALTER TABLE `role`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT pour la table `rubrique`
+--
+ALTER TABLE `rubrique`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT pour la table `tva`
+--
+ALTER TABLE `tva`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT pour la table `utilisateur`
+--
+ALTER TABLE `utilisateur`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
+--
+-- Contraintes pour les tables déchargées
+--
+
+--
+-- Contraintes pour la table `adresse`
+--
+ALTER TABLE `adresse`
+  ADD CONSTRAINT `FK_C35F0816670C757F` FOREIGN KEY (`fournisseur_id`) REFERENCES `fournisseur` (`id`),
+  ADD CONSTRAINT `FK_C35F0816FB88E14F` FOREIGN KEY (`utilisateur_id`) REFERENCES `utilisateur` (`id`);
+
+--
+-- Contraintes pour la table `commande`
+--
+ALTER TABLE `commande`
+  ADD CONSTRAINT `FK_6EEAA67DFB88E14F` FOREIGN KEY (`utilisateur_id`) REFERENCES `utilisateur` (`id`);
+
+--
+-- Contraintes pour la table `detail_commande`
+--
+ALTER TABLE `detail_commande`
+  ADD CONSTRAINT `FK_98344FA682EA2E54` FOREIGN KEY (`commande_id`) REFERENCES `commande` (`id`),
+  ADD CONSTRAINT `FK_98344FA6F347EFB` FOREIGN KEY (`produit_id`) REFERENCES `produit` (`id`);
+
+--
+-- Contraintes pour la table `detail_livraison`
+--
+ALTER TABLE `detail_livraison`
+  ADD CONSTRAINT `FK_B7FB4AAA8E54FB25` FOREIGN KEY (`livraison_id`) REFERENCES `livraison` (`id`),
+  ADD CONSTRAINT `FK_B7FB4AAAF347EFB` FOREIGN KEY (`produit_id`) REFERENCES `produit` (`id`);
+
+--
+-- Contraintes pour la table `facture`
+--
+ALTER TABLE `facture`
+  ADD CONSTRAINT `FK_FE86641082EA2E54` FOREIGN KEY (`commande_id`) REFERENCES `commande` (`id`);
+
+--
+-- Contraintes pour la table `fournisseur`
+--
+ALTER TABLE `fournisseur`
+  ADD CONSTRAINT `FK_369ECA32FB88E14F` FOREIGN KEY (`utilisateur_id`) REFERENCES `utilisateur` (`id`);
+
+--
+-- Contraintes pour la table `livraison`
+--
+ALTER TABLE `livraison`
+  ADD CONSTRAINT `FK_A60C9F1F82EA2E54` FOREIGN KEY (`commande_id`) REFERENCES `commande` (`id`);
+
+--
+-- Contraintes pour la table `produit`
+--
+ALTER TABLE `produit`
+  ADD CONSTRAINT `FK_29A5EC273BD38833` FOREIGN KEY (`rubrique_id`) REFERENCES `rubrique` (`id`),
+  ADD CONSTRAINT `FK_29A5EC274D79775F` FOREIGN KEY (`tva_id`) REFERENCES `tva` (`id`),
+  ADD CONSTRAINT `FK_29A5EC27670C757F` FOREIGN KEY (`fournisseur_id`) REFERENCES `fournisseur` (`id`);
+
+--
+-- Contraintes pour la table `rubrique`
+--
+ALTER TABLE `rubrique`
+  ADD CONSTRAINT `FK_8FA4097C3BD38833` FOREIGN KEY (`rubrique_id`) REFERENCES `rubrique` (`id`);
+
+--
+-- Contraintes pour la table `utilisateur`
+--
+ALTER TABLE `utilisateur`
+  ADD CONSTRAINT `FK_1D1C63B3D60322AC` FOREIGN KEY (`role_id`) REFERENCES `role` (`id`);
+
+--
+-- Contraintes pour la table `utilisateur_produit`
+--
+ALTER TABLE `utilisateur_produit`
+  ADD CONSTRAINT `FK_53AE1BB5F347EFB` FOREIGN KEY (`produit_id`) REFERENCES `produit` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `FK_53AE1BB5FB88E14F` FOREIGN KEY (`utilisateur_id`) REFERENCES `utilisateur` (`id`) ON DELETE CASCADE;
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
     adresse_telephone VARCHAR(255)
 );
 
