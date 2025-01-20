@@ -28,51 +28,6 @@ class UtilisateurController extends AbstractController
     *                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~      CONNEXION CONTROLLER     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ####################################################################################################################################*/
 
-
-    // CRÉATION ET GESTION DE FORMULAIRE
-    // Utilise les fonctions de la classe AbstractController: création et gestion du formulaire
-    // #[
-    //     Route(
-    //         path: '/connexion',
-    //         name: 'app_connexion'
-    //     )
-    // ]
-    // public function connexion(
-    //     Request $request,
-    //     EntityManagerInterface $entityManager,
-    // ): Response {
-    //     // Création du formulaire pour l'inscription utilisateur
-    //     $form = $this->createForm(ConnexionType::class);
-
-    //     // Traitement des données
-    //     $form->handleRequest($request);
-
-    //     if ($form->isSubmitted() && $form->isValid()) {
-    //         $dataForm = $form->getData();
-    //         $mailForm = $dataForm["utilisateur_mail"];
-    //         $mdpForm = $dataForm['utilisateur_mdp'];
-
-    //         // Recherche de l'utilisateur par email uniquement
-    //         $objUser = $entityManager->getRepository(Utilisateur::class)->findOneBy(['utilisateur_mail' => $mailForm]);
-           
-    //         dump($objUser);
-    //         if (!$objUser || !password_verify($mdpForm, $objUser->getUtilisateurMdp())) {
-    //             $this->addFlash('error', 'Veuillez entrer un e-mail ou un mot de passe valide !');
-    //             return $this->redirectToRoute('app_login');
-    //         }
-
-    //         return $this->redirectToRoute('app_accueil');
-    //     }
-
-
-    //     return $this->render(
-    //         'utilisateur/connexion.html.twig',
-    //         [
-    //             'form' => $form->createView(),
-    //         ]
-    //     );
-    // }
-
     // EX: debug
     // error_log(str_repeat('#', 80));
         // error_log(sprintf('YK [%s:%d] %s', __FILE__, __LINE__, $this->classOrAlias));
@@ -343,21 +298,21 @@ class UtilisateurController extends AbstractController
     *                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~     PANIER CONTROLLER     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ####################################################################################################################################*/
 
-    // #[
-    //     Route(
-    //         '/panier',
-    //         name: 'app_panier',
-    //     )
-    // ]
-    // public function panier(): Response
-    // {
-    //     return $this->render(
-    //             'utilisateur/panier.html.twig',
-    //             [
-    //                 'controller_name' => 'UtilisateurController',
-    //             ]
-    //         );
-    // }
+    #[
+        Route(
+            '/panier',
+            name: 'app_panier',
+        )
+    ]
+    public function panier(): Response
+    {
+        return $this->render(
+                'utilisateur/panier.html.twig',
+                [
+                    'controller_name' => 'UtilisateurController',
+                ]
+            );
+    }
 
     /*####################################################################################################################################
     *                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~     PAYEMENT  CONTROLLER     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
