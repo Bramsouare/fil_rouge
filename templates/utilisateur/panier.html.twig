@@ -3,41 +3,100 @@
 {% block title %}Panier{% endblock %}
 
 {% block body %}
-<div class="container">
 
-    <h1 class="text-center my-5 text-white">Panier</h1>  <!-- Texte en blanc pour le titre -->
+    <div class="container">
 
-    <div class="cart-container">
+        <h1 class="text-center my-5 text-white">Panier</h1>
 
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th scope="col" class="text-white">Produit</th>
-                    <th scope="col" class="text-white">Quantité</th>
-                    <th scope="col" class="text-white">Prix</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr class="table-row">
-                    <td class="text-white">Produit A</td>
-                    <td class="text-white">2</td>
-                    <td class="text-white">20 €</td>
-                </tr>
-                <tr class="table-row">
-                    <td class="text-white">Produit B</td>
-                    <td class="text-white">1</td>
-                    <td class="text-white">15 €</td>
-                </tr>
-            </tbody>
-        </table>
+        <div class="cart-container">
 
-        <!-- Total et Bouton -->
-        <div class="d-flex justify-content-between align-items-center">
-            <div><strong class="text-white">Total :</strong> 35 €</div>
-            <a href="{{ path('app_payement') }}" class="btn btn-light">Valider le panier</a>
+            {% if items | length > 0 %}
+
+                {% for message in app.flashes('success') %}
+                    <div class="alert alert-success">{{ message }}</div>
+                {% endfor %}
+
+
+                <table class="table table-striped">
+
+                    <thead>
+                        <tr>
+                            <th scope="col" class="text-white">Image</th>
+                            <th scope="col" class="text-white">Produit</th>
+                            <th scope="col" class="text-white">Quantité</th>
+                            <th scope="col" class="text-white">Prix Unitaire</th>
+                            <th scope="col" class="text-white">Total</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        {% set leTotal = 0 %}
+
+                        {% for item in items %}
+
+                            {% set total = item.produit.produitPrixHt * item.quantity %}
+                            {% set leTotal = leTotal + total %}
+
+                            <tr>
+                                <td>
+                                    <img src="{{ asset(item.produit.produitImage) }}" alt="Produit">
+                                </td>
+                                <td>{{ item.produit.produitLibelle }}</td>
+                                <td>
+                                    {{ item.quantity }} 
+
+                                    <a href="{{ path('panier_remove', {'id': item.produit.id }) }}">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </a>
+
+                                    <a href="{{ path('panier_decrementer', {'id': item.produit.id }) }}">
+                                        <i class="fa-solid fa-circle-minus"></i>
+                                    </a>
+
+                                    <a href="{{ path('panier_incrementer', {'id': item.produit.id }) }}">
+                                        <i class="fa-solid fa-circle-plus"></i>
+                                    </a>
+
+                                </td>
+                                <td>{{ item.produit.produitPrixHt }} €</td>
+                                <td>{{ total }} €</td> 
+
+                                <td>
+                                    
+                                </td>
+                            </tr>
+                            
+                        {% endfor %}
+                        <tr>
+                            <td><strong class="text-white">Total :</strong></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td>{{ leTotal }} €</td> 
+                            <td></td>
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+                <div class="d-flex justify-content-between align-items-center">
+                    <a href="{{ path('app_instrument') }}" class="btn btn-primary">Ajouter un autre produit</a>
+                    <a href="#" class="btn btn-light">Valider le panier</a>
+                </div>
+                
+                <a href="{{ path('panier_maj') }}" class="btn btn-danger mt-5">Vider le panier</a>
+
+                {% else %}
+
+                <p>Le panier est vide !</p>
+
+            {% endif %}
+            
         </div>
-
+        
     </div>
 
-</div>
 {% endblock %}

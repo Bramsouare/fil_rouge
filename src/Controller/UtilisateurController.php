@@ -4,12 +4,15 @@ namespace App\Controller;
 
 use App\Entity\Role;
 use App\Entity\Adresse;
+use App\Entity\Produit;
 use App\Entity\Utilisateur;
 use App\Form\InscriptionType;
+use App\Repository\ProduitRepository;
 use App\Security\EmailVerifier;
 use Symfony\Component\Mime\Address;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\UtilisateurRepository;
+use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,6 +20,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 
@@ -304,15 +308,177 @@ class UtilisateurController extends AbstractController
             name: 'app_panier',
         )
     ]
-    public function panier(): Response
+    public function panier(SessionInterface $session, EntityManagerInterface $entityManager)
     {
-        return $this->render(
-                'utilisateur/panier.html.twig',
+        $panier = $session->get('panier', []);
+
+        $panierData = [];
+
+        foreach($panier as $id => $quantity)
+        {
+            $produit = $entityManager->getRepository(Produit::class)->find($id);
+
+            if($produit)
+            {
+                $panierData[] = 
                 [
-                    'controller_name' => 'UtilisateurController',
-                ]
-            );
+                    'produit' => $produit,
+                    'quantity' => $quantity,
+                ];
+            }
+        }
+
+        return $this->render(
+
+            'utilisateur/panier.html.twig',
+            [
+                'items' => $panierData,
+                'panier' => $panier,
+            ]
+        );
     }
+
+    ################################################################
+    #                   AJOUTER AU PANIER
+    ################################################################
+
+    #[
+        route(
+            '/panier/add/{id}',
+            name: 'panier_add',
+        )
+    ]
+    public function add($id, SessionInterface $session, EntityManagerInterface $entityManager)
+    {
+        $panier = $session->get('panier', []);
+        
+        $produit = $entityManager->getRepository(Produit::class)->findOneBy(['id' => $id]);
+
+        if ($produit)
+        {
+            if (!empty($panier[$id]))
+            {
+                $panier[$id]++;
+            }
+            else
+            {
+                $panier[$id] = 1;
+            }
+        }
+        
+        $session->set('panier', $panier);
+
+        // dd($session->get('panier'));
+
+        return $this->redirectToRoute('app_panier');
+
+    }
+
+    ################################################################
+    #                   SUPRIMER DU PANIER
+    ################################################################
+
+    #[
+        route(
+            '/panier/remove/{id}',
+            name: 'panier_remove',
+        )
+    ]
+
+    public function remove($id, SessionInterface $session)
+    {
+        $panier = $session->get('panier', []);
+
+        if (isset($panier[$id]))
+        {
+            unset ($panier[$id]);
+        }
+
+        $session->set('panier', $panier);
+
+        return $this->redirectToRoute('app_panier');
+    }
+
+    ################################################################
+    #                   DÉCRÉMENTER LA QUANTITÉ
+    ################################################################
+
+    #[
+        Route(
+            '/panier/decrementer/{id}', 
+            name: 'panier_decrementer'
+        )
+    ]
+
+    public function decrementer($id, SessionInterface $session)
+    {
+        $panier = $session->get('panier', []);
+
+        if (!empty($panier[$id])) 
+        {
+            if ($panier[$id] > 1) 
+            {
+                $panier[$id]--;
+                $this->addFlash('success', 'La quantité du produit a été réduit.');
+            } 
+            else 
+            {
+                unset($panier[$id]);
+            }
+        }
+
+        $session->set('panier', $panier);
+
+        return $this->redirectToRoute('app_panier');
+    }
+
+    ################################################################
+    #                   INCRÉMENTER LA QUANTITÉ
+    ################################################################
+
+    #[
+        Route(
+            '/panier/incrementer/{id}', 
+            name: 'panier_incrementer'
+        )
+    ]
+
+    public function incrementer($id, SessionInterface $session)
+    {
+        $panier = $session->get('panier', []);
+
+        if (!empty($panier[$id])) 
+        {
+            $panier[$id]++;
+            $this->addFlash('success', 'La quantité du produit a été augmentée.');
+
+        }    
+      
+        $session->set('panier', $panier);
+
+        return $this->redirectToRoute('app_panier');
+    }
+
+    ################################################################
+    #                   MISE À JOUR DU PANIER
+    ################################################################
+
+    #[
+        Route(
+            '/panier/maj', 
+            name: 'panier_maj'
+        )
+    
+    ]
+
+    public function maj(SessionInterface $session)
+    {
+        $session->set('panier', []);
+
+        return $this->redirectToRoute('app_panier');
+    }
+
+
 
     /*####################################################################################################################################
     *                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~     PAYEMENT  CONTROLLER     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
