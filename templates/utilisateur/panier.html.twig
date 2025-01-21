@@ -41,7 +41,12 @@
 
                             <tr>
                                 <td>
-                                    <img src="{{ asset(item.produit.produitImage) }}" alt="Produit">
+                                    <img 
+                                        src="{{ asset('/image/'~ item.produit.produitImage) }}" 
+                                        alt="{{ item.produit.produitLibelle }}"
+                                        class="card-img-top h-1"
+                                    >
+                    
                                 </td>
                                 <td>{{ item.produit.produitLibelle }}</td>
                                 <td>
@@ -58,7 +63,6 @@
                                     <a href="{{ path('panier_incrementer', {'id': item.produit.id }) }}">
                                         <i class="fa-solid fa-circle-plus"></i>
                                     </a>
-
                                 </td>
                                 <td>{{ item.produit.produitPrixHt }} €</td>
                                 <td>{{ total }} €</td> 
