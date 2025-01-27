@@ -4,7 +4,14 @@
 
 {% block body %}
 
-<h1>Votre achat est enregistré</h1>
+  <div style="text-align: center; padding: 50px;">
+
+    <h1 style="color: red; font-size: 36px;">Une erreur est survenue lors du paiement</h1>
+    <p style="font-size: 18px;">Nous avons rencontré un problème avec votre paiement. Veuillez réessayer ou contacter notre support si le problème persiste.</p>
+    <a href="#" style="font-size: 18px; color: #007bff;">Réessayer le paiement</a>
+    <br>
+    <a href="{{ path('app_accueil') }}" style="font-size: 18px; color: #007bff;">Retour à l'accueil</a>
+
+  </div>
 
 {% endblock %}
-

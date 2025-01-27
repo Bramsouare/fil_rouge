@@ -4,7 +4,11 @@
 
 {% block body %}
 
-<h1>Votre achat est enregistré</h1>
+  <div style="text-align: center; padding: 50px;">
+
+    <h1 style="color: green; font-size: 36px;">Votre paiement a été effectué avec succès !</h1>
+    <p style="font-size: 18px;">Merci pour votre achat. Nous avons bien reçu votre paiement et votre commande sera traitée sous peu.</p>
+    <a href="{{ path('app_accueil') }}" style="font-size: 18px; color: #007bff;">Retour à l'accueil</a>
+  </div>
 
 {% endblock %}
-

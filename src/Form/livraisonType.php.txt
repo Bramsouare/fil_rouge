@@ -1,0 +1,208 @@
+<?php 
+namespace App\Form;
+
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+
+class ConnexionType extends AbstractType
+{
+    public function buildForm(FormBuilderInterface $builder, array $options): void
+    {
+        $builder
+            -> add(
+                'utilisateur_mail',
+                EmailType::class, 
+                [
+                    'label' => 'Email',
+                    'required' => true,
+                ]
+            )
+            -> add( 
+                'utilisateur_mdp',
+                PasswordType::class, 
+                [
+                    'label' => 'Mot de passe',
+                    'required' => true,
+                ]
+            )
+
+            -> add(
+                'submit',
+                SubmitType::class,
+                [
+                    'label' => 'Je me connecte',
+                    'attr' => 
+                    [
+                        'class' => 'btn btn-light'
+                    ]
+                ]
+            )
+        
+            
+        ;
+    }
+
+    // Renvoie l'entité et le nom de la classe de l'entité
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        // Les données du form mappée sur l'object de la classe lors de la soumission puis mise a jour.
+        $resolver -> setDefaults(
+            [
+                // 'data_class' => Utilisateur::class,
+            ]
+    );
+    }
+}
+##############################################
+
+// src/Controller/UtilisateurController.php
+namespace App\Controller;
+
+use App\Form\LivraisonType;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Doctrine\ORM\EntityManagerInterface;
+
+class UtilisateurController extends AbstractController
+{
+    #[Route('/panier/validation', name: 'panier_validation')]
+    public function validation(Request $request, SessionInterface $session, EntityManagerInterface $entityManager): Response
+    {
+        // Récupérer le panier depuis la session
+        $panier = $session->get('panier', []);
+        if (empty($panier)) {
+            return $this->redirectToRoute('app_panier');
+        }
+
+        // Créer le formulaire de livraison
+        $form = $this->createForm(LivraisonType::class);
+
+        // Traiter le formulaire
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Vous pouvez ici sauvegarder les données du formulaire dans la base de données
+            // ou les utiliser pour créer une commande
+
+            // Rediriger vers une page de confirmation ou paiement
+            return $this->redirectToRoute('panier_valider');
+        }
+
+        // Calculer le total de la commande
+        $total = 0;
+        foreach ($panier as $id => $qty) {
+            $produit = $entityManager->getRepository(Produit::class)->find($id);
+            if ($produit) {
+                $total += $produit->getPrix() * $qty;
+            }
+        }
+
+        return $this->render('panier/validation.html.twig', [
+            'form' => $form->createView(),
+            'items' => $panier, // Le panier avec les produits
+            'total' => $total,
+        ]);
+    }
+}
+
+#########################################################
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Validation du panier{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+
+    <div class="row">
+
+        <div class="col-md-6">
+            <h2>Informations de livraison</h2>
+
+            {# Affichage du formulaire de livraison Symfony #}
+            {{ form_start(form) }}
+                <div class="mb-3">
+                    {{ form_row(form.nom) }}
+                </div>
+                <div class="mb-3">
+                    {{ form_row(form.prenom) }}
+                </div>
+                <div class="mb-3">
+                    {{ form_row(form.email) }}
+                </div>
+                <div class="mb-3">
+                    {{ form_row(form.adresse) }}
+                </div>
+                <div class="mb-3">
+                    {{ form_row(form.ville) }}
+                </div>
+                <div class="mb-3">
+                    {{ form_row(form.code_postal) }}
+                </div>
+                <div class="mb-3">
+                    {{ form_row(form.telephone) }}
+                </div>
+                <div class="mb-3">
+                    {{ form_row(form.submit) }}
+                </div>
+            {{ form_end(form) }}
+
+        </div>
+
+        <div class="col-md-6">
+
+            <h2>Récapitulatif de la commande</h2>
+
+            <ul class="list-group">
+
+                {% set total = 0 %}
+                
+                {% for item in items %}  
+
+                    {% set totalProduit = item.produit.produitPrixHt * item.quantity %}
+
+                    {% set total = total + totalProduit %}
+
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+
+                        <div class="d-flex">
+                            <img 
+                                src="{{ asset('/image/' ~ item.produit.produitImage) }}" 
+                                alt="{{ item.produit.produitLibelle }}" 
+                                class="img-thumbnail" 
+                                style="width: 50px; height: 50px; margin-right: 10px;"
+                            >
+
+                            <div>
+                                <span>{{ item.produit.produitLibelle }} (x{{ item.quantity }})</span>
+                            </div>
+                        </div>
+                        
+                        <span>{{ totalProduit|number_format(2, ',', ' ') }}€</span>
+
+                    </li>
+
+                {% endfor %}
+
+            </ul>
+
+            <hr>
+
+            <div class="d-flex justify-content-between">
+                <strong>Total :</strong>
+                <strong>{{ total|number_format(2, ',', ' ') }} €</strong>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}

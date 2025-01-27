@@ -2,13 +2,13 @@
 
 namespace App\Controller;
 
-use Stripe\Stripe;
-use Stripe\Checkout\Session;
+use App\Entity\Produit;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class StripeController extends AbstractController
 {
@@ -19,9 +19,7 @@ class StripeController extends AbstractController
     #[Route('/stripe', name: 'app_stripe')]
     public function index(): Response
     {
-        return $this->render('stripe/index.html.twig', [
-            'controller_name' => 'StripeController',
-        ]);
+        return $this->render('stripe/index.html.twig', []);
     }
 
     /*###################################################################################################################################
@@ -30,7 +28,7 @@ class StripeController extends AbstractController
 
 
     #[Route('/success', name: 'success')]
-    public function success(): Response
+    public function success(EntityManagerInterface $entityManager): Response
     {
         return $this->render('stripe/success.html.twig', []);
     }
@@ -53,31 +51,46 @@ class StripeController extends AbstractController
 
     #[Route('/create-checkout-session', name: 'app_checkout')]
 
-    public function checkout()
+    public function checkout(SessionInterface $session, EntityManagerInterface $entityManager)
     {
-        \Stripe\Stripe::setApiKey('sk_test_51QkMiAADlF7Q3OUjhJcYYIUvOwAyMcHgf7XXmbiFbvQGkm5FTKArURcDPUoCFSgjGYlVBToX44R0avE6c1uCCupS00bxsrdC7C');
+        \Stripe\Stripe::setApiKey($_ENV["CLE_SECRETE"]);
 
-        $session = \Stripe\Checkout\Session::create(
+        $domaine="https://127.0.0.1:8000";
+
+        $individuel=[];
+
+        $panier = $session->get('panier');
+
+        foreach ($panier as $id => $qty)
+        {
+            $produit = $entityManager->getRepository(Produit::class)->findOneBy(["id"=>$id]);
+
+            $individuel[]= 
             [
-                'payment_method_types' => ['card'],
-                'line_items' => [[
-                    'price_data' => [
-                        'currency' => 'eur',
-                        'product_data' => [
-                            'name' => 'Instrument',
-                        ],
-                        'unit_amount' => 2000,
-                    ],
-                    'quantity' => 1,
-                ]],
-                'mode' => 'payment',
-                'success_url' => $this->generateUrl('success', [], UrlGeneratorInterface::ABSOLUTE_URL),
-                'cancel_url' => $this->generateUrl('error', [], UrlGeneratorInterface::ABSOLUTE_URL),
 
+                'price' => $produit->getPrix(),
+                'quantity' => $qty,
+            ];
+        }
+           
+        $session = \Stripe\Checkout\Session::create(
+
+            [
+                'line_items' => $individuel,
+            
+                'mode' => 'payment',
+
+                'automatic_tax' => 
+                [
+                    'enabled' => true,
+                ],
+
+                'success_url' => $domaine."/success",
+                'cancel_url' => $domaine."/error",
             ]
         );
 
-        return new JsonResponse(['id' => $session->id ]);
+        return new RedirectResponse($session->url);
     }
 }
 

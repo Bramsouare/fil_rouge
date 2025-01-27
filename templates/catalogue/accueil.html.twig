@@ -11,7 +11,7 @@
         <div class="row row-cols-1 row-cols-md-3 g-4 justify-content-center">
 
         {% for rubrique in rubriques %}
-
+{# TODO BOUTON POUR LE PANIER #}
             <div class="col-3 my-5">
 
                 <div class="card h-100 d-flex flex-column">
@@ -63,9 +63,7 @@
                             <a href="{{ path('panier_add', {'id': produit.id} ) }}" class="btn btn-light">Valider le panier</a>
                         </div>
                     </div>
-
-                    
-                    
+            
                 </div>
 
             {% endfor %}

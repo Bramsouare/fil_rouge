@@ -82,6 +82,9 @@ class Produit
     #[ORM\OneToMany(targetEntity: DetailLivraison::class, mappedBy: 'produit', orphanRemoval: true)]
     private Collection $detailLivraisons;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $prix = null;
+
     public function __construct()
     {
         $this->utilisateurs = new ArrayCollection();
@@ -300,6 +303,18 @@ class Produit
                 $detailLivraison->setProduit(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getPrix(): ?string
+    {
+        return $this->prix;
+    }
+
+    public function setPrix(?string $prix): static
+    {
+        $this->prix = $prix;
 
         return $this;
     }

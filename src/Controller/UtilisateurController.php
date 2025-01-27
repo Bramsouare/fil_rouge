@@ -277,27 +277,6 @@ class UtilisateurController extends AbstractController
             );
     }
 
-
-    /*####################################################################################################################################
-    *                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~      COMMANDE CONTROLLER     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ####################################################################################################################################*/
-
-    #[
-        Route(
-            '/commande',
-            name: 'app_commande',
-        )
-    ]
-    public function commande(): Response
-    {
-        return $this->render(
-                'commande/index.html.twig',
-                [
-                    'controller_name' => 'UtilisateurController',
-                ]
-            );
-    }
-
     /*####################################################################################################################################
     *                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~     PANIER CONTROLLER     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ####################################################################################################################################*/
@@ -478,46 +457,67 @@ class UtilisateurController extends AbstractController
         return $this->redirectToRoute('app_panier');
     }
 
+    /* ########################################################################
+    *              Validations du panier 
+    #########################################################################*/
+    
+    #[Route('/panier/validation', name: 'panier_validation')]
+    public function validation(SessionInterface $session, EntityManagerInterface $entityManager): Response
+    {
+        $panier = $session->get('panier');
+
+        $panierData = [];
+
+        if (empty($panier)) 
+        {
+            return $this->redirectToRoute('app_panier');
+        }
+
+        foreach ($panier as $id => $qty) 
+        {
+            $produit = $entityManager->getRepository(Produit::class)->find($id);
+
+            if ($produit) 
+            {
+                $panierData[] =
+                [
+                    'produit' => $produit,
+                    'quantity' => $qty,
+                ];
+            }
+        }
+
+        return $this->render(
+
+            'utilisateur/panier_validation.html.twig', 
+            [
+                'items' => $panierData,
+            ]
+        );
+    }
 
 
     /*####################################################################################################################################
-    *                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~     PAYEMENT  CONTROLLER     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    *                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~      COMMANDE CONTROLLER     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ####################################################################################################################################*/
 
-    // #[Route(
-    //     '/payement',
-    //     name: 'app_payement',
-    //     )
-    // ]
-    // // Récupération des données du formulaire
-    // public function payement(Request $Request): Response
-    // {
-    //     // Création de l'entité
-    //     $payement = new Payement();
+    #[
+        Route(
+            '/commande',
+            name: 'app_commande',
+        )
+    ]
+    public function commande(): Response
+    {
+        return $this->render(
 
-    //     // Création du formulaire
-    //     $form = $this -> createForm(PayementType::class, $payement);
+            'commande/index.html.twig',
+            [
+                'controller_name' => 'UtilisateurController',
+            ]
+        );
+    }
 
-    //     // traitement des données et vérification plus renplis les champs
-    //     $form -> handleRequest($Request);
-
-    //     // Si le formulaire est soumis et valide
-    //     if ($form -> isSubmitted() && $form -> isValid())
-    //     {
-    //         // Redirection vers la page de confirmation
-    //         return $this -> redirectToRoute('payment_success');
-    //     }
-
-    //     // Affichage du formulaire si il n'est pas soumis et valide
-    //     return $this -> render
-    //         (
-    //             'payement/index.html.twig',
-    //             [
-    //                 'form' => $form -> createView(),
-    //             ]
-    //         )
-    //     ;
-    // }
 
 
     /*####################################################################################################################################

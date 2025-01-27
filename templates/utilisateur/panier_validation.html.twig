@@ -3,12 +3,17 @@
 {% block title %}Validation du panier{% endblock %}
 
 {% block body %}
+
 <div class="container mt-5">
+
     <div class="row">
-        <!-- Formulaire d'informations -->
+
         <div class="col-md-6">
-            <h2>Informations de livraison</h2>
-            <form action="#" method="post">
+
+            {# <h2>Informations de livraison</h2>
+
+            <form action="{{ path('panier_validation') }}" method="POST">
+
                 <div class="mb-3">
                     <label for="nom" class="form-label">Nom</label>
                     <input type="text" id="nom" name="nom" class="form-control" required>
@@ -38,26 +43,61 @@
                     <input type="text" id="telephone" name="telephone" class="form-control" required>
                 </div>
                 <button type="submit" class="btn btn-primary">Valider la commande</button>
+                
             </form>
-        </div>
 
-        <!-- Récapitulatif de commande -->
+        </div> #}
+
         <div class="col-md-6">
+
             <h2>Récapitulatif de la commande</h2>
+
             <ul class="list-group">
-                {% for produit in panier %}
+
+                {% set total = 0 %}
+                
+                {% for item in items %}  
+
+                    {% set totalProduit = item.produit.produitPrixHt * item.quantity %}
+
+                    {% set total = total + totalProduit %}
+
                     <li class="list-group-item d-flex justify-content-between align-items-center">
-                        {{ produit.nom }} (x{{ produit.quantite }})
-                        <span>{{ produit.prix|number_format(2, ',', ' ') }} €</span>
+
+                        <div class="d-flex">
+
+                            <img 
+                                src="{{ asset('/image/'~ item.produit.produitImage) }}" 
+                                alt="{{ item.produit.produitLibelle }}" 
+                                class="img-thumbnail" 
+                                style="width: 50px; height: 50px; margin-right: 10px;"
+                            >
+                            
+                            <div>
+                                <span>{{ item.produit.produitLibelle }} (x{{ item.quantity }})</span>
+                            </div>
+                        </div>
+                        
+                        <span>{{ totalProduit|number_format(2, ',', ' ') }}€ </span>
+
                     </li>
+
                 {% endfor %}
+
             </ul>
+
             <hr>
+
             <div class="d-flex justify-content-between">
+
                 <strong>Total :</strong>
                 <strong>{{ total|number_format(2, ',', ' ') }} €</strong>
+
             </div>
+
         </div>
+
     </div>
+
 </div>
 {% endblock %}
