@@ -2,25 +2,26 @@
 
 namespace App\Controller;
 
+use Dompdf\Dompdf;
+use Dompdf\Options;
 use App\Entity\Role;
 use App\Entity\Adresse;
 use App\Entity\Produit;
+use App\Form\AdresseType;
 use App\Entity\Utilisateur;
 use App\Form\InscriptionType;
-use App\Repository\ProduitRepository;
 use App\Security\EmailVerifier;
 use Symfony\Component\Mime\Address;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\UtilisateurRepository;
-use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 
@@ -191,7 +192,6 @@ class UtilisateurController extends AbstractController
             name: 'app_verify_email'
         )
     ]
-
 
     public function verifyUserEmail(
 
@@ -457,21 +457,48 @@ class UtilisateurController extends AbstractController
         return $this->redirectToRoute('app_panier');
     }
 
-    /* ########################################################################
-    *              Validations du panier 
-    #########################################################################*/
+    ############################################################
+    #                Validations du panier 
+    ############################################################
     
     #[Route('/panier/validation', name: 'panier_validation')]
-    public function validation(SessionInterface $session, EntityManagerInterface $entityManager): Response
+    public function validation(SessionInterface $session, Request $request, EntityManagerInterface $entityManager): Response
     {
+        // Récupérer l'utilisateur actuellement connecté
+        $utilisateur = $this->getUser();
+
+        // Vérifier que l'utilisateur est bien connecté
+        if (!$utilisateur) 
+        {
+            // Si l'utilisateur n'est pas connecté, rediriger vers la page de connexion
+            return $this->redirectToRoute('app_login');
+        }
+
+        // Récupérer les informations de l'utilisateur
+        $nom = $utilisateur->getUtilisateurNom(); 
+        $prenom = $utilisateur->getUtilisateurPrenom();
+        $email = $utilisateur->getUtilisateurMail(); 
+
+        // Récupérer les données du panier
         $panier = $session->get('panier');
 
-        $panierData = [];
-
+        // Si le panier est vide, rediriger vers la page panier
         if (empty($panier)) 
         {
             return $this->redirectToRoute('app_panier');
         }
+
+        // Créer le formulaire pour l'adresse
+        $form = $this->createForm(AdresseType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) 
+        {
+            $this->addFlash('success', 'Adresse validée !');
+        }
+
+        // Préparer les données du panier
+        $panierData = [];
 
         foreach ($panier as $id => $qty) 
         {
@@ -479,7 +506,7 @@ class UtilisateurController extends AbstractController
 
             if ($produit) 
             {
-                $panierData[] =
+                $panierData[] = 
                 [
                     'produit' => $produit,
                     'quantity' => $qty,
@@ -487,15 +514,16 @@ class UtilisateurController extends AbstractController
             }
         }
 
-        return $this->render(
-
-            'utilisateur/panier_validation.html.twig', 
-            [
-                'items' => $panierData,
-            ]
-        );
+        // Rendre la vue avec les informations du panier et du formulaire
+        return $this->render('utilisateur/panier_validation.html.twig', 
+        [
+            'items' => $panierData,
+            'form' => $form->createView(),
+            'nom' => $nom,
+            'prenom' => $prenom,
+            'email' => $email,
+        ]);
     }
-
 
     /*####################################################################################################################################
     *                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~      COMMANDE CONTROLLER     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -518,33 +546,68 @@ class UtilisateurController extends AbstractController
         );
     }
 
-
-
     /*####################################################################################################################################
-    *                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~      FACTURE CONTROLLER     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    *                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~      PDF CONTROLLER     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ####################################################################################################################################*/
 
-    // #[
-    //     Route(
-    //         '/facture',
-    //         name: 'app_facture',
-    //     )
-    // ]
-    // public function facture(): Response
-    // {
-    //     return $this->render(
-    //             'facture/index.html.twig',
-    //             [
-    //                 'controller_name' => 'UtilisateurController',
-    //             ]
-    //         );
-    // }
+    #[Route('/pdf/generate', name: 'pdf_generate')]
+    public function generatePdf(SessionInterface $session, EntityManagerInterface $entityManager): Response
+    {
+        // Récupérer l'utilisateur actuellement connecté
+        $utilisateur = $this->getUser();
+
+        $nom = $utilisateur->getUtilisateurNom(); 
+        $adresse = $utilisateur->getUtilisateurAdresse();
+        $email = $utilisateur->getUtilisateurMail(); 
 
 
+        // Créer une instance de DOMPDF avec des options personnalisées
+        $options = new Options();
+        $options->set('isHtml5ParserEnabled', true);
+        $options->set('isPhpEnabled', true);  // Activer si tu utilises des fonctions PHP dans ton PDF
+
+        $dompdf = new Dompdf($options);
+
+        $entreprise = [
+            'nom' => 'Village Green',
+            'adresse' => '1 rue du Commerce, Paris',
+            'telephone' => '01 23 45 67 89',
+        ];
+
+        // Récupérer le HTML que tu veux convertir en PDF (par exemple, en utilisant Twig)
+        $html = $this->renderView('pdf_template.html.twig', 
+        [
+            'facture' => [ 'numero' => '123456' ], // Passer des variables à ton template Twig
+            'entreprise' => $entreprise,
+            'nom' => $nom,
+            'adrresse' => $adresse,
+            'email' => $email,
+        ]);
+
+        // Charger le HTML dans DOMPDF
+        $dompdf->loadHtml($html);
+
+        // (Optionnel) Définir la taille du papier (A4 par défaut)
+        $dompdf->setPaper('A4', 'portrait');
+
+        // Rendre le PDF
+        $dompdf->render();
+
+        // Retourner le PDF dans la réponse HTTP
+        return new Response(
+            $dompdf->output(),
+            200,
+            [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'inline; filename="document.pdf"',
+            ]
+        );
+    }
 
     /*####################################################################################################################################
     *                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~      LIVRAISON CONTROLLER     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ####################################################################################################################################*/
+
     // #[
     //     Route(
     //         '/livraison',
@@ -561,5 +624,5 @@ class UtilisateurController extends AbstractController
     //         );
     // }
 
-
 }
+  

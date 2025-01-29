@@ -1,0 +1,74 @@
+<title>Facture - {{ facture.numero }}</title>
+
+<body>
+
+    <div class="container">
+        
+        <div class="header">
+            <h1>Facture</h1>
+            <p>{{ entreprise.nom }}</p>
+            <p>{{ entreprise.adresse }}</p>
+            <p>{{ entreprise.telephone }}</p>
+        </div>
+
+        
+        <div class="client_details">
+            <table>
+                <tr>
+                    <td><strong>Client:</strong> {{ nom }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Adresse:</strong> {{ adresse }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Email:</strong> {{ email }}</td>
+                </tr>
+            </table>
+        </div>
+
+        
+        <div class="details">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Description</th>
+                        <th>Quantité</th>
+                        <th>Prix unitaire</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    {% set total = 0 %}
+
+                    {% for item in items %}
+
+                    {% set totalProduit = item.produit.produitPrixHt * item.quantity %}
+
+                    {% set total = total + totalProduit %}
+
+                        <tr>
+                            <td>{{ item.produit.produitLibelle }}</td>
+                            <td>{{ item.quantity }}</td>
+                            <td>{{ item.produit.produitPrixHt|number_format(2, ',', ' ') }} €</td>
+                            <td>{{ (item.produit.produitPrixHt * item.quantity)|number_format(2, ',', ' ') }} €</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Total -->
+        <div class="total">
+            <span>Total :</span> {{ totalProduit|number_format(2, ',', ' ') }} €
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>Merci pour votre achat !</p>
+        </div>
+
+    </div>
+
+</body>
+
