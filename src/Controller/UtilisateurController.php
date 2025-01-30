@@ -568,7 +568,8 @@ class UtilisateurController extends AbstractController
 
         $dompdf = new Dompdf($options);
 
-        $entreprise = [
+        $entreprise = 
+        [
             'nom' => 'Village Green',
             'adresse' => '1 rue du Commerce, Paris',
             'telephone' => '01 23 45 67 89',
