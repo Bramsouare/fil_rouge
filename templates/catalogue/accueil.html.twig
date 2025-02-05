@@ -9,7 +9,7 @@
         <h1 class="text-center my-5 text-white">Toutes nos catégories</h1>
         
         <div class="row row-cols-1 row-cols-md-3 g-4 justify-content-center">
-
+    
         {% for rubrique in rubriques %}
 {# TODO BOUTON POUR LE PANIER #}
             <div class="col-3 my-5">
@@ -19,7 +19,7 @@
                     <a href="{{ path('app_rubrique_produits', { id:rubrique.id }) }}">
 
                         <img 
-                            src="{{ asset('image/' ~ rubrique.rubriqueImage) }}" 
+                            src="{{ asset('/images/acoustique1.webp' ) }}" 
                             alt="{{ rubrique.rubriqueLibelle }}" 
                             class="card-img-top h-80"
                         >
