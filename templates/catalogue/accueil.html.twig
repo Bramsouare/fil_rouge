@@ -18,8 +18,8 @@
 
                     <a href="{{ path('app_rubrique_produits', { id:rubrique.id }) }}">
 
-                        <img 
-                            src="{{ asset('/images/acoustique1.webp' ) }}" 
+                         <img 
+                            src="{{ asset('images/' ~ rubrique.rubriqueImage) }}" 
                             alt="{{ rubrique.rubriqueLibelle }}" 
                             class="card-img-top h-80"
                         >
@@ -38,7 +38,7 @@
         <!-- Best Sellers -->
         <div class="d-flex align-items-center justify-content-center my-4">
             <h1 class"text-white">Best Sellers</h1>
-            <img src="{{ asset('/image/best.webp') }}" alt="Best Sellers" style="width: 70px; height: 70px; margin-left: 20px;">
+            <img src="{{ asset('/images/best.webp') }}" alt="Best Sellers" style="width: 70px; height: 70px; margin-left: 20px;">
         </div>
 
         <div class="row row-cols-1 row-cols-md-3 g-4 justify-content-center mb-3">
@@ -49,7 +49,7 @@
 
                     <div class="card h-100 d-flex flex-column">
                         <img 
-                            src="{{ asset('/image/'~ produit.produitImage) }}" 
+                            src="{{ asset('/images/'~ produit.produitImage) }}" 
                             alt="{{ produit.produitLibelle}}" 
                             class="card-img-top h-50"
                         >

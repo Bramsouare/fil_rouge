@@ -15,7 +15,7 @@
                 <div class="d-flex justify-content-center col-3 my-5">
                     <div class="card h-100 d-flex flex-column">
                         <img 
-                            src="{{ asset('/image/'~ produit.produitImage) }}" 
+                            src="{{ asset('/images/'~ produit.produitImage) }}" 
                             alt="{{ produit.produitLibelle}}" 
                             class="card-img-top h-75"
                         >
@@ -27,7 +27,7 @@
                         </div>
                         
                         <div class="text-center my-2">
-                            <a href="#" class="btn btn-light">Ajouter au panier</a>
+                            <a href="{{ path('panier_add', {'id': produit.id} ) }}" class="btn btn-light">Ajouter au panier</a>
                         </div>
                     </div>
 
