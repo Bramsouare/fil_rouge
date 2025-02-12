@@ -25,7 +25,6 @@
                             <th scope="col" class="text-white">Quantité</th>
                             <th scope="col" class="text-white">Prix Unitaire</th>
                             <th scope="col" class="text-white">Total</th>
-                            <th></th>
                         </tr>
                     </thead>
 
@@ -59,18 +58,18 @@
                                 </td>
                                 <td>{{ item.produit.produitPrixHt }} €</td>
                                 <td>{{ total }} €</td> 
-
-                                <td></td>
+                                
                             </tr>
 
                         {% endfor %}
                         <tr>
+                        
                             <td><strong class="text-white">Total :</strong></td>
                             <td></td>
                             <td></td>
                             <td></td>
                             <td>{{ leTotal }} €</td> 
-                            <td></td>
+
                         </tr>
 
                     </tbody>
