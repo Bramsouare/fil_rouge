@@ -24,6 +24,7 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
+use App\Service\PanierService;
 
 class UtilisateurController extends AbstractController
 {
@@ -327,27 +328,9 @@ class UtilisateurController extends AbstractController
             name: 'panier_add',
         )
     ]
-    public function add($id, SessionInterface $session, EntityManagerInterface $entityManager)
+    public function add($id, PanierService $panier, Request $request)
     {
-        $panier = $session->get('panier', []);
-        
-        $produit = $entityManager->getRepository(Produit::class)->findOneBy(['id' => $id]);
-
-        if ($produit)
-        {
-            if (!empty($panier[$id]))
-            {
-                $panier[$id]++;
-            }
-            else
-            {
-                $panier[$id] = 1;
-            }
-        }
-        
-        $session->set('panier', $panier);
-
-        // dd($session->get('panier'));
+        $ajout = $panier->add($id,$request);
 
         return $this->redirectToRoute('app_panier');
 
@@ -364,16 +347,10 @@ class UtilisateurController extends AbstractController
         )
     ]
 
-    public function remove($id, SessionInterface $session)
+    public function remove($id, PanierService $panier, Request $request)
     {
-        $panier = $session->get('panier', []);
-
-        if (isset($panier[$id]))
-        {
-            unset ($panier[$id]);
-        }
-
-        $session->set('panier', $panier);
+        
+        $supp = $panier->remove($id, $request);
 
         return $this->redirectToRoute('app_panier');
     }
@@ -389,24 +366,10 @@ class UtilisateurController extends AbstractController
         )
     ]
 
-    public function decrementer($id, SessionInterface $session)
+    public function decrementer($id, PanierService $panier, Request $request)
     {
-        $panier = $session->get('panier', []);
 
-        if (!empty($panier[$id])) 
-        {
-            if ($panier[$id] > 1) 
-            {
-                $panier[$id]--;
-                $this->addFlash('success', 'La quantité du produit a été réduit.');
-            } 
-            else 
-            {
-                unset($panier[$id]);
-            }
-        }
-
-        $session->set('panier', $panier);
+        $moin = $panier->decrementer($id, $request);
 
         return $this->redirectToRoute('app_panier');
     }
@@ -422,18 +385,9 @@ class UtilisateurController extends AbstractController
         )
     ]
 
-    public function incrementer($id, SessionInterface $session)
+    public function incrementer($id, PanierService $panier, Request $request)
     {
-        $panier = $session->get('panier', []);
-
-        if (!empty($panier[$id])) 
-        {
-            $panier[$id]++;
-            $this->addFlash('success', 'La quantité du produit a été augmentée.');
-
-        }    
-      
-        $session->set('panier', $panier);
+        $plus = $panier->incrementer($id, $request);
 
         return $this->redirectToRoute('app_panier');
     }
@@ -468,23 +422,19 @@ class UtilisateurController extends AbstractController
         $utilisateur = $this->getUser();
 
         // Vérifier que l'utilisateur est bien connecté
-        if (!$utilisateur) 
-        {
-            // Si l'utilisateur n'est pas connecté, rediriger vers la page de connexion
+        if (!$utilisateur) {
             return $this->redirectToRoute('app_login');
         }
 
         // Récupérer les informations de l'utilisateur
-        $nom = $utilisateur->getUtilisateurNom(); 
+        $nom = $utilisateur->getUtilisateurNom();
         $prenom = $utilisateur->getUtilisateurPrenom();
-        $email = $utilisateur->getUtilisateurMail(); 
+        $email = $utilisateur->getUtilisateurMail();
 
         // Récupérer les données du panier
         $panier = $session->get('panier');
 
-        // Si le panier est vide, rediriger vers la page panier
-        if (empty($panier)) 
-        {
+        if (empty($panier)) {
             return $this->redirectToRoute('app_panier');
         }
 
@@ -492,31 +442,34 @@ class UtilisateurController extends AbstractController
         $form = $this->createForm(AdresseType::class);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) 
-        {
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Sauvegarder l'adresse dans la base de données
+            $adresse = $form->getData();
+            $adresse->setUtilisateur($utilisateur);  // Associer l'adresse à l'utilisateur
+
+            $entityManager->persist($adresse);
+            $entityManager->flush();
+
             $this->addFlash('success', 'Adresse validée !');
+
+            // Rediriger l'utilisateur vers la page de paiement
+            return $this->redirectToRoute('panier_paiement');
         }
 
         // Préparer les données du panier
         $panierData = [];
-
-        foreach ($panier as $id => $qty) 
-        {
+        foreach ($panier as $id => $qty) {
             $produit = $entityManager->getRepository(Produit::class)->find($id);
 
-            if ($produit) 
-            {
-                $panierData[] = 
-                [
+            if ($produit) {
+                $panierData[] = [
                     'produit' => $produit,
                     'quantity' => $qty,
                 ];
             }
         }
 
-        // Rendre la vue avec les informations du panier et du formulaire
-        return $this->render('utilisateur/panier_validation.html.twig', 
-        [
+        return $this->render('utilisateur/panier_validation.html.twig', [
             'items' => $panierData,
             'form' => $form->createView(),
             'nom' => $nom,
@@ -524,6 +477,46 @@ class UtilisateurController extends AbstractController
             'email' => $email,
         ]);
     }
+
+    ############################################################
+    #                PAIEMENT DU PANIER 
+    ############################################################
+
+    #[Route('/panier/paiement', name: 'panier_paiement')]
+    public function paiement(SessionInterface $session, EntityManagerInterface $entityManager): Response
+    {
+        // Récupérer les données du panier
+        $panier = $session->get('panier');
+
+        if (empty($panier)) {
+            return $this->redirectToRoute('app_panier');
+        }
+
+        // Préparer les données du panier
+        $panierData = [];
+        $total = 0;
+
+        foreach ($panier as $id => $qty) {
+            $produit = $entityManager->getRepository(Produit::class)->find($id);
+
+            if ($produit) {
+                $totalProduit = $produit->getProduitPrixHt() * $qty;
+                $total += $totalProduit;
+                $panierData[] = [
+                    'produit' => $produit,
+                    'quantity' => $qty,
+                    'totalProduit' => $totalProduit
+                ];
+            }
+        }
+
+        return $this->render('utilisateur/paiement.html.twig', [
+            'items' => $panierData,
+            'total' => $total,
+        ]);
+    }
+
+
 
     /*####################################################################################################################################
     *                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~      COMMANDE CONTROLLER     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -555,56 +548,66 @@ class UtilisateurController extends AbstractController
     {
         // Récupérer l'utilisateur actuellement connecté
         $utilisateur = $this->getUser();
-
-        $nom = $utilisateur->getUtilisateurNom(); 
-        $adresse = $utilisateur->getUtilisateurAdresse();
-        $email = $utilisateur->getUtilisateurMail(); 
-
-
-        // Créer une instance de DOMPDF avec des options personnalisées
+    
+        // Récupérer les détails de la commande
+        $panier = $session->get('panier', []);
+        $adresse = $utilisateur->getUtilisateurAdresse()->first();  // Récupérer la première adresse de l'utilisateur
+        $email = $utilisateur->getUtilisateurMail();
+    
+        // Calculer le total de la commande
+        $total = 0;
+        $produits = [];  // Tableau pour stocker les objets produits
+    
+        foreach ($panier as $id => $quantity) {
+            $produit = $entityManager->getRepository(Produit::class)->find($id);
+            if ($produit) {
+                // Calcul du total
+                $total += $produit->getProduitPrixHt() * $quantity;
+                // Ajouter le produit et sa quantité dans le tableau
+                $produits[] = 
+                [
+                    'produit' => $produit,
+                    'quantite' => $quantity
+                ];
+            }
+        }
+    
+        // Créer une instance de DOMPDF
         $options = new Options();
         $options->set('isHtml5ParserEnabled', true);
-        $options->set('isPhpEnabled', true);  // Activer si tu utilises des fonctions PHP dans ton PDF
-
+        $options->set('isPhpEnabled', true);
         $dompdf = new Dompdf($options);
-
-        $entreprise = 
-        [
-            'nom' => 'Village Green',
-            'adresse' => '1 rue du Commerce, Paris',
-            'telephone' => '01 23 45 67 89',
-        ];
-
-        // Récupérer le HTML que tu veux convertir en PDF (par exemple, en utilisant Twig)
-        $html = $this->renderView('pdf_template.html.twig', 
-        [
-            'facture' => [ 'numero' => '123456' ], // Passer des variables à ton template Twig
-            'entreprise' => $entreprise,
-            'nom' => $nom,
-            'adrresse' => $adresse,
+    
+        // Préparer les données pour le template Twig
+        $html = $this->renderView('pdf_template.html.twig', [
+            'nom' => $utilisateur->getUtilisateurNom(),
+            'prenom' => $utilisateur->getUtilisateurPrenom(),
             'email' => $email,
+            'adresse' => $adresse,
+            'panier' => $produits,  // Passer les produits avec leur quantité
+            'total' => $total,
         ]);
-
+    
         // Charger le HTML dans DOMPDF
         $dompdf->loadHtml($html);
-
-        // (Optionnel) Définir la taille du papier (A4 par défaut)
+    
+        // Définir la taille du papier (A4 par défaut)
         $dompdf->setPaper('A4', 'portrait');
-
+    
         // Rendre le PDF
         $dompdf->render();
-
+    
         // Retourner le PDF dans la réponse HTTP
         return new Response(
             $dompdf->output(),
             200,
             [
                 'Content-Type' => 'application/pdf',
-                'Content-Disposition' => 'inline; filename="document.pdf"',
+                'Content-Disposition' => 'inline; filename="commande.pdf"',
             ]
         );
     }
-
+    
     /*####################################################################################################################################
     *                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~      LIVRAISON CONTROLLER     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ####################################################################################################################################*/
@@ -624,6 +627,7 @@ class UtilisateurController extends AbstractController
     //             ]
     //         );
     // }
+
 
 }
   

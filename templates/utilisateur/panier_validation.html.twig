@@ -6,82 +6,51 @@
 
 <div class="container mt-5">
 
-    <div class="row">
+    
+    <h2>Vos informations</h2>
+    <p><strong>Nom:</strong> {{ nom }}</p>
+    <p><strong>Prénom:</strong> {{ prenom }}</p>
+    <p><strong>Email:</strong> {{ email }}</p>
 
-        <div class="col-md-6">
+    
+    <h3>Entrez votre adresse</h3>
 
-            <h2>Vos informations</h2>
-
-            <p><strong>Nom:</strong> {{ nom }}</p>
-            <p><strong>Prénom:</strong> {{ prenom }}</p>
-            <p><strong>Email:</strong> {{ email }}</p>
-
-            <h3>Entrez votre adresse</h3>
-
-            {{ form_start(form) }}
-                {{ form_row(form.adresse_libelle) }}
-                {{ form_row(form.adresse_ville) }}
-                {{ form_row(form.adresse_postal) }}
-                {{ form_row(form.submit) }}
-            {{ form_end(form) }}
-
-        </div>
-        <div class="col-md-6">
-
-            <h2>Récapitulatif de la commande</h2>
-
-            <ul class="list-group">
-
-                {% set total = 0 %}
-                
-                {% for item in items %}  
-
-                    {% set totalProduit = item.produit.produitPrixHt * item.quantity %}
-
-                    {% set total = total + totalProduit %}
-
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-
-                        <div class="d-flex">
-
-                            <img 
-                                src="{{ asset('/image/'~ item.produit.produitImage) }}" 
-                                alt="{{ item.produit.produitLibelle }}" 
-                                class="img-thumbnail" 
-                                style="width: 50px; height: 50px; margin-right: 10px;"
-                            >
-                            
-                            <div>
-                                <span>{{ item.produit.produitLibelle }} (x{{ item.quantity }})</span>
-                            </div>
-                        </div>
-                        
-                        <span>{{ totalProduit|number_format(2, ',', ' ') }}€ </span>
-
-                    </li>
-
-                {% endfor %}
-
-            </ul>
-
-            <hr>
-
-            <div class="d-flex justify-content-between">
-
-                <strong>Total :</strong>
-                <strong>{{ total|number_format(2, ',', ' ') }} €</strong>
-
-            </div>
-
-            <div class="d-flex justify-content-center align-items-center mt-5">
-                <form action="/create-checkout-session" method="POST" >
-                    <button type="submit" class="btn btn-light" id="checkout-button">Paiement</button>
-                </form>
-            </div>
-
+    {{ form_start(form) }}
+        <div class="form-group my-4">
+            {{ form_label(form.adresse_libelle) }}
+            {{ form_widget(form.adresse_libelle, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.adresse_libelle) }}
         </div>
 
-    </div>
+        <div class="form-group">
+            {{ form_label(form.adresse_ville) }}
+            {{ form_widget(form.adresse_ville, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.adresse_ville) }}
+        </div>
+
+        <div class="form-group my-4">
+            {{ form_label(form.adresse_postal) }}
+            {{ form_widget(form.adresse_postal, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.adresse_postal) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(form.adresse_type) }}
+            {{ form_widget(form.adresse_type, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.adresse_type) }}
+        </div>
+
+        <div class="form-group my-4">
+            {{ form_label(form.adresse_telephone) }}
+            {{ form_widget(form.adresse_telephone, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.adresse_telephone) }}
+        </div>
+
+        <div class="form-group text-center mt-5">
+            {{ form_widget(form.submit, {'attr': {'class': 'btn btn-light'}}) }}
+        </div>
+    {{ form_end(form) }}
 
 </div>
+
 {% endblock %}

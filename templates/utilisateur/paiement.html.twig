@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Validation du panier{% endblock %}
+
+{% block body %}
+
+    <div class="container mt-5">
+
+        <h2>Récapitulatif de la commande</h2>
+
+        <ul class="list-group">
+
+            {% set total = 0 %}
+            
+            {% for item in items %}  
+
+                {% set totalProduit = item.produit.produitPrixHt * item.quantity %}
+
+                {% set total = total + totalProduit %}
+
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+
+                    <div class="d-flex">
+
+                        <img 
+                            src="{{ asset('/images/'~ item.produit.produitImage) }}" 
+                            alt="{{ item.produit.produitLibelle }}" 
+                            class="img-thumbnail" 
+                            style="width: 50px; height: 50px; margin-right: 10px;"
+                        >
+                        
+                        <div>
+                            <span>{{ item.produit.produitLibelle }} (x{{ item.quantity }})</span>
+                        </div>
+                    </div>
+                    
+                    <span>{{ totalProduit|number_format(2, ',', ' ') }}€ </span>
+
+                </li>
+
+            {% endfor %}
+
+        </ul>
+
+        <hr>
+
+        <div class="d-flex justify-content-between">
+
+            <strong>Total :</strong>
+            <strong>{{ total|number_format(2, ',', ' ') }} €</strong>
+
+        </div>
+
+        <div class="d-flex justify-content-center align-items-center mt-5">
+            <form action="/create-checkout-session" method="POST" >
+                <button type="submit" class="btn btn-light" id="checkout-button">Paiement</button>
+            </form>
+        </div>
+
+    </div>
+
+{% endblock %}

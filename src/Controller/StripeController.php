@@ -53,13 +53,13 @@ class StripeController extends AbstractController
 
     public function checkout(SessionInterface $session, EntityManagerInterface $entityManager)
     {
-        \Stripe\Stripe::setApiKey($_ENV["CLE_SECRETE"]);
+        \Stripe\Stripe::setApiKey($_ENV['CLE_SECRETE']);
 
         $domaine="https://127.0.0.1:8000";
 
         $individuel=[];
 
-        $panier = $session->get('panier');
+        $panier = $session->get('panier',[]);
 
         foreach ($panier as $id => $qty)
         {
@@ -67,14 +67,13 @@ class StripeController extends AbstractController
 
             $individuel[]= 
             [
-
                 'price' => $produit->getPrix(),
                 'quantity' => $qty,
             ];
         }
-           
-        $session = \Stripe\Checkout\Session::create(
-
+        
+        $session = \Stripe\Checkout\Session::create(                                                                                                                                                  
+    
             [
                 'line_items' => $individuel,
             
