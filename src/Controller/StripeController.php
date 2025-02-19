@@ -76,7 +76,7 @@ class StripeController extends AbstractController
     
             [
                 'line_items' => $individuel,
-            
+
                 'mode' => 'payment',
 
                 'automatic_tax' => 

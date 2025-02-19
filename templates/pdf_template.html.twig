@@ -5,10 +5,11 @@
     <p>Adresse:
         
         {% for item in adresse %}
-            {{ item.adresseLibelle }} {{ item.adressePostal }} {{ item.adresseVille }}
+            {{ item.adresse.adresseLibelle }} {{ item.adresse.adressePostal }} {{ item.adresse.adresseVille }}
         {% endfor %}
        
     </p>
+    {# TODO adresse #}
 
     <h2>Produits Commandés</h2>
     <table border="1">
@@ -17,7 +18,6 @@
                 <th>Produit</th>
                 <th>Quantité</th>
                 <th>Prix Unitaire</th>
-                <th>Total</th>
             </tr>
         </thead>
         <tbody>
@@ -26,7 +26,6 @@
                     <td>{{ item.produit.produitLibelle }}</td> 
                     <td>{{ item.quantite }}</td>  
                     <td>{{ item.produit.produitPrixHt | number_format(2, ',', ' ') }} €</td>  {# Prix unitaire #}
-                    <td>{{ item.produit.produitPrixHt * item.quantite | number_format(2, ',', ' ') }} €</td>  Total pour ce produit
                 </tr>
             {% endfor %}
         </tbody>

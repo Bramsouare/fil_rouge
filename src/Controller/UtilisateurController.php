@@ -7,6 +7,7 @@ use Dompdf\Options;
 use App\Entity\Role;
 use App\Entity\Adresse;
 use App\Entity\Produit;
+use App\Entity\Commande;
 use App\Form\AdresseType;
 use App\Entity\Utilisateur;
 use App\Form\InscriptionType;
@@ -418,57 +419,80 @@ class UtilisateurController extends AbstractController
     #[Route('/panier/validation', name: 'panier_validation')]
     public function validation(SessionInterface $session, Request $request, EntityManagerInterface $entityManager): Response
     {
-        // Récupérer l'utilisateur actuellement connecté
         $utilisateur = $this->getUser();
-
-        // Vérifier que l'utilisateur est bien connecté
+    
         if (!$utilisateur) {
             return $this->redirectToRoute('app_login');
         }
-
-        // Récupérer les informations de l'utilisateur
+    
         $nom = $utilisateur->getUtilisateurNom();
         $prenom = $utilisateur->getUtilisateurPrenom();
         $email = $utilisateur->getUtilisateurMail();
-
-        // Récupérer les données du panier
+    
         $panier = $session->get('panier');
-
+    
         if (empty($panier)) {
             return $this->redirectToRoute('app_panier');
         }
-
+    
+        // Créer une nouvelle commande
+        $commande = new Commande();
+        $commande->setUtilisateur($utilisateur);
+        $commande->setCommandeDate(new \DateTime());
+        $commande->setCommandePaiement('Carte bancaire');  
+        $commande->setCommandeStatut('En attente');  
+        $commande->setCommandeReference(uniqid('CMD_', true)); 
+        $commande->setCommandeFactureDate(new \DateTime());
+        $commande->setCommandeTotalHt(0);  
+        $commande->setCommandeDiffere(false);
+    
+        $commande->setCommandeDatePaiement(new \DateTime()); 
+    
         // Créer le formulaire pour l'adresse
         $form = $this->createForm(AdresseType::class);
         $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            // Sauvegarder l'adresse dans la base de données
+    
+        if ($form->isSubmitted() && $form->isValid()) 
+        {
             $adresse = $form->getData();
-            $adresse->setUtilisateur($utilisateur);  // Associer l'adresse à l'utilisateur
-
+            $adresse->setUtilisateur($utilisateur); 
+    
             $entityManager->persist($adresse);
             $entityManager->flush();
-
+    
             $this->addFlash('success', 'Adresse validée !');
-
-            // Rediriger l'utilisateur vers la page de paiement
+    
             return $this->redirectToRoute('panier_paiement');
         }
-
+    
         // Préparer les données du panier
         $panierData = [];
+        $total = 0;
         foreach ($panier as $id => $qty) {
             $produit = $entityManager->getRepository(Produit::class)->find($id);
-
+    
             if ($produit) {
+                $total += $produit->getProduitPrixHt() * $qty;
                 $panierData[] = [
                     'produit' => $produit,
                     'quantity' => $qty,
                 ];
             }
         }
-
+    
+        // Assigner le total hors taxe de la commande
+        //$commande->setCommandeTotalHt($total);
+    
+        // Persister la commande dans la base de données
+        $entityManager->persist($commande);
+    
+        // Sauvegarder les modifications
+        $entityManager->flush();
+    
+        // Vider le panier de la session
+        // $session->set('panier', []);
+    
+        // Rendu du template
         return $this->render('utilisateur/panier_validation.html.twig', [
             'items' => $panierData,
             'form' => $form->createView(),
@@ -477,6 +501,7 @@ class UtilisateurController extends AbstractController
             'email' => $email,
         ]);
     }
+    
 
     ############################################################
     #                PAIEMENT DU PANIER 

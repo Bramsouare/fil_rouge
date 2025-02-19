@@ -3,21 +3,34 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Produit;
+use App\Entity\Rubrique;
 use App\Entity\Utilisateur;
+use App\Repository\ProduitRepository;
+use App\Repository\RubriqueRepository;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
 
 class DashboardController extends AbstractDashboardController
 {
+    private $rubriqueRepository;
+
+    public function __construct(RubriqueRepository $rubriqueRepository)
+    {
+        $this->rubriqueRepository = $rubriqueRepository;
+    }
+
     #[Route('/admin', name: 'admin')]
     public function index(): Response
     {
-        return $this->render('admin/dashboard.html.twig');
-    }
+        $rubriques = $this->rubriqueRepository->findAll();
 
+        return $this->render('admin/dashboard.html.twig', [
+            'rubriques' => $rubriques,
+        ]);
+    }
     public function configureDashboard(): Dashboard
     {
         return Dashboard::new()
@@ -32,6 +45,8 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Produit', 'fa-solid fa-guitar', Produit::class);
     }
 }
+
+
 
 // Un tableau de bord spécifique pour les employés internes (DashboardController) pourrait inclure :
 

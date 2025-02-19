@@ -2,6 +2,41 @@
 
 {% block content %}
 
-    <h1>Bienvenue au sein de l'administration de Village Green</h1>
+    <div class="container">
+
+        <h1>Bienvenue au sein de l'administration de Village Green</h1>
+
+        <h1 class="text-center my-5 text-white">Toutes nos catégories</h1>
+        
+        <div class="row row-cols-1 row-cols-md-3 g-4 justify-content-center">
+
+            {% for rubrique in rubriques %}
+
+            <div class="col-3 my-5">
+
+                <div class="card h-100 d-flex flex-column">
+
+                    <a href="{{ path('app_rubrique_produits', { id: rubrique.id }) }}">
+
+                        <img 
+                            src="{{ asset('images/' ~ rubrique.rubriqueImage) }}" 
+                            alt="{{ rubrique.rubriqueLibelle }}" 
+                            class="card-img-top"
+                        >
+                    </a>
+                    <div class="card-body text-center">
+                    
+                        <p class="card-text h-25">{{ rubrique.rubriqueDescription }}</p>
+
+                    </div>
+                    
+                </div>
+            </div>
+
+        {% endfor %}
+
+        </div>
+
+    </div>
 
 {% endblock %}
